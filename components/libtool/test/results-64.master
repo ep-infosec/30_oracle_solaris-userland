@@ -1,0 +1,8 @@
+ 70: Runpath in libtool library files                FAILED (runpath-in-lalib.at:61)
+117: enforced lib prefix                             FAILED (need_lib_prefix.at:182)
+138: shared library                                  FAILED (tagdemo.at:359)
+139: shared and static together                      FAILED (tagdemo.at:374)
+144: C++ exception handling                          FAILED (exceptions.at:373)
+170: Run tests with low max_cmd_len                  FAILED (cmdline_wrap.at:47)
+11 failed (5 expected failures).
+   Subject: [GNU Libtool 2.4.6] testsuite: 70 117 138 139 144 170 failed

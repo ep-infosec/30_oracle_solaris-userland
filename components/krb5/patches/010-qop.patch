@@ -1,0 +1,88 @@
+#
+# This patch patches in g_utils.c with /etc/gss/qop related interfaces.
+#
+# These functions were removed from MIT code, but are referenced by Solaris
+# rpcsec_gss wrappers.
+#
+# This is a Solaris specific patch not intended for upstream contribution.
+# Patch source: in-house
+#
+--- a/src/lib/gssapi/libgssapi_krb5.exports
++++ b/src/lib/gssapi/libgssapi_krb5.exports
+@@ -44,6 +44,9 @@ GSS_C_MA_COMPRESS
+ GSS_C_MA_CTX_TRANS
+ GSS_C_MA_NEGOEX_AND_SPNEGO
+ GSS_C_SEC_CONTEXT_SASL_SSF
++gssint_qop_to_num
++gssint_num_to_qop
++gssint_get_mech_info
+ gss_accept_sec_context
+ gss_acquire_cred
+ gss_acquire_cred_with_password
+--- a/src/lib/gssapi/mechglue/Makefile.in
++++ b/src/lib/gssapi/mechglue/Makefile.in
+@@ -68,6 +68,7 @@ SRCS = \
+ 	$(srcdir)/g_sign.c \
+ 	$(srcdir)/g_store_cred.c \
+ 	$(srcdir)/g_unseal.c \
++	$(srcdir)/g_utils.c \
+ 	$(srcdir)/g_unwrap_aead.c \
+ 	$(srcdir)/g_unwrap_iov.c \
+ 	$(srcdir)/g_verify.c \
+@@ -133,6 +134,7 @@ OBJS = \
+ 	$(OUTPRE)g_sign.$(OBJEXT) \
+ 	$(OUTPRE)g_store_cred.$(OBJEXT) \
+ 	$(OUTPRE)g_unseal.$(OBJEXT) \
++	$(OUTPRE)g_utils.$(OBJEXT) \
+ 	$(OUTPRE)g_unwrap_aead.$(OBJEXT) \
+ 	$(OUTPRE)g_unwrap_iov.$(OBJEXT) \
+ 	$(OUTPRE)g_verify.$(OBJEXT) \
+@@ -198,6 +200,7 @@ STLIBOBJS = \
+ 	g_sign.o \
+ 	g_store_cred.o \
+ 	g_unseal.o \
++	g_utils.o \
+ 	g_unwrap_aead.o \
+ 	g_unwrap_iov.o \
+ 	g_verify.o \
+--- a/src/lib/gssapi/mechglue/mglueP.h
++++ b/src/lib/gssapi/mechglue/mglueP.h
+@@ -64,6 +64,38 @@ typedef struct gss_cred_id_struct {
+ 	gss_cred_id_t		*cred_array;
+ } gss_union_cred_desc, *gss_union_cred_t;
+ 
++/*
++ * qop configuration file handling.
++ */
++#define	MAX_QOP_NUM_PAIRS	128
++#define	MAX_QOPS_PER_MECH	128
++
++typedef struct _qop_num {
++	char *qop;
++	OM_uint32 num;
++	char *mech;
++} qop_num;
++
++OM_uint32
++gssint_qop_to_num(
++	char		*qop,		/* input qop string */
++	char		*mech,		/* input mech string */
++	OM_uint32	*num		/* output qop num */
++);
++
++OM_uint32
++gssint_num_to_qop(
++	char		*mech,		/* input mech string */
++	OM_uint32	num,		/* input qop num */
++	char		**qop		/* output qop name */
++);
++
++OM_uint32
++gssint_get_mech_info(
++	char		*mech,		/* input mech string */
++	char		**qops		/* buffer for return qops */
++);
++
+ /*
+  * Rudimentary pointer validation macro to check whether the
+  * "loopback" field of an opaque struct points back to itself.  This

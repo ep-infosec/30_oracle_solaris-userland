@@ -1,0 +1,55 @@
+17907916 typing while X resets on attached or rkvm console leads to hard hang
+
+Unknown if this should be applied upstream for all platforms or if it's
+Solaris specific.
+
+--- xf86-video-ast-1.1.5/src/ast_vgatool.c
++++ xf86-video-ast-1.1.5/src/ast_vgatool.c
+@@ -1077,30 +1077,43 @@ }
+ static void vEnableVGA(ScrnInfoPtr pScrn)
+ {
+     ASTRecPtr pAST;
++    UCHAR miscout;
+ 
+     pAST = ASTPTR(pScrn);
+ 
+     SetReg(VGA_ENABLE_PORT, 0x01);
+-    SetReg(MISC_PORT_WRITE, 0x01);
+ 
++    /*
++     * Only set the Input/Output Address bit in the Miscellaneous
++     * output register, as clearing others bits and accessing the
++     * frame buffer caused non-resumable errors on sparc.
++     */
++    miscout = GetReg(MISC_PORT_READ);
++    SetReg(MISC_PORT_WRITE, miscout | 0x01);
+ }
+ 
++/*
++ * Leave video memory enabled in PCI Control Register #1 (0xa0), as
++ * accessing the frame buffer with it disabled caused non-resumable
++ * errors on sparc.
++ */
++
+ static UCHAR ExtRegInfo[] = {
+-    0x0F,
++    0x7F,
+     0x04,
+     0x1C,
+     0xFF
+ };
+ 
+ static UCHAR ExtRegInfo_AST2300A0[] = {
+-    0x0F,
++    0x7F,
+     0x04,
+     0x1C,
+     0xFF
+ };
+ 
+ static UCHAR ExtRegInfo_AST2300[] = {
+-    0x0F,
++    0x7F,
+     0x04,
+     0x1F,
+     0xFF

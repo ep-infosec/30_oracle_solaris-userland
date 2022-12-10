@@ -1,0 +1,124 @@
+ok 1 - cache_create
+ok 2 - cache_constructor
+ok 3 - cache_constructor_fail
+ok 4 - cache_destructor
+ok 5 - cache_reuse
+ok 6 - cache_redzone
+ok 7 - cache_limit_revised_downward
+ok 8 - stats_prefix_find
+ok 9 - stats_prefix_record_get
+ok 10 - stats_prefix_record_delete
+ok 11 - stats_prefix_record_set
+ok 12 - stats_prefix_dump
+ok 13 - issue_161
+ok 14 - strtol
+ok 15 - strtoll
+ok 16 - strtoul
+ok 17 - strtoull
+ok 18 - issue_44
+ok 19 - vperror
+ok 20 - issue_101
+ok 21 - crc32c
+ok 22 - start_server
+ok 23 - issue_92
+ok 24 - issue_102
+ok 25 - binary_noop
+ok 26 - binary_quit
+ok 27 - binary_quitq
+ok 28 - binary_set
+ok 29 - binary_setq
+ok 30 - binary_add
+ok 31 - binary_addq
+ok 32 - binary_replace
+ok 33 - binary_replaceq
+ok 34 - binary_delete
+ok 35 - binary_deleteq
+ok 36 - binary_get
+ok 37 - binary_getq
+ok 38 - binary_getk
+ok 39 - binary_getkq
+ok 40 - binary_gat
+ok 41 - binary_gatq
+ok 42 - binary_gatk
+ok 43 - binary_gatkq
+ok 44 - binary_incr
+ok 45 - binary_incrq
+ok 46 - binary_decr
+ok 47 - binary_decrq
+ok 48 - binary_version
+ok 49 - binary_flush
+ok 50 - binary_flushq
+ok 51 - binary_append
+ok 52 - binary_appendq
+ok 53 - binary_prepend
+ok 54 - binary_prependq
+ok 55 - binary_stat
+ok 56 - binary_illegal
+ok 57 - binary_pipeline_hickup
+ok 58 - shutdown
+ok 59 - stop_server
+t/00-startup.t .............. ok
+t/64bit.t ................... ok
+t/ascii-auth.t .............. ok
+t/binary-get.t .............. ok
+t/binary-sasl.t ............. ok
+t/binary.t .................. ok
+t/bogus-commands.t .......... ok
+t/cas.t ..................... ok
+t/chunked-items.t ........... ok
+t/conn-limits.t ............. ok
+t/daemonize.t ............... ok
+t/dash-M.t .................. ok
+t/dyn-maxbytes.t ............ ok
+t/evictions.t ............... ok
+t/expirations.t ............. ok
+t/flags.t ................... ok
+t/flush-all.t ............... ok
+t/getandtouch.t ............. ok
+t/getset.t .................. ok
+t/idle-timeout.t ............ ok
+t/incrdecr.t ................ ok
+t/issue_104.t ............... ok
+t/issue_108.t ............... ok
+t/issue_14.t ................ ok
+t/issue_152.t ............... ok
+t/issue_163.t ............... ok
+t/issue_183.t ............... ok
+t/issue_192.t ............... ok
+t/issue_22.t ................ ok
+t/issue_29.t ................ ok
+t/issue_3.t ................. ok
+t/issue_41.t ................ ok
+t/issue_42.t ................ ok
+t/issue_50.t ................ ok
+t/issue_61.t ................ ok
+t/issue_67.t ................ ok
+t/issue_68.t ................ ok
+t/issue_70.t ................ ok
+t/item_size_max.t ........... ok
+t/line-lengths.t ............ ok
+t/lru-crawler.t ............. ok
+t/lru-maintainer.t .......... ok
+t/lru.t ..................... ok
+t/malicious-commands.t ...... ok
+t/maxconns.t ................ ok
+t/metaget.t ................. ok
+t/multiversioning.t ......... ok
+t/noreply.t ................. ok
+t/quit.t .................... ok
+t/restart.t ................. ok
+t/shutdown.t ................ ok
+t/slabs-reassign-chunked.t .. ok
+t/slabs-reassign2.t ......... ok
+t/slabs_reassign.t .......... ok
+t/stats-conns.t ............. ok
+t/stats-detail.t ............ ok
+t/stats.t ................... ok
+t/strtol-testing.t .......... ok
+t/touch.t ................... ok
+t/udp.t ..................... ok
+t/unixsocket.t .............. ok
+t/watcher.t ................. ok
+t/watcher_connid.t .......... ok
+All tests successful.
+Result: PASS

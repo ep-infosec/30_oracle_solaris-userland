@@ -1,0 +1,80 @@
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+# Copyright (c) 2011, 2021, Oracle and/or its affiliates.
+#
+
+<transform file path=usr.*/man/.+ -> \
+    default mangler.man.stability "pass-through volatile">
+set name=pkg.fmri \
+    value=pkg:/library/lua/lgi-54@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION)
+set name=pkg.summary \
+    value="Dynamic Lua binding to GObject libraries using GObject-Introspection"
+set name=com.oracle.info.baid value=$(COMPONENT_BAID)
+set name=com.oracle.info.description value=$(COMPONENT_NAME)
+set name=info.classification \
+    value="org.opensolaris.category.2008:Development/Other Languages"
+set name=info.source-url value=$(COMPONENT_ARCHIVE_URL)
+set name=info.upstream-url value=$(COMPONENT_PROJECT_URL)
+set name=org.opensolaris.arc-caseid value=PSARC/2016/381
+set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
+file files/lgi-64.pc path=usr/lib/$(MACH64)/pkgconfig/lgi.pc
+file path=usr/lib/lua/$(LUA_VERSION)/64/lgi/corelgilua54.so
+file files/lgi.pc path=usr/lib/pkgconfig/lgi.pc
+file path=usr/share/lua/$(LUA_VERSION)/lgi.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/class.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/component.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/core.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/enum.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/ffi.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/init.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/log.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/namespace.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/override/Clutter.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/override/GLib-Bytes.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/override/GLib-Error.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/override/GLib-Markup.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/override/GLib-Source.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/override/GLib-Timer.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/override/GLib-Variant.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/override/GLib.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/override/GObject-Closure.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/override/GObject-Object.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/override/GObject-Type.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/override/GObject-Value.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/override/Gdk.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/override/Gio-DBus.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/override/Gio.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/override/GooCanvas.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/override/Gst.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/override/Gtk.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/override/Pango.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/override/PangoCairo.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/override/cairo.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/package.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/record.lua
+file path=usr/share/lua/$(LUA_VERSION)/lgi/version.lua
+license LICENSE license=MIT
+
+# force the rename with an optional dependency on the old name
+depend type=optional fmri=library/lua/lgi-52@0.9.2-11.4.27.0.1.82.0
+
+# force a dependency on lua runtime
+depend type=require fmri=runtime/lua

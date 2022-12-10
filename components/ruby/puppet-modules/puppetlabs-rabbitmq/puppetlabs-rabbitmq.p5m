@@ -1,0 +1,173 @@
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+
+#
+# Copyright (c) 2015, 2022, Oracle and/or its affiliates.
+#
+
+<transform file -> edit path ^ usr/puppetlabs/puppet/modules/>
+#
+set name=pkg.fmri \
+    value=pkg:/system/management/puppet/puppetlabs-rabbitmq@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION)
+set name=pkg.summary value="Rabbitmq Puppet Module"
+set name=pkg.description \
+    value="The rabbitmq module sets up rabbitmq and has a number of providers to manage everything from vhosts to exchanges after setup."
+set name=com.oracle.info.baid value=$(COMPONENT_BAID)
+set name=com.oracle.info.description value="Rabbitmq Puppet Module"
+set name=info.classification \
+    value="org.opensolaris.category.2008:System/Administration and Configuration"
+set name=info.source-url value=$(GIT_REPO)
+set name=info.upstream \
+    value="puppetlabs - https://forge.puppetlabs.com/puppetlabs"
+set name=info.upstream-url value=$(GIT_REPO)
+set name=org.opensolaris.arc-caseid value=PSARC/2015/368 value=PSARC/2016/016 \
+    value=PSARC/2016/607 value=PSARC/2017/092
+set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
+file path=rabbitmq/CHANGELOG.md
+file path=rabbitmq/Gemfile
+file path=rabbitmq/HISTORY.md
+file path=rabbitmq/LICENSE
+file path=rabbitmq/MAINTAINERS.md
+file path=rabbitmq/NOTICE
+file path=rabbitmq/README.md
+file path=rabbitmq/REFERENCE.md
+file path=rabbitmq/Rakefile
+file path=rabbitmq/examples/erlang_deps.pp
+file path=rabbitmq/examples/full.pp
+file path=rabbitmq/examples/permissions/add.pp
+file path=rabbitmq/examples/plugin.pp
+file path=rabbitmq/examples/repo/apt.pp
+file path=rabbitmq/examples/site.pp
+file path=rabbitmq/examples/user/add.pp
+file path=rabbitmq/examples/vhosts/add.pp
+file path=rabbitmq/files/README.markdown
+file path=rabbitmq/files/plugins/amqp_client-2.3.1.ez
+file path=rabbitmq/files/plugins/rabbit_stomp-2.3.1.ez
+file path=rabbitmq/hiera.yaml
+file path=rabbitmq/lib/facter/erl_ssl_path.rb
+file path=rabbitmq/lib/facter/rabbitmq_clustername.rb
+file path=rabbitmq/lib/facter/rabbitmq_nodename.rb
+file path=rabbitmq/lib/facter/rabbitmq_plugins_dirs.rb
+file path=rabbitmq/lib/facter/rabbitmq_version.rb
+file path=rabbitmq/lib/puppet/provider/rabbitmq_binding/rabbitmqadmin.rb
+file path=rabbitmq/lib/puppet/provider/rabbitmq_cli.rb
+file path=rabbitmq/lib/puppet/provider/rabbitmq_cluster/rabbitmqctl.rb
+file path=rabbitmq/lib/puppet/provider/rabbitmq_erlang_cookie/ruby.rb
+file path=rabbitmq/lib/puppet/provider/rabbitmq_exchange/rabbitmqadmin.rb
+file path=rabbitmq/lib/puppet/provider/rabbitmq_parameter/rabbitmqctl.rb
+file path=rabbitmq/lib/puppet/provider/rabbitmq_parameter/rabbitmqctl.rb
+file path=rabbitmq/lib/puppet/provider/rabbitmq_plugin/rabbitmqplugins.rb
+file path=rabbitmq/lib/puppet/provider/rabbitmq_policy/rabbitmqctl.rb
+file path=rabbitmq/lib/puppet/provider/rabbitmq_policy/rabbitmqctl.rb
+file path=rabbitmq/lib/puppet/provider/rabbitmq_queue/rabbitmqadmin.rb
+file path=rabbitmq/lib/puppet/provider/rabbitmq_user/rabbitmqctl.rb
+file path=rabbitmq/lib/puppet/provider/rabbitmq_user/rabbitmqctl.rb
+file path=rabbitmq/lib/puppet/provider/rabbitmq_user_permissions/rabbitmqctl.rb
+file path=rabbitmq/lib/puppet/provider/rabbitmq_user_permissions/rabbitmqctl.rb
+file path=rabbitmq/lib/puppet/provider/rabbitmq_vhost/rabbitmqctl.rb
+file path=rabbitmq/lib/puppet/provider/rabbitmq_vhost/rabbitmqctl.rb
+file path=rabbitmq/lib/puppet/type/rabbitmq_binding.rb
+file path=rabbitmq/lib/puppet/type/rabbitmq_cluster.rb
+file path=rabbitmq/lib/puppet/type/rabbitmq_erlang_cookie.rb
+file path=rabbitmq/lib/puppet/type/rabbitmq_exchange.rb
+file path=rabbitmq/lib/puppet/type/rabbitmq_parameter.rb
+file path=rabbitmq/lib/puppet/type/rabbitmq_plugin.rb
+file path=rabbitmq/lib/puppet/type/rabbitmq_policy.rb
+file path=rabbitmq/lib/puppet/type/rabbitmq_queue.rb
+file path=rabbitmq/lib/puppet/type/rabbitmq_user.rb
+file path=rabbitmq/lib/puppet/type/rabbitmq_user_permissions.rb
+file path=rabbitmq/lib/puppet/type/rabbitmq_vhost.rb
+file path=rabbitmq/locales/config.yaml
+file path=rabbitmq/manifests/config.pp
+file path=rabbitmq/manifests/init.pp
+file path=rabbitmq/manifests/install.pp
+file path=rabbitmq/manifests/install/rabbitmqadmin.pp
+file path=rabbitmq/manifests/management.pp
+file path=rabbitmq/manifests/repo/apt.pp
+file path=rabbitmq/manifests/repo/rhel.pp
+file path=rabbitmq/manifests/service.pp
+file path=rabbitmq/metadata.json
+file path=rabbitmq/metadata.json.~1~
+file path=rabbitmq/spec/README.markdown
+file path=rabbitmq/spec/acceptance/class_spec.rb
+file path=rabbitmq/spec/acceptance/clustering_spec.rb
+file path=rabbitmq/spec/acceptance/delete_guest_user_spec.rb
+file path=rabbitmq/spec/acceptance/nodesets/default.yml
+file path=rabbitmq/spec/acceptance/parameter_spec.rb
+file path=rabbitmq/spec/acceptance/policy_spec.rb
+file path=rabbitmq/spec/acceptance/queue_spec.rb
+file path=rabbitmq/spec/acceptance/rabbitmqadmin_spec.rb
+file path=rabbitmq/spec/acceptance/user_spec.rb
+file path=rabbitmq/spec/acceptance/vhost_spec.rb
+file path=rabbitmq/spec/classes/rabbitmq_spec.rb
+file path=rabbitmq/spec/spec_helper.rb
+file path=rabbitmq/spec/spec_helper_acceptance.rb
+file path=rabbitmq/spec/spec_helper_local.rb
+file path=rabbitmq/spec/unit/facter/util/fact_erl_ssl_path_spec.rb
+file path=rabbitmq/spec/unit/facter/util/fact_rabbitmq_clustername_spec.rb
+file path=rabbitmq/spec/unit/facter/util/fact_rabbitmq_nodename_spec.rb
+file path=rabbitmq/spec/unit/facter/util/fact_rabbitmq_plugins_dirs_spec.rb
+file path=rabbitmq/spec/unit/facter/util/fact_rabbitmq_version_spec.rb
+file path=rabbitmq/spec/unit/puppet/provider/rabbitmq_binding/rabbitmqadmin_spec.rb
+file path=rabbitmq/spec/unit/puppet/provider/rabbitmq_cli_spec.rb
+file path=rabbitmq/spec/unit/puppet/provider/rabbitmq_cluster/rabbitmqctl_spec.rb
+file path=rabbitmq/spec/unit/puppet/provider/rabbitmq_exchange/rabbitmqadmin_spec.rb
+file path=rabbitmq/spec/unit/puppet/provider/rabbitmq_parameter/rabbitmqctl_federation_spec.rb
+file path=rabbitmq/spec/unit/puppet/provider/rabbitmq_parameter/rabbitmqctl_spec.rb
+file path=rabbitmq/spec/unit/puppet/provider/rabbitmq_parameter/rabbitmqctl_spec.rb
+file path=rabbitmq/spec/unit/puppet/provider/rabbitmq_plugin/rabbitmqctl_spec.rb
+file path=rabbitmq/spec/unit/puppet/provider/rabbitmq_plugin/rabbitmqctl_spec.rb
+file path=rabbitmq/spec/unit/puppet/provider/rabbitmq_policy/rabbitmqctl_spec.rb
+file path=rabbitmq/spec/unit/puppet/provider/rabbitmq_policy/rabbitmqctl_spec.rb
+file path=rabbitmq/spec/unit/puppet/provider/rabbitmq_queue/rabbitmqadmin_spec.rb
+file path=rabbitmq/spec/unit/puppet/provider/rabbitmq_user/rabbitmqctl_spec.rb
+file path=rabbitmq/spec/unit/puppet/provider/rabbitmq_user/rabbitmqctl_spec.rb
+file path=rabbitmq/spec/unit/puppet/provider/rabbitmq_user_permissions/rabbitmqctl_spec.rb
+file path=rabbitmq/spec/unit/puppet/provider/rabbitmq_user_permissions/rabbitmqctl_spec.rb
+file path=rabbitmq/spec/unit/puppet/provider/rabbitmq_vhost/rabbitmqctl_spec.rb
+file path=rabbitmq/spec/unit/puppet/provider/rabbitmq_vhost/rabbitmqctl_spec.rb
+file path=rabbitmq/spec/unit/puppet/type/rabbitmq_binding_spec.rb
+file path=rabbitmq/spec/unit/puppet/type/rabbitmq_cluster_spec.rb
+file path=rabbitmq/spec/unit/puppet/type/rabbitmq_exchange_spec.rb
+file path=rabbitmq/spec/unit/puppet/type/rabbitmq_parameter_spec.rb
+file path=rabbitmq/spec/unit/puppet/type/rabbitmq_plugin_spec.rb
+file path=rabbitmq/spec/unit/puppet/type/rabbitmq_policy_spec.rb
+file path=rabbitmq/spec/unit/puppet/type/rabbitmq_queue_spec.rb
+file path=rabbitmq/spec/unit/puppet/type/rabbitmq_user_permissions_spec.rb
+file path=rabbitmq/spec/unit/puppet/type/rabbitmq_user_spec.rb
+file path=rabbitmq/spec/unit/puppet/type/rabbitmq_vhost_spec.rb
+file path=rabbitmq/templates/README.markdown
+file path=rabbitmq/templates/default.erb
+file path=rabbitmq/templates/enabled_plugins.erb
+file path=rabbitmq/templates/inetrc.erb
+file path=rabbitmq/templates/limits.conf
+file path=rabbitmq/templates/rabbitmq-env.conf.erb
+file path=rabbitmq/templates/rabbitmq.config.erb
+file path=rabbitmq/templates/rabbitmqadmin.conf.erb
+#
+#
+license puppetlabs-rabbitmq.license license="Apache v2.0"
+# Renamed Package
+depend type=optional \
+    fmri=system/management/puppet/puppet-rabbitmq@3.1.0-5.12.0.0.0.93.0
+
+# force a dependency on puppetlabs-stdlib
+depend type=require fmri=system/management/puppet/puppetlabs-stdlib

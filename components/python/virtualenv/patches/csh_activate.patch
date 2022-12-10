@@ -1,0 +1,54 @@
+Csh activation script is incorrectly using : modifiers, which are not
+available for environment variables.
+
+Can be offered upstream.
+
+The test suite works with tcsh, but fails with our original csh due
+to a missing newline. This change forces the newline and also
+explicitly tests tcsh as well.
+
+This was offered upstream:
+https://github.com/pypa/virtualenv/pull/2418
+
+--- virtualenv-20.16.3/src/virtualenv/activation/cshell/activate.csh
++++ virtualenv-20.16.3/src/virtualenv/activation/cshell/activate.csh
+@@ -12,15 +12,15 @@ deactivate nondestructive
+ 
+ setenv VIRTUAL_ENV '__VIRTUAL_ENV__'
+ 
+-set _OLD_VIRTUAL_PATH="$PATH:q"
+-setenv PATH "$VIRTUAL_ENV:q/__BIN_NAME__:$PATH:q"
++set _OLD_VIRTUAL_PATH="$PATH"
++setenv PATH "$VIRTUAL_ENV/__BIN_NAME__:$PATH"
+ 
+ 
+ 
+ if ('__VIRTUAL_PROMPT__' != "") then
+     set env_name = '(__VIRTUAL_PROMPT__) '
+ else
+-    set env_name = '('"$VIRTUAL_ENV:t:q"') '
++    set env_name = '('`basename "$VIRTUAL_ENV"`') '
+ endif
+ 
+ if ( $?VIRTUAL_ENV_DISABLE_PROMPT ) then
+--- virtualenv-20.16.3/tests/unit/activation/test_csh.py
++++ virtualenv-20.16.3/tests/unit/activation/test_csh.py
+@@ -7,6 +7,17 @@ def test_csh(activation_tester_class, ac
+             super().__init__(CShellActivator, session, "csh", "activate.csh", "csh")
+ 
+         def print_prompt(self):
+-            return "echo 'source \"$VIRTUAL_ENV/bin/activate.csh\"; echo $prompt' | csh -i"
++            return "echo 'source \"$VIRTUAL_ENV/bin/activate.csh\"; echo $prompt' | csh -i; echo"
+ 
+     activation_tester(Csh)
++
++
++def test_tcsh(activation_tester_class, activation_tester):
++    class Tcsh(activation_tester_class):
++        def __init__(self, session):
++            super().__init__(CShellActivator, session, "tcsh", "activate.csh", "csh")
++
++        def print_prompt(self):
++            return "echo 'source \"$VIRTUAL_ENV/bin/activate.csh\"; echo $prompt' | tcsh -i"
++
++    activation_tester(Tcsh)

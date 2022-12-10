@@ -1,0 +1,46 @@
+'gmake test' runs the full test suite.
+
+To run individual unit test cases:
+    cd meson-0.63.3
+    ./run_unittests.py -k <test>
+
+For example, to run the test_flock unit test:
+    ./run_unittests.py -k test_flock
+
+For other test cases, cd to the test case directory and run:
+    env PKG_CONFIG_PATH=/usr/lib/64/pkgconfig python3 \
+ 	../../../meson.py builddir
+    cd builddir
+    ninja
+    ninja test
+
+Known, unfixed issues:
+
+======================================================================
+run_unittests.py::AllPlatformTests::test_flock <- unittests/allplatformstests.py FAILED
+
+_________________________ AllPlatformTests.test_flock __________________________
+>   self.assertTrue(exception_raised, 'Double locking did not raise exception.')
+E   AssertionError: False is not true : Double locking did not raise exception.
+
+-- This appears to be because the test tries to lock the file twice
+   in the same process, but the fcntl calls underlying Python's fcntl.flock()
+   only lock out other processes, and allow a single process to get additional
+   locks on the same file.   Perhaps we need to find a way to fork a second
+   process for this test?
+
+   Reported upstream as https://github.com/mesonbuild/meson/issues/5903
+
+======================================================================
+[4/6] Linking target libsample.so.
+FAILED: libsample.so 
+/usr/gcc/9/bin/gcc  -o libsample.so 'sample@sha/meson-sample.c.o' -Wl,--no-undefined -Wl,--as-needed -shared -fPIC -Wl,--start-group -Wl,-soname,libsample.so -m64 -O3 samelibname/libsample.so /usr/lib/amd64/libgobject-2.0.so /usr/lib/amd64/libglib-2.0.so -Wl,--end-group '-Wl,-rpath,$ORIGIN/samelibname'
+ld: fatal: recording name conflict: file 'samelibname/libsample.so' and soname option (-h, -soname) provide identical dependency names: libsample.so
+collect2: error: ld returned 1 exit status
+ninja: build stopped: subcommand failed.
+
+-- This fails because it attempts to perform the illogical operation of
+   creating a shared object that depends on a shared object of the same
+   name, which makes no sense with our dynamic linker.
+
+   Reported upstream as https://github.com/mesonbuild/meson/issues/5915

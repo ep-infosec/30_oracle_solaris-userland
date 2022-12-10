@@ -1,0 +1,134 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr "Project-Id-Version: PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2018-05-15 05:49-0700\nPO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\nLast-Translator: FULL NAME <EMAIL@ADDRESS>\nLanguage-Team: LANGUAGE <LL@li.org>\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\n"
+
+#: ../os-about.desktop.in.h:1
+msgid "About Oracle Solaris"
+msgstr "Oracle Solaris について"
+
+#: ../os-about.desktop.in.h:2
+msgid "Oracle Solaris version and notices"
+msgstr "Oracle Solaris のバージョンと著作権表示"
+
+#. We don't technically use this string at the moment, but this
+#. may change
+#: ../os-about.py:45
+msgid "Copyright (c) 2017, Oracle and/or its affiliates. All rights reserved."
+msgstr "Copyright (c) 2017, Oracle and/or its affiliates. All rights reserved."
+
+#: ../os-about.py:47
+msgid "Release"
+msgstr "リリース"
+
+#: ../os-about.py:48
+msgid "Used Space"
+msgstr "使用済み領域"
+
+#: ../os-about.py:49
+msgid "Available Space"
+msgstr "空き領域"
+
+#: ../os-about.py:50
+msgid "Memory"
+msgstr "メモリー"
+
+#: ../os-about.py:57
+msgid "Unknown"
+msgstr "不明"
+
+#: ../os-about.py:75 ../os-about.py:94
+#, python-format
+msgid "%.1f MB"
+msgstr "%.1f M バイト"
+
+#: ../os-about.py:77 ../os-about.py:97
+#, python-format
+msgid "%.1f GB"
+msgstr "%.1f G バイト"
+
+#: ../os-about.py:87
+#, python-format
+msgid "%u bytes"
+msgstr "%u バイト"
+
+#: ../os-about.py:91
+#, python-format
+msgid "%.1f KB"
+msgstr "%.1f K バイト"
+
+#: ../os-about.py:103
+msgid "Oracle Solaris Notices"
+msgstr "Oracle Solaris の著作権表示"
+
+#. Set the dialog default spacing for about
+#: ../os-about.py:144
+msgid "Welcome to Oracle Solaris"
+msgstr "Oracle Solaris へようこそ"
+
+#: ../os-about.py:211
+msgid "_Notices"
+msgstr "著作権表示(_N)"
+
+#: ../os-next-steps.desktop.in.h:1
+msgid "Start Here"
+msgstr "ここから開始"
+
+#: ../os-next-steps.desktop.in.h:2
+msgid "Start here with next steps for Oracle Solaris"
+msgstr "ここから Oracle Solaris の次の手順を開始します"
+
+#: ../os-next-steps.py:63
+msgid "Learn More about Oracle Solaris"
+msgstr "Oracle Solaris の詳細情報"
+
+#: ../os-next-steps.py:65
+msgid "##What's new## with <b>Oracle Solaris 11.4</b>"
+msgstr "<b>Oracle Solaris 11.4</b> の##新機能##"
+
+#: ../os-next-steps.py:65
+msgid "##Get world class support## with <b>Oracle Premier Support</b>"
+msgstr "<b>Oracle Premier Support</b> で##ワールドクラスのサポートを入手##"
+
+#: ../os-next-steps.py:65
+msgid ""
+"##Explore## the <b>Oracle Solaris Dashboard</b> with system analytics and "
+"more"
+msgstr "システム分析などを使用して <b>Oracle Solaris ダッシュボード</b>を##探索する##"
+
+#: ../os-next-steps.py:69
+msgid "Use the GNOME Desktop"
+msgstr "GNOME デスクトップの使用"
+
+#: ../os-next-steps.py:71
+msgid "##Get Help## using the <b>GNOME Desktop</b>"
+msgstr "<b>GNOME デスクトップ</b>を使用して##ヘルプを取得##"
+
+#: ../os-next-steps.py:71
+msgid "##Change desktop settings## with <b>GNOME Control Center</b>"
+msgstr "<b>GNOME コントロールセンター</b>で##デスクトップの設定を変更##"
+
+#: ../os-next-steps.py:71
+msgid "##Enable Accessibility## with <b>Settings > Universal Access</b>"
+msgstr "<b>「設定」 > 「ユニバーサルアクセス」</b>で##アクセシビリティーを有効化##"
+
+#: ../os-next-steps.py:75
+msgid "Participate"
+msgstr "参加"
+
+#: ../os-next-steps.py:77
+msgid "##Join in on the discussion## of the <b>Oracle Solaris Forums</b>"
+msgstr "<b>Oracle Solaris フォーラム</b>の##ディスカッションにご参加ください##"
+
+#: ../os-next-steps.py:77
+msgid "##Catch the latest## from the <b>Oracle Solaris Community</b>"
+msgstr "<b>Oracle Solaris コミュニティー</b>で##最新情報をキャッチしてください##"
+
+#. Set the dialog default spacing for about
+#: ../os-next-steps.py:95
+msgid "Start here with Oracle Solaris"
+msgstr "ここから Oracle Solaris を開始します"

@@ -1,0 +1,106 @@
+Use randomly generated port between 30000 and 40000 for cupsd. In case the port
+is already used run-stp-tests.sh returns 2 to be re-run.
+
+Remove preloading of libCrun as it is not needed.
+
+Install trap to kill leftover cupsd.
+
+Restart test if cupsd fails to start.
+
+Expect more warning message because of specific `pdftops-renderer' setting.
+
+This patch is not for upstream. The change was made to make the tests more
+reliable in Userland infrastructure.
+
+--- a/Makefile
++++ b/Makefile
+@@ -240,16 +240,16 @@ #
+ 
+ testserver:	all unittests
+ 	echo Running CUPS test server...
+-	cd test; ./run-stp-tests.sh $(TESTOPTIONS)
++	cd test; while ./run-stp-tests.sh $(TESTOPTIONS); [ $$? -eq 2 ]; do :; done
+ 
+ 
+ check test:	all unittests
+ 	echo Running CUPS test suite...
+-	cd test; ./run-stp-tests.sh 1 0 n n
++	cd test; while ./run-stp-tests.sh 1 0 n n; [ $$? -eq 2 ]; do :; done
+ 
+ debugcheck debugtest:	all unittests
+ 	echo Running CUPS test suite with debug printfs...
+-	cd test; ./run-stp-tests.sh 1 0 n y
++	cd test; while ./run-stp-tests.sh 1 0 n y; [ $$? -eq 2 ]; do :; done
+ 
+ 
+ #
+--- a/test/run-stp-tests.sh
++++ b/test/run-stp-tests.sh
+@@ -180,7 +180,12 @@
+ 	fi
+ fi
+ 
+-port="${CUPS_TESTPORT:=8631}"
++port=$(netstat -f inet -an | perl -ne '
++	$x{$1}=1 if m/^\s*[0-9\.\*]*?\.(\d+)\s.*LISTEN$/;
++	END {
++		while ($port=int(rand(10000)+30000)) { last unless defined $x{$port} };
++		print "$port\n"
++	}')
+ cwd=`pwd`
+ root=`dirname $cwd`
+ CUPS_TESTROOT="$root"; export CUPS_TESTROOT
+@@ -594,9 +599,6 @@
+ 	fi
+ 
+ 	LD_PRELOAD="$root/cups/libcups.so.2:$root/cups/libcupsimage.so.2"
+-	if test `uname` = SunOS -a -r /usr/lib/libCrun.so.1; then
+-		LD_PRELOAD="/usr/lib/libCrun.so.1:$LD_PRELOAD"
+-	fi
+ fi
+ 
+ if test -f "$root/cups/libcups.2.dylib"; then
+@@ -679,6 +681,7 @@
+ $runcups $VALGRIND ../scheduler/cupsd -c $BASE/cupsd.conf -f >$BASE/log/debug_log 2>&1 &
+ 
+ cupsd=$!
++trap "trap - SIGTERM && kill $cupsd >/dev/null 2>&1; exit 130" SIGINT SIGTERM                                                
+ 
+ if test "x$testtype" = x0; then
+ 	# Not running tests...
+@@ -696,8 +699,8 @@
+ 	echo $ac_n "Press ENTER to continue... $ac_c"
+ 	read junk
+ else
+-	echo "Scheduler is PID $cupsd."
+-	sleep 2
++	echo "Scheduler is PID $cupsd on port $port."
++	sleep 5
+ fi
+ 
+ tries=0
+@@ -707,8 +710,8 @@
+ 		break
+ 	fi
+ 
+-	echo "Waiting for scheduler to become ready..."
+-	sleep 10
++	echo "Cupsd is not ready after 5 seconds. Port in use? Terminating with 2 to try again."
++	exit 2
+ 
+ 	tries=`expr $tries + 1`
+ done
+@@ -1134,10 +1137,10 @@
+ 
+ # Warning log messages
+ count=`$GREP '^W ' $BASE/log/error_log | $GREP -v CreateProfile | $GREP -v 'libusb error' | $GREP -v ColorManager | $GREP -v 'Avahi client failed' | wc -l | awk '{print $1}'`
+-if test $count != 14; then
+-	echo "FAIL: $count warning messages, expected 14."
++if test $count != 80; then
++	echo "FAIL: $count warning messages, expected 80."
+ 	$GREP '^W ' $BASE/log/error_log
+-	echo "    <p>FAIL: $count warning messages, expected 14.</p>" >>$strfile
++	echo "    <p>FAIL: $count warning messages, expected 80.</p>" >>$strfile
+ 	echo "    <pre>" >>$strfile
+ 	$GREP '^W ' $BASE/log/error_log | sed -e '1,$s/&/&amp;/g' -e '1,$s/</&lt;/g' >>$strfile
+ 	echo "    </pre>" >>$strfile

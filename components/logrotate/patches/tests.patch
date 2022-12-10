@@ -1,0 +1,19 @@
+The test below expects GNU date but as absolute path is used we cannot just set
+proper path (as for other tools like sed / gsed, etc.) but we have to actually
+change the path. This is in-house patch not suitable for upstream.
+
+--- logrotate-3.20.1/test/test-0050.sh
++++ logrotate-3.20.1/test/test-0050.sh
+@@ -8,9 +8,9 @@ # ------------------------------- Test 5
+ # test that hourly rotation works properly
+ preptest test.log 50 1 0
+ 
+-DATESTRING=$(/bin/date +%Y%m%d%H)
+-NOW=$(/bin/date "+%Y-%-m-%-d-%-H" 2>/dev/null)
+-HOURAGO=$(/bin/date "+%Y-%-m-%-d-%-H" --date "1 hour ago" 2>/dev/null)
++DATESTRING=$(/usr/gnu/bin/date +%Y%m%d%H)
++NOW=$(/usr/gnu/bin/date "+%Y-%-m-%-d-%-H" 2>/dev/null)
++HOURAGO=$(/usr/gnu/bin/date "+%Y-%-m-%-d-%-H" --date "1 hour ago" 2>/dev/null)
+ GNUDATE=$?
+ 
+ # --force to trigger rotation

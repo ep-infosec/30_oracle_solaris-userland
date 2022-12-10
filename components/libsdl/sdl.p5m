@@ -1,0 +1,129 @@
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+# Copyright (c) 2015, 2021, Oracle and/or its affiliates.
+#
+
+<transform file path=usr.*/man/.+ -> default mangler.man.stability volatile>
+set name=pkg.fmri \
+    value=pkg:/library/sdl@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION)
+set name=pkg.summary value="libsdl - Simple DirectMedia Layer"
+set name=pkg.description \
+    value="Simple DirectMedia Layer is a library designed to provide low level access to audio, keyboard, mouse, and graphics hardware via OpenGL."
+set name=com.oracle.info.baid value=$(COMPONENT_BAID)
+set name=com.oracle.info.description \
+    value="the Simple DirectMedia Layer library"
+set name=info.classification \
+    value=org.opensolaris.category.2008:System/Libraries
+set name=info.source-url value=$(COMPONENT_ARCHIVE_URL)
+set name=info.upstream-url value=$(COMPONENT_PROJECT_URL)
+set name=org.opensolaris.arc-caseid value=PSARC/2021/023
+set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
+link path=usr/bin/$(MACH64)/sdl-config target=sdl2-config
+file path=usr/bin/$(MACH64)/sdl2-config
+link path=usr/bin/sdl-config target=sdl2-config
+file path=usr/bin/sdl2-config
+file path=usr/include/SDL2/SDL.h
+file path=usr/include/SDL2/SDL_assert.h
+file path=usr/include/SDL2/SDL_atomic.h
+file path=usr/include/SDL2/SDL_audio.h
+file path=usr/include/SDL2/SDL_bits.h
+file path=usr/include/SDL2/SDL_blendmode.h
+file path=usr/include/SDL2/SDL_clipboard.h
+file path=usr/include/SDL2/SDL_config.h
+file path=usr/include/SDL2/SDL_cpuinfo.h
+file path=usr/include/SDL2/SDL_egl.h
+file path=usr/include/SDL2/SDL_endian.h
+file path=usr/include/SDL2/SDL_error.h
+file path=usr/include/SDL2/SDL_events.h
+file path=usr/include/SDL2/SDL_filesystem.h
+file path=usr/include/SDL2/SDL_gamecontroller.h
+file path=usr/include/SDL2/SDL_gesture.h
+file path=usr/include/SDL2/SDL_haptic.h
+file path=usr/include/SDL2/SDL_hints.h
+file path=usr/include/SDL2/SDL_joystick.h
+file path=usr/include/SDL2/SDL_keyboard.h
+file path=usr/include/SDL2/SDL_keycode.h
+file path=usr/include/SDL2/SDL_loadso.h
+file path=usr/include/SDL2/SDL_locale.h
+file path=usr/include/SDL2/SDL_log.h
+file path=usr/include/SDL2/SDL_main.h
+file path=usr/include/SDL2/SDL_messagebox.h
+file path=usr/include/SDL2/SDL_metal.h
+file path=usr/include/SDL2/SDL_misc.h
+file path=usr/include/SDL2/SDL_mouse.h
+file path=usr/include/SDL2/SDL_mutex.h
+file path=usr/include/SDL2/SDL_name.h
+file path=usr/include/SDL2/SDL_opengl.h
+file path=usr/include/SDL2/SDL_opengl_glext.h
+file path=usr/include/SDL2/SDL_opengles.h
+file path=usr/include/SDL2/SDL_opengles2.h
+file path=usr/include/SDL2/SDL_opengles2_gl2.h
+file path=usr/include/SDL2/SDL_opengles2_gl2ext.h
+file path=usr/include/SDL2/SDL_opengles2_gl2platform.h
+file path=usr/include/SDL2/SDL_opengles2_khrplatform.h
+file path=usr/include/SDL2/SDL_pixels.h
+file path=usr/include/SDL2/SDL_platform.h
+file path=usr/include/SDL2/SDL_power.h
+file path=usr/include/SDL2/SDL_quit.h
+file path=usr/include/SDL2/SDL_rect.h
+file path=usr/include/SDL2/SDL_render.h
+file path=usr/include/SDL2/SDL_revision.h
+file path=usr/include/SDL2/SDL_rwops.h
+file path=usr/include/SDL2/SDL_scancode.h
+file path=usr/include/SDL2/SDL_sensor.h
+file path=usr/include/SDL2/SDL_shape.h
+file path=usr/include/SDL2/SDL_stdinc.h
+file path=usr/include/SDL2/SDL_surface.h
+file path=usr/include/SDL2/SDL_system.h
+file path=usr/include/SDL2/SDL_syswm.h
+file path=usr/include/SDL2/SDL_test.h
+file path=usr/include/SDL2/SDL_test_assert.h
+file path=usr/include/SDL2/SDL_test_common.h
+file path=usr/include/SDL2/SDL_test_compare.h
+file path=usr/include/SDL2/SDL_test_crc32.h
+file path=usr/include/SDL2/SDL_test_font.h
+file path=usr/include/SDL2/SDL_test_fuzzer.h
+file path=usr/include/SDL2/SDL_test_harness.h
+file path=usr/include/SDL2/SDL_test_images.h
+file path=usr/include/SDL2/SDL_test_log.h
+file path=usr/include/SDL2/SDL_test_md5.h
+file path=usr/include/SDL2/SDL_test_memory.h
+file path=usr/include/SDL2/SDL_test_random.h
+file path=usr/include/SDL2/SDL_thread.h
+file path=usr/include/SDL2/SDL_timer.h
+file path=usr/include/SDL2/SDL_touch.h
+file path=usr/include/SDL2/SDL_types.h
+file path=usr/include/SDL2/SDL_version.h
+file path=usr/include/SDL2/SDL_video.h
+file path=usr/include/SDL2/SDL_vulkan.h
+file path=usr/include/SDL2/begin_code.h
+file path=usr/include/SDL2/close_code.h
+link path=usr/lib/$(MACH64)/libSDL2-2.0.so.0 target=libSDL2-2.0.so.0.14.0
+file path=usr/lib/$(MACH64)/libSDL2-2.0.so.0.14.0
+link path=usr/lib/$(MACH64)/libSDL2.so target=libSDL2-2.0.so.0.14.0
+link path=usr/lib/$(MACH64)/pkgconfig/sdl.pc target=sdl2.pc
+file path=usr/lib/$(MACH64)/pkgconfig/sdl2.pc
+link path=usr/lib/libSDL2-2.0.so.0 target=libSDL2-2.0.so.0.14.0
+file path=usr/lib/libSDL2-2.0.so.0.14.0
+link path=usr/lib/libSDL2.so target=libSDL2-2.0.so.0.14.0
+link path=usr/lib/pkgconfig/sdl.pc target=sdl2.pc
+file path=usr/lib/pkgconfig/sdl2.pc
+license COPYING.txt license=zlib

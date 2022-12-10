@@ -1,0 +1,36 @@
+.\" libtidy man page for the HTML Tidy project
+.TH libtidy 3 "13 Mar 2017" "HTML Tidy" "5.4.0"
+.SH NAME
+\fBlibtidy\fR - validate, correct, and pretty-print HTML files
+.SH LIBRARY
+The Tidy HTML Parser Library (libtidy, -ltidy)
+.PP
+.br
+.SH DESCRIPTION
+.PP
+\fB#include <tidy.h>\fP
+.br
+\fB#include <tidybuffio.h>\fP
+.PP
+.br
+The
+\fBtidy\fP
+library provides parsing facilities for validating HTML, similar to
+those found in
+\fBlint\fP(1).
+These functions are available in the
+\fBlibtidy\fP
+library.
+Programs should be linked with
+\fB\-ltidy\fP.
+.SH "SEE ALSO"
+\fBtidy\fP(1)
+.PP
+.br
+API documentation can be found online at
+\fBhttp://api.html-tidy.org/\fP.
+.SH AUTHOR
+\fBTidy\fR was written by \fBDave Raggett\fR <dsr@w3.org>, and subsequently maintained by a team at http://tidy.sourceforge.net/,
+and now maintained by \fBHTACG\fR (http://www.htacg.org).
+.LP
+The sources for \fBHTML Tidy\fR are available at https://github.com/htacg/tidy-html5/ under the MIT Licence.

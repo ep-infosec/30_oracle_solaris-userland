@@ -1,0 +1,206 @@
+#
+# Add Solaris Auditing configuration (--with-audit=solaris) to openssh-6.5p1.
+#
+# Add phase 1 Solaris Auditing of sshd login/logout to openssh-6.5p1.
+#
+# Additional Solaris Auditing should include audit of password
+#  change.
+# Presuming it is appropriate, this patch should/will be updated
+#  with additional files and updates to sources/audit-solaris.c 
+#
+# Code is developed by the Solaris Audit team.
+# It should/will likely be contributed up stream when done.
+# This patch relies on sources/audit-solaris.c being copied into
+#  the openssh source directory by the Makefile that configures
+#  using --with-audit=solaris.
+#
+# The up stream community has been contacted about the plans.
+#  No reply has yet been received.
+#
+# An additional patch relying on the --with-audit=solaris configuration
+#  should/will be created for sftp Solaris Audit and password change.
+#
+--- old/INSTALL	2020-11-19 14:07:11.034567614 +0000
++++ new/INSTALL	2020-11-19 14:08:02.001752839 +0000
+@@ -105,9 +105,13 @@ http://www.gnu.org/software/automake/
+ 
+ Basic Security Module (BSM):
+ 
+-Native BSM support is known to exist in Solaris from at least 2.5.1,
+-FreeBSD 6.1 and OS X.  Alternatively, you may use the OpenBSM
+-implementation (http://www.openbsm.org).
++Native BSM support is known to exist in Solaris from at least 2.5.1
++to Solaris 10.  From Solaris 11 the previously documented BSM (libbsm)
++interfaces are no longer public and are unsupported.  While not public
++interfaces, audit-solaris.c implements Solaris Audit from Solaris 11.
++Native BSM support is known to exist in FreeBSD 6.1 and OS X.
++Alternatively, you may use the OpenBSM implementation
++(http://www.openbsm.org)
+ 
+ makedepend:
+ 
+@@ -173,8 +177,9 @@ name).
+ There are a few other options to the configure script:
+ 
+ --with-audit=[module] enable additional auditing via the specified module.
+-Currently, drivers for "debug" (additional info via syslog) and "bsm"
+-(Sun's Basic Security Module) are supported.
++Currently, drivers for "debug" (additional info via syslog), and "bsm"
++(Sun's Legacy Basic Security Module prior to Solaris 11), and "solaris"
++(Sun's Audit infrastructure from Solaris 11) are supported.
+ 
+ --with-pam enables PAM support. If PAM support is compiled in, it must
+ also be enabled in sshd_config (refer to the UsePAM directive).
+--- old/Makefile.in	2020-11-19 14:07:11.040318329 +0000
++++ new/Makefile.in	2020-11-19 14:08:02.008143519 +0000
+@@ -118,7 +118,7 @@ SSHOBJS= ssh.o readconf.o clientloop.o s
+ 	sshconnect.o sshconnect2.o mux.o $(SKOBJS)
+ 
+ SSHDOBJS=sshd.o auth-rhosts.o auth-passwd.o \
+-	audit.o audit-bsm.o audit-linux.o platform.o \
++	audit.o audit-bsm.o audit-linux.o audit-solaris.o platform.o \
+ 	sshpty.o sshlogin.o servconf.o serverloop.o \
+ 	auth.o auth2.o auth-options.o session.o \
+ 	auth2-chall.o groupaccess.o \
+--- old/README.platform	2020-11-19 14:07:11.045756046 +0000
++++ new/README.platform	2020-11-19 14:08:02.013597876 +0000
+@@ -71,8 +71,8 @@ zlib-devel and pam-devel, on Debian base
+ libssl-dev, libz-dev and libpam-dev.
+ 
+ 
+-Solaris
+--------
++Prior to Solaris 11
++-------------------
+ If you enable BSM auditing on Solaris, you need to update audit_event(4)
+ for praudit(1m) to give sensible output.  The following line needs to be
+ added to /etc/security/audit_event:
+@@ -86,6 +86,11 @@ number is already in use on your system,
+ by configure'ing --with-cflags=-DAUE_openssh=32801 then rebuilding.
+ 
+ 
++From Solaris 11
++---------------
++Solaris Audit is supported by configuring --with-audit=solaris.
++
++
+ Platforms using PAM
+ -------------------
+ As of OpenSSH 4.3p1, sshd will no longer check /etc/nologin itself when
+--- old/config.h.in	2020-11-19 14:07:11.051383723 +0000
++++ new/config.h.in	2020-11-19 14:08:02.018724080 +0000
+@@ -1956,6 +1956,9 @@
+ /* Use Linux audit module */
+ #undef USE_LINUX_AUDIT
+ 
++/* Use Solaris audit module */
++#undef USE_SOLARIS_AUDIT
++
+ /* Enable OpenSSL engine support */
+ #undef USE_OPENSSL_ENGINE
+ 
+--- old/configure	2020-11-19 14:07:11.057950842 +0000
++++ new/configure	2020-11-19 14:08:02.025506833 +0000
+@@ -1465,7 +1465,7 @@ Optional Packages:
+   --without-zlib-version-check Disable zlib version check
+   --with-ldns[=PATH]      Use ldns for DNSSEC support (optionally in PATH)
+   --with-libedit[=PATH]   Enable libedit support for sftp
+-  --with-audit=module     Enable audit support (modules=debug,bsm,linux)
++  --with-audit=module     Enable audit support (modules=debug,bsm,linux,solaris)
+   --with-pie              Build Position Independent Executables if possible
+   --with-security-key-builtin include builtin U2F/FIDO support
+   --with-ssl-dir=PATH     Specify path to OpenSSL installation
+@@ -11002,6 +11002,31 @@ if test "${with_audit+set}" = set; then
+ 	  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for supported audit module" >&5
+ $as_echo_n "checking for supported audit module... " >&6; }
+ 	  case "$withval" in
++          solaris)
++                { $as_echo "$as_me:${as_lineno-$LINENO}: result: solaris" >&5
++$as_echo "solaris" >&6; }
++                AUDIT_MODULE=solaris
++                                for ac_header in bsm/adt.h
++do :
++  ac_fn_c_check_header_compile "$LINENO" "bsm/adt.h" "ac_cv_header_bsm_adt_h" "
++
++"
++if test "x$ac_cv_header_bsm_adt_h" = xyes; then :
++  cat >>confdefs.h <<_ACEOF
++#define HAVE_BSM_ADT_H 1
++_ACEOF
++
++else
++  as_fn_error $? "Solaris Audit enabled and bsm/adt.h not found" "$LINENO" 5
++fi
++
++done
++
++                SSHDLIBS="$SSHDLIBS -lbsm"
++
++$as_echo "#define USE_SOLARIS_AUDIT 1" >>confdefs.h
++
++                ;;
+ 	  bsm)
+ 		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: bsm" >&5
+ $as_echo "bsm" >&6; }
+--- old/configure.ac	2020-11-19 14:07:11.064029968 +0000
++++ new/configure.ac	2020-11-19 14:08:02.031332995 +0000
+@@ -1653,10 +1653,21 @@ AC_ARG_WITH([libedit],
+ 
+ AUDIT_MODULE=none
+ AC_ARG_WITH([audit],
+-	[  --with-audit=module     Enable audit support (modules=debug,bsm,linux)],
++	[  --with-audit=module     Enable audit support (modules=debug,bsm,linux,solaris)],
+ 	[
+ 	  AC_MSG_CHECKING([for supported audit module])
+ 	  case "$withval" in
++          solaris)
++                AC_MSG_RESULT([solaris])
++                AUDIT_MODULE=solaris
++                dnl    Checks for headers, libs and functions
++                AC_CHECK_HEADERS([bsm/adt.h], [],
++                    [AC_MSG_ERROR([Solaris Audit enabled and bsm/adt.h not found])],
++                    []
++                )
++                SSHDLIBS="$SSHDLIBS -lbsm"
++                AC_DEFINE([USE_SOLARIS_AUDIT], [1], [Use Solaris audit module])
++                ;;
+ 	  bsm)
+ 		AC_MSG_RESULT([bsm])
+ 		AUDIT_MODULE=bsm
+--- old/defines.h	2020-11-19 14:07:11.069587481 +0000
++++ new/defines.h	2020-11-19 14:08:02.036911933 +0000
+@@ -674,6 +674,11 @@ struct winsize {
+ # define CUSTOM_SSH_AUDIT_EVENTS
+ #endif
+ 
++#ifdef USE_SOLARIS_AUDIT
++# define SSH_AUDIT_EVENTS
++# define CUSTOM_SSH_AUDIT_EVENTS
++#endif
++
+ #if !defined(HAVE___func__) && defined(HAVE___FUNCTION__)
+ #  define __func__ __FUNCTION__
+ #elif !defined(HAVE___func__)
+--- old/sshd.c	2020-11-19 14:07:11.075282348 +0000
++++ new/sshd.c	2020-11-19 14:08:02.042267865 +0000
+@@ -2269,7 +2269,9 @@ main(int ac, char **av)
+ 	}
+ 
+ #ifdef SSH_AUDIT_EVENTS
++#ifndef USE_SOLARIS_AUDIT
+ 	audit_event(ssh, SSH_AUTH_SUCCESS);
++#endif /* !USE_SOLARIS_AUDIT */
+ #endif
+ 
+ #ifdef GSSAPI
+@@ -2285,6 +2287,10 @@ main(int ac, char **av)
+ 		do_pam_session(ssh);
+ 	}
+ #endif
++#ifdef USE_SOLARIS_AUDIT
++	/* Audit should take place after all successful pam */
++	audit_event(ssh, SSH_AUTH_SUCCESS);
++#endif /* USE_SOLARIS_AUDIT */
+ 
+ 	/*
+ 	 * In privilege separation, we fork another child and prepare

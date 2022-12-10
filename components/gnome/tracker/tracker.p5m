@@ -1,0 +1,251 @@
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+
+#
+# Copyright (c) 2015, 2022, Oracle and/or its affiliates.
+#
+
+<transform file path=usr.*/man/.+ -> \
+    default mangler.man.stability "pass-through volatile">
+set name=pkg.fmri \
+    value=pkg:/library/desktop/search/tracker@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION)
+set name=pkg.summary \
+    value="A search engine, search tool and metadata storage system"
+set name=pkg.description \
+    value="Tracker is a search engine, search tool and metadata storage system.  It allows you to find the proverbial needle in your computer's haystack as well as providing a one stop solution to the organisation, storage and categorisation of your data."
+set name=com.oracle.info.baid value=$(COMPONENT_BAID)
+set name=com.oracle.info.description value=$(COMPONENT_NAME)
+set name=info.classification \
+    value="org.opensolaris.category.2008:Applications/System Utilities"
+set name=info.source-url value=$(COMPONENT_ARCHIVE_URL)
+set name=info.upstream-url value=$(COMPONENT_PROJECT_URL)
+set name=org.opensolaris.arc-caseid value=PSARC/2016/408 value=PSARC/2020/109
+set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
+file path=usr/bin/$(MACH32)/tracker
+file path=usr/bin/tracker
+file path=usr/include/tracker-2.0/libtracker-control/tracker-control.h
+file path=usr/include/tracker-2.0/libtracker-control/tracker-miner-manager.h
+file path=usr/include/tracker-2.0/libtracker-miner/tracker-data-provider.h
+file path=usr/include/tracker-2.0/libtracker-miner/tracker-decorator-fs.h
+file path=usr/include/tracker-2.0/libtracker-miner/tracker-decorator.h
+file path=usr/include/tracker-2.0/libtracker-miner/tracker-indexing-tree.h
+file path=usr/include/tracker-2.0/libtracker-miner/tracker-miner-enum-types.h
+file path=usr/include/tracker-2.0/libtracker-miner/tracker-miner-enums.h
+file path=usr/include/tracker-2.0/libtracker-miner/tracker-miner-fs.h
+file path=usr/include/tracker-2.0/libtracker-miner/tracker-miner-object.h
+file path=usr/include/tracker-2.0/libtracker-miner/tracker-miner-online.h
+file path=usr/include/tracker-2.0/libtracker-miner/tracker-miner-proxy.h
+file path=usr/include/tracker-2.0/libtracker-miner/tracker-miner.h
+file path=usr/include/tracker-2.0/libtracker-sparql/tracker-generated.h
+file path=usr/include/tracker-2.0/libtracker-sparql/tracker-namespace-manager.h
+file path=usr/include/tracker-2.0/libtracker-sparql/tracker-notifier.h
+file path=usr/include/tracker-2.0/libtracker-sparql/tracker-ontologies.h
+file path=usr/include/tracker-2.0/libtracker-sparql/tracker-resource.h
+file path=usr/include/tracker-2.0/libtracker-sparql/tracker-sparql.h
+file path=usr/include/tracker-2.0/libtracker-sparql/tracker-version.h
+file path=usr/lib/$(MACH64)/girepository-1.0/Tracker-2.0.typelib
+file path=usr/lib/$(MACH64)/girepository-1.0/TrackerControl-2.0.typelib
+file path=usr/lib/$(MACH64)/girepository-1.0/TrackerMiner-2.0.typelib
+link path=usr/lib/$(MACH64)/libtracker-control-2.0.so \
+    target=libtracker-control-2.0.so.0
+link path=usr/lib/$(MACH64)/libtracker-control-2.0.so.0 \
+    target=libtracker-control-2.0.so.0.306.0
+file path=usr/lib/$(MACH64)/libtracker-control-2.0.so.0.306.0
+link path=usr/lib/$(MACH64)/libtracker-miner-2.0.so \
+    target=libtracker-miner-2.0.so.0
+link path=usr/lib/$(MACH64)/libtracker-miner-2.0.so.0 \
+    target=libtracker-miner-2.0.so.0.306.0
+file path=usr/lib/$(MACH64)/libtracker-miner-2.0.so.0.306.0
+link path=usr/lib/$(MACH64)/libtracker-sparql-2.0.so \
+    target=libtracker-sparql-2.0.so.0
+link path=usr/lib/$(MACH64)/libtracker-sparql-2.0.so.0 \
+    target=libtracker-sparql-2.0.so.0.306.0
+file path=usr/lib/$(MACH64)/libtracker-sparql-2.0.so.0.306.0
+file path=usr/lib/$(MACH64)/pkgconfig/tracker-control-2.0.pc
+file path=usr/lib/$(MACH64)/pkgconfig/tracker-miner-2.0.pc
+file path=usr/lib/$(MACH64)/pkgconfig/tracker-sparql-2.0.pc
+file path=usr/lib/$(MACH64)/tracker-2.0/libtracker-data.so
+file path=usr/lib/$(MACH64)/tracker-2.0/trackertestutils/__init__.py
+file path=usr/lib/$(MACH64)/tracker-2.0/trackertestutils/dconf.py
+file path=usr/lib/$(MACH64)/tracker-2.0/trackertestutils/helpers.py
+file path=usr/lib/$(MACH64)/tracker-2.0/trackertestutils/mainloop.py
+link path=usr/lib/libtracker-control-2.0.so target=libtracker-control-2.0.so.0
+link path=usr/lib/libtracker-control-2.0.so.0 \
+    target=libtracker-control-2.0.so.0.306.0
+file path=usr/lib/libtracker-control-2.0.so.0.306.0
+link path=usr/lib/libtracker-miner-2.0.so target=libtracker-miner-2.0.so.0
+link path=usr/lib/libtracker-miner-2.0.so.0 \
+    target=libtracker-miner-2.0.so.0.306.0
+file path=usr/lib/libtracker-miner-2.0.so.0.306.0
+link path=usr/lib/libtracker-sparql-2.0.so target=libtracker-sparql-2.0.so.0
+link path=usr/lib/libtracker-sparql-2.0.so.0 \
+    target=libtracker-sparql-2.0.so.0.306.0
+file path=usr/lib/libtracker-sparql-2.0.so.0.306.0
+file path=usr/lib/pkgconfig/tracker-control-2.0.pc
+file path=usr/lib/pkgconfig/tracker-miner-2.0.pc
+file path=usr/lib/pkgconfig/tracker-sparql-2.0.pc
+file path=usr/lib/tracker-2.0/libtracker-data.so
+file path=usr/lib/tracker-2.0/trackertestutils/__init__.py
+file path=usr/lib/tracker-2.0/trackertestutils/dconf.py
+file path=usr/lib/tracker-2.0/trackertestutils/helpers.py
+file path=usr/lib/tracker-2.0/trackertestutils/mainloop.py
+file path=usr/lib/tracker-store mode=0555
+file path=usr/share/bash-completion/completions/tracker
+file path=usr/share/dbus-1/services/org.freedesktop.Tracker1.service
+file path=usr/share/gir-1.0/Tracker-2.0.gir
+file path=usr/share/gir-1.0/TrackerControl-2.0.gir
+file path=usr/share/gir-1.0/TrackerMiner-2.0.gir
+file path=usr/share/glib-2.0/schemas/org.freedesktop.Tracker.DB.gschema.xml
+file path=usr/share/glib-2.0/schemas/org.freedesktop.Tracker.FTS.gschema.xml
+file path=usr/share/glib-2.0/schemas/org.freedesktop.Tracker.Store.gschema.xml
+file path=usr/share/glib-2.0/schemas/org.freedesktop.Tracker.enums.xml
+file path=usr/share/glib-2.0/schemas/org.freedesktop.Tracker.gschema.xml
+file path=usr/share/locale/ar/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/as/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/be@latin/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/bg/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/bs/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/ca/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/ca@valencia/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/cs/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/da/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/de/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/dz/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/el/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/en_GB/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/eo/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/es/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/et/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/eu/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/fi/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/fr/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/fur/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/gl/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/he/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/hr/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/hu/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/id/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/is/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/it/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/ja/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/kk/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/ko/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/lt/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/lv/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/mk/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/ml/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/ms/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/nb/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/nds/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/ne/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/nl/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/oc/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/pa/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/pl/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/pt/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/pt_BR/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/ro/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/ru/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/sk/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/sl/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/sr/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/sr@latin/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/sv/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/te/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/tg/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/th/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/tr/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/uk/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/vi/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/zh_CN/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/zh_HK/LC_MESSAGES/tracker.mo
+file path=usr/share/locale/zh_TW/LC_MESSAGES/tracker.mo
+file path=usr/share/man/man1/tracker-daemon.1
+file path=usr/share/man/man1/tracker-export.1
+file path=usr/share/man/man1/tracker-index.1
+file path=usr/share/man/man1/tracker-info.1
+file path=usr/share/man/man1/tracker-reset.1
+file path=usr/share/man/man1/tracker-search.1
+file path=usr/share/man/man1/tracker-sparql.1
+file path=usr/share/man/man1/tracker-sql.1
+file path=usr/share/man/man1/tracker-status.1
+file path=usr/share/man/man1/tracker-store.1
+file path=usr/share/man/man1/tracker-tag.1
+file path=usr/share/tracker/domain-ontologies/default.rule
+file path=usr/share/tracker/ontologies/nepomuk/30-nie.description
+file path=usr/share/tracker/ontologies/nepomuk/30-nie.ontology
+file path=usr/share/tracker/ontologies/nepomuk/32-nco.description
+file path=usr/share/tracker/ontologies/nepomuk/32-nco.ontology
+file path=usr/share/tracker/ontologies/nepomuk/33-nfo.description
+file path=usr/share/tracker/ontologies/nepomuk/33-nfo.ontology
+file path=usr/share/tracker/ontologies/nepomuk/34-nmo.description
+file path=usr/share/tracker/ontologies/nepomuk/34-nmo.ontology
+file path=usr/share/tracker/ontologies/nepomuk/35-ncal.description
+file path=usr/share/tracker/ontologies/nepomuk/35-ncal.ontology
+file path=usr/share/tracker/ontologies/nepomuk/36-scal.description
+file path=usr/share/tracker/ontologies/nepomuk/36-scal.ontology
+file path=usr/share/tracker/ontologies/nepomuk/37-nid3.description
+file path=usr/share/tracker/ontologies/nepomuk/37-nid3.ontology
+file path=usr/share/tracker/ontologies/nepomuk/38-nmm.description
+file path=usr/share/tracker/ontologies/nepomuk/38-nmm.ontology
+file path=usr/share/tracker/ontologies/nepomuk/39-mto.description
+file path=usr/share/tracker/ontologies/nepomuk/39-mto.ontology
+file path=usr/share/tracker/ontologies/nepomuk/40-mlo.description
+file path=usr/share/tracker/ontologies/nepomuk/40-mlo.ontology
+file path=usr/share/tracker/ontologies/nepomuk/41-mfo.description
+file path=usr/share/tracker/ontologies/nepomuk/41-mfo.ontology
+file path=usr/share/tracker/ontologies/nepomuk/89-mtp.description
+file path=usr/share/tracker/ontologies/nepomuk/89-mtp.ontology
+file path=usr/share/tracker/ontologies/nepomuk/90-tracker.description
+file path=usr/share/tracker/ontologies/nepomuk/90-tracker.ontology
+file path=usr/share/tracker/ontologies/nepomuk/91-maemo.description
+file path=usr/share/tracker/ontologies/nepomuk/91-maemo.ontology
+file path=usr/share/tracker/ontologies/nepomuk/92-slo.description
+file path=usr/share/tracker/ontologies/nepomuk/92-slo.ontology
+file path=usr/share/tracker/ontologies/nepomuk/93-libosinfo.description
+file path=usr/share/tracker/ontologies/nepomuk/93-libosinfo.ontology
+file path=usr/share/tracker/stop-words/stopwords.da
+file path=usr/share/tracker/stop-words/stopwords.de
+file path=usr/share/tracker/stop-words/stopwords.en
+file path=usr/share/tracker/stop-words/stopwords.es
+file path=usr/share/tracker/stop-words/stopwords.fi
+file path=usr/share/tracker/stop-words/stopwords.fr
+file path=usr/share/tracker/stop-words/stopwords.hu
+file path=usr/share/tracker/stop-words/stopwords.it
+file path=usr/share/tracker/stop-words/stopwords.nb
+file path=usr/share/tracker/stop-words/stopwords.nl
+file path=usr/share/tracker/stop-words/stopwords.pt
+file path=usr/share/tracker/stop-words/stopwords.ru
+file path=usr/share/tracker/stop-words/stopwords.sv
+file path=usr/share/tracker/tracker-backup.xml
+file path=usr/share/tracker/tracker-miner.xml
+file path=usr/share/tracker/tracker-resources.xml
+file path=usr/share/tracker/tracker-statistics.xml
+file path=usr/share/tracker/tracker-status.xml
+file path=usr/share/vala/vapi/tracker-control-2.0.deps
+file path=usr/share/vala/vapi/tracker-control-2.0.vapi
+file path=usr/share/vala/vapi/tracker-miner-2.0.deps
+file path=usr/share/vala/vapi/tracker-miner-2.0.vapi
+file path=usr/share/vala/vapi/tracker-sparql-2.0.deps
+file path=usr/share/vala/vapi/tracker-sparql-2.0.vapi
+license tracker.license license="GPLv2, LGPLv2.1"
+depend type=optional \
+    fmri=library/desktop/search/tracker-miners@2.3.3-11.4.27.0.1.82.0

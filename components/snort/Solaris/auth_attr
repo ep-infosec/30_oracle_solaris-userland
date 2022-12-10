@@ -1,0 +1,2 @@
+solaris.smf.manage.snort:RO::Manage snort service states::
+solaris.smf.value.snort:RO::Change snort value properties::

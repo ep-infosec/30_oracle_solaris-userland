@@ -1,0 +1,40 @@
+From 1fb3067b5280218e26374f596923f77619ca0451 Mon Sep 17 00:00:00 2001
+From: Shawn Ferry <sferry@gmail.com>
+Date: Wed, 16 Aug 2017 16:49:17 -0400
+Subject: [PATCH] (MODULES-5496) puppetlabs-ntp : the OS formerly known as
+ Solaris 12
+
+Solaris 12 is now Solaris 11.4 metadata.json needs an update
+
+patch submitted upstream
+https://tickets.puppetlabs.com/browse/MODULES-5496
+---
+ metadata.json | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/metadata.json b/metadata.json
+index 3f254ce..bffc922 100644
+--- a/metadata.json
++++ b/metadata.json
+@@ -83,7 +83,8 @@
+     {
+       "operatingsystem": "Solaris",
+       "operatingsystemrelease": [
+-        "11"
++        "11",
++        "11.4"
+       ]
+     },
+     {
+
+--- puppetlabs-ntp-9.1.0/metadata.json.orig	2022-06-23 00:46:27.198846546 -0700
++++ puppetlabs-ntp-9.1.0/metadata.json	2022-06-23 00:47:00.871263787 -0700
+@@ -89,7 +89,7 @@
+       "version_requirement": ">= 6.0.0 < 8.0.0"
+     }
+   ],
+-  "description": "NTP Module for Debian, Ubuntu, CentOS, RHEL, OEL, Fedora, FreeBSD, ArchLinux, Amazon Linux and Gentoo.",
++  "description": "NTP Module for Debian, Ubuntu, CentOS, RHEL, OEL, Fedora, FreeBSD, ArchLinux, Amazon Linux and Gentoo and Solaris.",
+   "template-url": "https://github.com/puppetlabs/pdk-templates.git#main",
+   "template-ref": "heads/main-0-g03daa92",
+   "pdk-version": "2.1.0"

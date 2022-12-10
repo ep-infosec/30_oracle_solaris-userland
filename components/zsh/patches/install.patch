@@ -1,0 +1,22 @@
+Use absolute paths during install runhelp target.
+
+This is specific for our build environment and shouldn't be send upstream.
+
+diff --git a/Doc/Makefile.in b/Doc/Makefile.in
+index 5a6a705..d717357 100644
+--- a/Doc/Makefile.in
++++ b/Doc/Makefile.in
+@@ -338,11 +338,11 @@ install.man: man
+ install.runhelp: $(runhelp)
+ 	if test x"$(runhelpdir)" != x""; then \
+ 	    ${SHELL} $(sdir_top)/mkinstalldirs $(DESTDIR)$(runhelpdir); \
+-	    $(INSTALL_DATA) help/* $(DESTDIR)$(runhelpdir); \
++	    $(INSTALL_DATA) $(sdir)/help/* $(DESTDIR)$(runhelpdir); \
+ 	    while read from to; do \
+ 	        rm -f $(DESTDIR)$(runhelpdir)/$$to || : ; \
+ 	        $(LN_S) $$from $(DESTDIR)$(runhelpdir)/$$to; \
+-	    done < help.txt; \
++	    done < $(sdir)/help.txt; \
+ 	fi
+ .PHONY: install.runhelp
+ 

@@ -1,0 +1,79 @@
+Reference:
+BUG 15799858 - SUNBT7178826 PulseAudio generates error messages 
+in the /var/adm/messages/output
+BUG 26837528 - pulseaudio - oss-util.c: open('/dev/dsp'): No such file or directory
+
+Not suitable for upstream
+
+--- a/src/daemon/main.c	2019-03-07 10:28:27.461393019 -0800
++++ b/src/daemon/main.c	2019-03-07 10:29:10.136501471 -0800
+@@ -787,7 +787,7 @@
+             }
+ 
+             if (retval)
+-                pa_log(_("Daemon startup failed."));
++                pa_log_debug(_("Daemon startup failed."));
+             else
+                 pa_log_info("Daemon startup successful.");
+ 
+--- a/src/modules/oss/oss-util.c	2019-03-07 10:29:23.696004093 -0800
++++ b/src/modules/oss/oss-util.c	2019-03-07 10:29:49.518671650 -0800
+@@ -70,13 +70,13 @@
+ 
+         if ((fd = pa_open_cloexec(device, (*mode = O_WRONLY)|O_NDELAY, 0)) < 0) {
+             if ((fd = pa_open_cloexec(device, (*mode = O_RDONLY)|O_NDELAY, 0)) < 0) {
+-                pa_log("open('%s'): %s", device, pa_cstrerror(errno));
++                pa_log_debug("open('%s'): %s", device, pa_cstrerror(errno));
+                 goto fail;
+             }
+         }
+     } else {
+         if ((fd = pa_open_cloexec(device, *mode|O_NDELAY, 0)) < 0) {
+-            pa_log("open('%s'): %s", device, pa_cstrerror(errno));
++            pa_log_debug("open('%s'): %s", device, pa_cstrerror(errno));
+             goto fail;
+         }
+     }
+--- a/src/pulsecore/module.c	2019-03-07 10:30:05.447306305 -0800
++++ b/src/pulsecore/module.c	2019-03-07 10:30:58.255002554 -0800
+@@ -170,7 +170,7 @@
+     }
+ 
+     if (!(m->init = (int (*)(pa_module*_m)) pa_load_sym(m->dl, name, PA_SYMBOL_INIT))) {
+-        pa_log("Failed to load module \"%s\": symbol \""PA_SYMBOL_INIT"\" not found.", name);
++        pa_log_debug("Failed to load module \"%s\": symbol \""PA_SYMBOL_INIT"\" not found.", name);
+         errcode = -PA_ERR_IO;
+         goto fail;
+     }
+@@ -193,7 +193,7 @@
+             errcode = -PA_ERR_NOENTITY;
+             goto fail;
+         }
+-        pa_log_error("Failed to load module \"%s\" (argument: \"%s\"): initialization failed.", name, argument ? argument : "");
++        pa_log_debug("Failed to load module \"%s\" (argument: \"%s\"): initialization failed.", name, argument ? argument : "");
+         errcode = -PA_ERR_IO;
+         goto fail;
+     }
+--- pulseaudio-13.99.1-M/src/daemon/main.c      2020-09-15 05:47:24.026479382 -0700
++++ pulseaudio-13.99.1/src/daemon/main.c        2020-09-15 05:47:56.012511144 -0700
+@@ -1004,7 +1004,7 @@
+                 goto finish;
+             }
+
+-            pa_log(_("pa_pid_file_create() failed."));
++            pa_log_info(_("pa_pid_file_create() failed."));
+             goto finish;
+         }
+
+--- pulseaudio-13.99.1/src/pulsecore/pid.c      2020-09-16 06:45:33.226677898 -0700
++++ pulseaudio-13.99.1-M/src/pulsecore/pid.c    2020-09-15 05:46:39.632191279 -0700
+@@ -220,7 +220,7 @@
+                 }
+
+             if (ours) {
+-                pa_log("Daemon already running.");
++                pa_log_info("Daemon already running.");
+                 ret = 1;
+                 goto fail;
+             }
+

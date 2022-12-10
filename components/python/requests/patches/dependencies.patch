@@ -1,0 +1,40 @@
+We are not using certifi package on Solaris as the location of the standard
+certs bundle is patched directly into requests.
+
+charset_normalizer was brought in to remove license ambiguity for projects
+bundling requests (LGPL chardet used by Apache licensed requests). We already
+provide chardet, and our legal has no issue with it, so there is no reason to
+use it for now.
+
+--- requests-2.26.0/setup.py
++++ requests-2.26.0/setup.py
+@@ -41,12 +41,10 @@ if sys.argv[-1] == 'publish':
+ packages = ['requests']
+ 
+ requires = [
+-    'charset_normalizer~=2.0.0; python_version >= "3"',
+-    'chardet>=3.0.2,<5; python_version < "3"',
++    'chardet>=3.0.2,<5',
+     'idna>=2.5,<3; python_version < "3"',
+     'idna>=2.5,<4; python_version >= "3"',
+     'urllib3>=1.21.1,<1.27',
+-    'certifi>=2017.4.17'
+ 
+ ]
+ test_requirements = [
+--- requests-2.26.0/requests.egg-info/requires.txt
++++ requests-2.26.0/requests.egg-info/requires.txt
+@@ -1,12 +1,10 @@
+ urllib3<1.27,>=1.21.1
+-certifi>=2017.4.17
++chardet<5,>=3.0.2
+ 
+ [:python_version < "3"]
+-chardet<5,>=3.0.2
+ idna<3,>=2.5
+ 
+ [:python_version >= "3"]
+-charset_normalizer~=2.0.0
+ idna<4,>=2.5
+ 
+ [security]

@@ -1,0 +1,83 @@
+Patch origin: in-house
+Patch status: deflate.c part: Solaris-specific; not suitable for upstream
+
+--- zlib-1.2.12/deflate.c
++++ zlib-1.2.12/deflate.c
+@@ -60,6 +60,7 @@ include such an acknowledgment, I would
+   copyright string in the executable of your product.
+  */
+ 
++#ifndef LONGEST_MATCH_ONLY
+ /* ===========================================================================
+  *  Function prototypes.
+  */
+@@ -92,13 +93,18 @@ #  pragma message("Assembler code may ha
+       void match_init OF((void)); /* asm code initialization */
+       uInt longest_match  OF((deflate_state *s, IPos cur_match));
+ #else
++#ifdef ORIG_LONGEST_MATCH
+ local uInt longest_match  OF((deflate_state *s, IPos cur_match));
++#else
++uInt longest_match  OF((deflate_state *s, IPos cur_match));
++#endif
+ #endif
+ 
+ #ifdef ZLIB_DEBUG
+ local  void check_match OF((deflate_state *s, IPos start, IPos match,
+                             int length));
+ #endif
++#endif /* ! LONGEST_MATCH_ONLY */
+ 
+ /* ===========================================================================
+  * Local data
+@@ -107,6 +113,7 @@ */
+ #define NIL 0
+ /* Tail of hash chains */
+ 
++#ifndef LONGEST_MATCH_ONLY
+ #ifndef TOO_FAR
+ #  define TOO_FAR 4096
+ #endif
+@@ -1258,7 +1265,9 @@ match_init(); /* initialize the asm code
+ #endif
+ #endif
+ }
++#endif /* ! LONGEST_MATCH_ONLY */
+ 
++#if defined(ORIG_LONGEST_MATCH) || defined(ORIG_LONGEST_MATCH_GLOBAL)
+ #ifndef FASTEST
+ /* ===========================================================================
+  * Set match_start to the longest match starting at the given string and
+@@ -1273,7 +1282,11 @@ #ifndef ASMV
+ /* For 80x86 and 680x0, an optimized version will be provided in match.asm or
+  * match.S. The code will be functionally equivalent.
+  */
++#ifdef ORIG_LONGEST_MATCH_GLOBAL
++uInt longest_match(s, cur_match)
++#else
+ local uInt longest_match(s, cur_match)
++#endif
+     deflate_state *s;
+     IPos cur_match;                             /* current match */
+ {
+@@ -1416,6 +1429,7 @@ if ((uInt)best_len <= s->lookahead) retu
+     return s->lookahead;
+ }
+ #endif /* ASMV */
++#endif /* ORIG_LONGEST_MATCHT */
+ 
+ #else /* FASTEST */
+ 
+@@ -1477,6 +1491,7 @@ }
+ 
+ #endif /* FASTEST */
+ 
++#ifndef LONGEST_MATCH_ONLY
+ #ifdef ZLIB_DEBUG
+ 
+ #define EQUAL 0
+@@ -2209,3 +2224,4 @@ if (s->sym_next)
+         FLUSH_BLOCK(s, 0);
+     return block_done;
+ }
++#endif /* ! LONGEST_MATCH_ONLY */

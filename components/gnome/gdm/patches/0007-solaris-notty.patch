@@ -1,0 +1,85 @@
+From 05391989747e3c6044329002f0786c37f34a2f6c Mon Sep 17 00:00:00 2001
+From: Alan Coopersmith <alan.coopersmith@oracle.com>
+Date: Tue, 29 Dec 2015 15:51:45 -0800
+Subject: [PATCH 07/19] solaris-notty
+
+Workaround the Solaris PAM & auditing subsystems requirements that
+every session cannot be attributed to a single device file, as if
+we all still logged in on serial terminals.
+
+Original date:2009-10-16 owner:yippi type:branding
+---
+ daemon/gdm-manager.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
+
+--- a/daemon/gdm-manager.c	2020-06-19 20:42:07.349142221 -0700
++++ b/daemon/gdm-manager.c	2020-06-19 20:45:07.554039906 -0700
+@@ -29,6 +29,11 @@
+ #include <sys/stat.h>
+ #include <sys/types.h>
+ 
++#ifdef __sun
++#include <utime.h>
++#include <sys/param.h>
++#endif
++
+ #include <glib.h>
+ #include <glib/gi18n.h>
+ #include <glib/gstdio.h>
+@@ -2825,6 +2830,47 @@
+         g_object_unref (session);
+ }
+ 
++static void
++create_device (const char *dev)
++{
++#ifdef __sun
++        gchar buf[MAXPATHLEN + 1];
++        struct stat st;
++
++        if (dev == NULL || dev[0] == '\0')
++                return;
++
++        if (strcmp (dev, "/dev/dtlocal")  != 0 &&
++            strcmp (dev, "/dev/dtremote") != 0 )
++                return;
++
++        memset (buf, 0, sizeof (gchar) * (MAXPATHLEN + 1));
++
++        if (stat (dev, &st) != 0) {
++                g_debug ("Creating pseudo-device %s", dev);
++                symlink ("/dev/null", dev);
++        } else if (readlink (dev, buf, MAXPATHLEN) > 0) {
++                if (strcmp (buf, "/dev/null") == 0) {
++                        /* Touch symlink */
++                        struct utimbuf  timebuf;
++
++                        timebuf.modtime = time ((time_t *) 0);
++                        timebuf.actime  = timebuf.modtime;
++
++                        if ((utime (dev, &timebuf)) != 0)
++                                g_debug ("Problem updating access time of pseudo-device %s", dev);
++                        else
++                                g_debug ("Touching pseudo-device %s", dev);
++                } else {
++                        g_debug ("Device %s points to %s", dev, buf);
++                }
++        } else {
++                g_debug ("Device %s is not a symlink", dev);
++        }
++#endif
++}
++
++
+ static GdmSession *
+ create_user_session_for_display (GdmManager *manager,
+                                  GdmDisplay *display,
+@@ -2855,6 +2901,9 @@
+ #endif
+                       NULL);
+         display_device = get_display_device (manager, display);
++        if (!display_device && !display_is_local)
++                display_device = g_strdup ("/dev/dtremote");
++        create_device (display_device);
+ 
+         session = gdm_session_new (GDM_SESSION_VERIFICATION_MODE_LOGIN,
+                                    allowed_user,

@@ -1,0 +1,42 @@
+# Solaris-specific patch.  Not appropriate for upstream.
+
+diff --git a/gdb/Makefile.in b/gdb/Makefile.in
+index 4808357..1fabf89 100644
+--- a/gdb/Makefile.in
++++ b/gdb/Makefile.in
+@@ -178,7 +178,7 @@ LIBDECNUMBER_CFLAGS = -I$(LIBDECNUMBER_DIR) -I$(LIBDECNUMBER_SRC)
+ # Where is the READLINE library?  Typically in ../readline/readline.
+ READLINE_DIR = ../readline/readline
+ READLINE_SRC = $(srcdir)/$(READLINE_DIR)
+-READLINE = @READLINE@
++READLINE = $(READLINE_DIR)/libreadline.a $(READLINE_DIR)/libhistory.a
+ READLINE_DEPS = @READLINE_DEPS@
+ READLINE_CFLAGS = @READLINE_CFLAGS@
+ 
+@@ -217,7 +217,7 @@ PTHREAD_LIBS = @PTHREAD_LIBS@
+ DEBUGINFOD_CFLAGS = @DEBUGINFOD_CFLAGS@
+ DEBUGINFOD_LIBS = @DEBUGINFOD_LIBS@
+ 
+-RDYNAMIC = @RDYNAMIC@
++RDYNAMIC =
+ 
+ # Where is the INTL library?  Typically in ../intl.
+ INTL = @LIBINTL@
+@@ -552,7 +552,7 @@ SUBDIR_GDBTK_CFLAGS = -DGDBTK
+ CONFIG_OBS = @CONFIG_OBS@
+ CONFIG_SRCS = @CONFIG_SRCS@
+ CONFIG_DEPS = @CONFIG_DEPS@
+-CONFIG_LDFLAGS = @CONFIG_LDFLAGS@
++CONFIG_LDFLAGS =
+ ENABLE_CFLAGS = @ENABLE_CFLAGS@
+ CONFIG_ALL = @CONFIG_ALL@
+ CONFIG_CLEAN = @CONFIG_CLEAN@
+@@ -1564,7 +1564,7 @@ COMMON_OBS = $(DEPFILES) $(CONFIG_OBS) $(YYOBJ) \
+ 	$(SUBDIR_TARGET_OBS) \
+ 	$(SUBDIR_GCC_COMPILE_OBS)
+ 
+-SUBDIRS = doc @subdirs@ data-directory
++SUBDIRS = @subdirs@ data-directory
+ CLEANDIRS = $(SUBDIRS)
+ 
+ # List of subdirectories in the build tree that must exist.

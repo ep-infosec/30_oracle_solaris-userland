@@ -1,0 +1,2 @@
+solaris.smf.value.tcsd:RO::Change TPM Administation value properties::
+solaris.smf.manage.tcsd:RO::Manage TPM Administration service states::

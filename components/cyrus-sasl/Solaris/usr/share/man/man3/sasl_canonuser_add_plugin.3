@@ -1,0 +1,49 @@
+'\" te
+.\" Copyright (C) 1998-2003, Carnegie Mellon Univeristy.  All Rights Reserved.
+.\" Portions Copyright (C) 2003, Sun Microsystems, Inc. All Rights Reserved
+.TH sasl_canonuser_add_plugin 3sasl "16 Sep 2003" SASL "SASL man pages"
+.SH NAME
+sasl_canonuser_add_plugin \- add a SASL user canonicalization plug-in
+.SH SYNOPSIS
+.nf
+.B cc [ flag ... ] file ... -lsasl   [ library ... ]
+
+.B #include <sasl/saslplug.h>
+
+.BI "int sasl_canonuser_add_plugin(const char *" plugname ", "
+.BI "   sasl_canonuser_plug_init_t *" cplugfunc "); "
+.fi
+
+.SH DESCRIPTION
+Use the 
+.B sasl_canonuser_add_plugin()
+interface to add a user canonicalization plug-in to the current list of user canonicalization plug-ins in the SASL library.
+
+.SH PARAMETERS
+.I plugname
+is the name of the user canonicalization plug-in.
+
+.I cplugfunc
+The value of cplugfunc is filled in by the sasl_canonuser_plug_init_t structure.
+
+.SH "RETURN VALUES"
+sasl_server_add_plugin() returns an integer that corresponds to a SASL error code.
+
+.SH ERRORS
+.TP 0.8i
+.B SASL_OK
+The call to 
+.I sasl_client_add_plugin()
+was successful.
+.TP 0.8i
+.B SASL_BADVERS
+Version mismatch with plug-in.
+.TP 0.8i
+.B SASL_NOMEM
+Memory shortage failure.
+
+See sasl_errors(3SASL) for information on other SASL error codes.
+
+.SH "SEE ALSO"
+sasl_errors(3SASL)
+

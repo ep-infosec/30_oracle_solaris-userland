@@ -1,0 +1,52 @@
+Existing set of patches from the X gate
+
+--- fontconfig-2.14.0/conf.d/40-nonlatin.conf
++++ fontconfig-2.14.0/conf.d/40-nonlatin.conf
+@@ -47,6 +47,10 @@ <family>HG-PMinchoL-Sun</family>
+ 		<default><family>serif</family></default>
+ 	</alias>
+ 	<alias>
++		<family>Sun-Michou</family>
++		<default><family>serif</family></default>
++	</alias>
++	<alias>
+ 		<family>HG-MinchoL-Sun</family>
+ 		<default><family>serif</family></default>
+ 	</alias>
+@@ -174,6 +178,10 @@ <family>HG-GothicB-Sun</family>
+ 		<default><family>sans-serif</family></default>
+ 	</alias>
+ 	<alias>
++		<family>Sun-Gothic</family>
++		<default><family>sans-serif</family></default>
++	</alias>
++	<alias>
+ 		<family>IPAPGothic</family>
+ 		<default><family>sans-serif</family></default>
+ 	</alias>
+--- fontconfig-2.14.0/conf.d/65-nonlatin.conf
++++ fontconfig-2.14.0/conf.d/65-nonlatin.conf
+@@ -33,6 +33,7 @@ <family>HanyiSong</family> <!-- han (zh-
+ 			<family>MgOpen Canonica</family>
+ 			<family>HG-PMinchoL-Sun</family>
+ 			<family>HG-MinchoL-Sun</family>
++			<family>Sun-Minchou</family>
+ 			<family>IPAMonaMincho</family>
+ 			<family>IPAPMincho</family>
+ 			<family>IPAMincho</family>
+@@ -113,6 +114,7 @@ <family>MgOpen Modata</family>
+ 			<family>VL Gothic</family>
+ 			<family>HG-PGothicB-Sun</family>
+ 			<family>HG-GothicB-Sun</family>
++			<family>Sun-Gothic</family>
+ 			<family>IPAMonaGothic</family>
+ 			<family>IPAPGothic</family>
+ 			<family>IPAGothic</family>
+@@ -165,6 +167,7 @@ <family>Miriam Mono</family> <!-- hebrew
+ 			<family>VL Gothic</family>
+ 			<family>HG-GothicB-Sun</family>
+ 			<family>HG-MinchoL-Sun</family>
++			<family>Sun-Gothic</family>
+ 			<family>IPAMonaGothic</family>
+ 			<family>IPAGothic</family>
+ 			<family>Sazanami Gothic</family>

@@ -1,0 +1,78 @@
+=====================================================================
+   patchutils 0.3.4: ./$(BUILD_DIR)/test/$(MACH64)/test-64-results
+=====================================================================
+
+# TOTAL: 137
+# PASS:  132
+# SKIP:  0
+# XFAIL: 4
+# FAIL:  1
+# XPASS: 0
+# ERROR: 0
+
+.. contents:: :depth: 2
+
+XFAIL: tests/delhunk5/run-test
+==============================
+
+[9] cat
+[20] cat
+[28] $(@D)/src/rediff original-patch edited-patch
+[28] exit 1
+XFAIL tests/delhunk5/run-test (exit status: 1)
+
+XFAIL: tests/delhunk6/run-test
+==============================
+
+[9] cat
+[24] cat
+[33] $(@D)/src/rediff original-patch edited-patch
+[33] exit 1
+XFAIL tests/delhunk6/run-test (exit status: 1)
+
+XFAIL: tests/trimlast1/run-test
+===============================
+
+[10] cat
+[24] cat
+[40] $(@D)/src/interdiff patch1 patch2
+[41] '[' -s errors ']'
+[43] cat
+[43] cmp - patch1-2
+- patch1-2 differ: char 1, line 1
+[43] exit 1
+XFAIL tests/trimlast1/run-test (exit status: 1)
+
+XFAIL: tests/trimlast2/run-test
+===============================
+
+[10] cat
+[24] cat
+[34] $(@D)/src/combinediff patch1 patch2
+[35] '[' -s errors ']'
+[37] cat
+[37] cmp - patch12
+- patch12 differ: char 1, line 1
+[37] exit 1
+XFAIL tests/trimlast2/run-test (exit status: 1)
+
+FAIL: tests/lsdiff2/run-test
+============================
+
+[9] mkdir dir dir.orig
+[10] echo a
+[11] echo A
+[12] gdiff -uN dir.orig dir
+[13] rm dir/a
+[14] gdiff -uN dir.orig dir
+[15] mv dir.orig/a dir
+[16] gdiff -uN dir.orig dir
+[17] cat diff diff
+[18] $(@D)/src/lsdiff -s --strip=1 diff2
+[19] '[' -s errors ']'
+[21] cat
+[21] cmp - index
+- index differ: char 5, line 2
+[21] exit 1
+FAIL tests/lsdiff2/run-test (exit status: 1)
+

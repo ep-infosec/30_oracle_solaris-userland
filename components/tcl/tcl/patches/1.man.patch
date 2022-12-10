@@ -1,0 +1,13 @@
+--- tcl8.6.12/unix/installManPage
++++ tcl8.6.12/unix/installManPage
+@@ -86,8 +86,8 @@ fi
+ 
+ case $ManPage in
+     *.1) Section=1 ;;
+-    *.3) Section=3 ;;
+-    *.n) Section=n ;;
++    *.3tcl) Section=3tcl ;;
++    *.1t) Section=1t ;;
+     *)	echo "unknown section for $ManPage"
+ 	exit 2 ;;
+ esac

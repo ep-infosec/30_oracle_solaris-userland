@@ -1,0 +1,374 @@
+#
+# This patch provides interfaces and functionality for the pam_krb5 module
+# and for other libkadm5clnt dependents, such as AK.
+#
+# Note: MIT may be interested in a public form of k5_get_init_creds_password
+# as the function returns the AS-REP, which can be used to glean key expiration,
+# among others.  A subsequent RFE-ticket will be filed for MIT.
+#
+# Note: MIT may decide to choose a different front-end support for multi-master
+# configuration via kadm5_get_adm_host_srv_names, instead of using
+# kadm5_get_admin_service_name, which returns the kadmin/<fqhn> form instead of
+# of kadmin@<fqhn> for instance.  In any case, a design such as this should be
+# presented to MIT.
+# Patch source: in-house
+#
+--- a/src/kprop/kpropd.c
++++ b/src/kprop/kpropd.c
+@@ -654,6 +654,7 @@ do_iprop()
+     if (pollin == 0)
+         pollin = 10;
+ 
++
+     retval = kadm5_get_kiprop_host_srv_name(kpropd_context, realm,
+                                             &primary_svc_princstr);
+     if (retval) {
+@@ -663,6 +664,8 @@ do_iprop()
+         goto done;
+     }
+ 
++
++
+     retval = sn2princ_realm(kpropd_context, NULL, KIPROP_SVC_NAME, realm,
+                             &iprop_svc_principal);
+     if (retval) {
+--- a/src/lib/kadm5/clnt/client_init.c
++++ b/src/lib/kadm5/clnt/client_init.c
+@@ -299,7 +299,7 @@ _kadm5_initialize_rpcsec_gss_handle(kadm5_server_handle_t handle,
+ {
+ 	int code = 0;
+ 	generic_ret r = { 0, 0 };
+-	char *ccname_orig = NULL;
++	const char *ccname_orig = NULL;
+ 	boolean_t iprop_enable = B_FALSE;
+ 	char mech[] = "kerberos_v5";
+ 	gss_OID mech_oid;
+@@ -316,15 +316,13 @@ _kadm5_initialize_rpcsec_gss_handle(kadm5_server_handle_t handle,
+ 	int port;
+ 	struct timeval timeout;
+ 
+-        /* service name is service/host */
+-        server = strpbrk(service_name, "/");
++        /* service name is service@host */
++        server = strpbrk(service_name, "@");
+         if (!server) {
+ 		code = KADM5_BAD_SERVER_NAME;
+ 		goto cleanup;
+         }
+-
+-	/* but rpc_gss_secreate expects service@host */
+-	*server++ = '@';
++	server++;
+ 
+  	/*
+ 	 * If the service_name and client_name are iprop-centric
+@@ -436,7 +434,7 @@ _kadm5_initialize_rpcsec_gss_handle(kadm5_server_handle_t handle,
+ 
+ 	if (ccname_orig) {
+ 		gssstat = gss_krb5_ccache_name(&minor_stat, ccname_orig, NULL);
+-		free(ccname_orig);
++		free((void *)ccname_orig);
+ 		if (gssstat != GSS_S_COMPLETE) {
+ 			code = KADM5_GSS_ERROR;
+ 			goto error;
+@@ -541,7 +539,7 @@ free_handle(kadm5_server_handle_t handle)
+ 
+ static kadm5_ret_t
+ init_any(krb5_context context, char *client_name, enum init_type init_type,
+-         char *pass, krb5_ccache ccache_in, char *svcname_in,
++         char *pass, krb5_ccache ccache_in, char *svcname,
+          kadm5_config_params *params_in, krb5_ui_4 struct_version,
+          krb5_ui_4 api_version, char **db_args, void **server_handle)
+ {
+@@ -556,8 +554,6 @@ init_any(krb5_context context, char *client_name, enum init_type init_type,
+     kadm5_config_params params_local;
+ 
+     krb5_error_code code;
+-    char svcname[BUFSIZ];
+-    generic_ret r = { 0, 0 };
+ 
+     initialize_ovk_error_table();
+     initialize_ovku_error_table();
+@@ -619,15 +615,19 @@ init_any(krb5_context context, char *client_name, enum init_type init_type,
+         client->type = KRB5_NT_SRV_HST;
+ 
+     /* NULL svcname means use host-based. */
+-    if (svcname_in == NULL) {
+-        code = kadm5_get_admin_service_name(handle->context,
+-                                            handle->params.realm,
+-                                            svcname, sizeof(svcname));
++    if (svcname == NULL) {
++	char **kadmin_srv_names;
++
++	code = kadm5_get_adm_host_srv_names(context, handle->params.realm,
++	    &kadmin_srv_names);
+         if (code)
++            goto error;
++	svcname = strdup(kadmin_srv_names[0]);
++	free_srv_names(kadmin_srv_names);
++	if (svcname == NULL) {
++	    code = ENOMEM;
+             goto cleanup;
+-    } else {
+-        strncpy(svcname, svcname_in, sizeof(svcname));
+-        svcname[sizeof(svcname)-1] = '\0';
++	}
+     }
+ 
+     /* Get credentials. */
+@@ -658,13 +658,51 @@ cleanup:
+ static kadm5_ret_t
+ get_init_creds(kadm5_server_handle_t handle, krb5_principal client,
+                enum init_type init_type, char *pass, krb5_ccache ccache_in,
+-               char *svcname, char *realm, krb5_principal *server_out)
++               char *svcname_in, char *realm, krb5_principal *server_out)
+ {
+     kadm5_ret_t code;
+     krb5_ccache ccache = NULL;
++    krb5_principal cprinc;
++    char svcbuf[BUFSIZ], *service, *host, *svcname, *save;
+ 
+     *server_out = NULL;
+ 
++    /*
++     * Convert the RPCSEC_GSS version to the host based version as this
++     * is what gic expects.
++     */
++    if ((svcname = strdup(svcname_in)) == NULL) {
++	code = ENOMEM;
++	goto error;
++    }
++    if ((service = strtok_r(svcname, "@", &save)) != NULL) {
++	if ((host = strtok_r(NULL, "@", &save)) != NULL) {
++	    char *str = NULL;
++	    /*
++	     * We want the canonical name here, via sname_to_principal.
++	     */
++	    code = krb5_sname_to_principal(handle->context, host, service,
++		KRB5_NT_SRV_HST, &cprinc);
++	    if (code) {
++		free(svcname);
++		goto error;
++	    }
++	    code = krb5_unparse_name_flags(handle->context, cprinc,
++		KRB5_PRINCIPAL_UNPARSE_NO_REALM, &str);
++	    krb5_free_principal(handle->context, cprinc);
++	    if (code) {
++		free(svcname);
++		goto error;
++	    }
++	    (void) strncpy(svcbuf, str, sizeof(svcbuf));
++	    krb5_free_unparsed_name(handle->context, str);
++	}
++    } else {
++	strncpy(svcbuf, svcname, sizeof(svcbuf));
++	svcbuf[sizeof(svcname)-1] = '\0';
++    }
++    free(svcname);
++
+     /*
+      * Acquire a service ticket for svcname@realm for client, using password
+      * pass (which could be NULL), and create a ccache to store them in.  If
+@@ -700,8 +738,7 @@ get_init_creds(kadm5_server_handle_t handle, krb5_principal client,
+     }
+     handle->lhandle->cache_name = handle->cache_name;
+ 
+-    svcname = (svcname != NULL) ? svcname : KADM5_ADMIN_SERVICE;
+-    code = gic_iter(handle, init_type, ccache, client, pass, svcname, realm,
++    code = gic_iter(handle, init_type, ccache, client, pass, svcbuf, realm,
+                     server_out);
+     /* Improved error messages */
+     if (code == KRB5KRB_AP_ERR_BAD_INTEGRITY) code = KADM5_BAD_PASSWORD;
+--- a/src/lib/krb5/krb/gic_pwd.c
++++ b/src/lib/krb5/krb/gic_pwd.c
+@@ -5,6 +5,17 @@
+ #include "int-proto.h"
+ #include "os-proto.h"
+ 
++/*
++ * See the function's definition for the description of this interface.
++ */
++krb5_error_code
++k5_get_init_creds_password(krb5_context, krb5_creds *,
++                               krb5_principal, const char *,
++                               krb5_prompter_fct, void *,
++                               krb5_deltat, const char *,
++                               krb5_get_init_creds_opt *,
++                               krb5_kdc_rep **);
++
+ krb5_error_code
+ krb5_get_as_key_password(krb5_context context,
+                          krb5_principal client,
+@@ -133,6 +144,113 @@ krb5_init_creds_set_password(krb5_context context,
+     return 0;
+ }
+ 
++/* Return the password expiry time indicated by enc_part2.  Set *is_last_req
++ * if the information came from a last_req value. */
++void
++get_expiry_times(krb5_enc_kdc_rep_part *enc_part2, krb5_timestamp *pw_exp,
++                 krb5_timestamp *acct_exp, krb5_boolean *is_last_req)
++{
++    krb5_last_req_entry **last_req;
++    krb5_int32 lr_type;
++
++    *pw_exp = 0;
++    *acct_exp = 0;
++    *is_last_req = FALSE;
++
++    /* Look for last-req entries for password or account expiration. */
++    if (enc_part2->last_req) {
++        for (last_req = enc_part2->last_req; *last_req; last_req++) {
++            lr_type = (*last_req)->lr_type;
++            if (lr_type == KRB5_LRQ_ALL_PW_EXPTIME ||
++                lr_type == KRB5_LRQ_ONE_PW_EXPTIME) {
++                *is_last_req = TRUE;
++                *pw_exp = (*last_req)->value;
++            } else if (lr_type == KRB5_LRQ_ALL_ACCT_EXPTIME ||
++                       lr_type == KRB5_LRQ_ONE_ACCT_EXPTIME) {
++                *is_last_req = TRUE;
++                *acct_exp = (*last_req)->value;
++            }
++        }
++    }
++
++    /* If we didn't find any, use the ambiguous key_exp field. */
++    if (*is_last_req == FALSE)
++        *pw_exp = enc_part2->key_exp;
++}
++
++/*
++ * Send an appropriate warning prompter if as_reply indicates that the password
++ * is going to expire soon.  If an expire callback was provided, use that
++ * instead.
++ */
++static void
++warn_pw_expiry(krb5_context context, krb5_get_init_creds_opt *options,
++               krb5_prompter_fct prompter, void *data,
++               const char *in_tkt_service, krb5_kdc_rep *as_reply)
++{
++    krb5_error_code ret;
++    krb5_expire_callback_func expire_cb;
++    void *expire_data;
++    krb5_timestamp pw_exp, acct_exp, now;
++    krb5_boolean is_last_req;
++    krb5_deltat delta;
++    char ts[256], banner[1024];
++
++    get_expiry_times(as_reply->enc_part2, &pw_exp, &acct_exp, &is_last_req);
++
++    k5_gic_opt_get_expire_cb(options, &expire_cb, &expire_data);
++    if (expire_cb != NULL) {
++        /* Invoke the expire callback and don't send prompter warnings. */
++        (*expire_cb)(context, expire_data, pw_exp, acct_exp, is_last_req);
++        return;
++    }
++
++    /* Don't warn if no password expiry value was sent. */
++    if (pw_exp == 0)
++        return;
++
++    /* Don't warn if the password is being changed. */
++    if (in_tkt_service && strcmp(in_tkt_service, "kadmin/changepw") == 0)
++        return;
++
++    /*
++     * If the expiry time came from a last_req field, assume the KDC wants us
++     * to warn.  Otherwise, warn only if the expiry time is less than a week
++     * from now.
++     */
++    ret = krb5_timeofday(context, &now);
++    if (ret != 0)
++        return;
++    if (!is_last_req &&
++        (ts_after(now, pw_exp) || ts_delta(pw_exp, now) > 7 * 24 * 60 * 60))
++        return;
++
++    if (!prompter)
++        return;
++
++    ret = krb5_timestamp_to_string(pw_exp, ts, sizeof(ts));
++    if (ret != 0)
++        return;
++
++    delta = ts_delta(pw_exp, now);
++    if (delta < 3600) {
++        snprintf(banner, sizeof(banner),
++                 _("Warning: Your password will expire in less than one hour "
++                   "on %s"), ts);
++    } else if (delta < 86400*2) {
++        snprintf(banner, sizeof(banner),
++                 _("Warning: Your password will expire in %d hour%s on %s"),
++                 delta / 3600, delta < 7200 ? "" : "s", ts);
++    } else {
++        snprintf(banner, sizeof(banner),
++                 _("Warning: Your password will expire in %d days on %s"),
++                 delta / 86400, ts);
++    }
++
++    /* PROMPTER_INVOCATION */
++    (*prompter)(context, data, 0, banner, 0, 0);
++}
++
+ /*
+  * Create a temporary options structure for getting a kadmin/changepw ticket,
+  * based on the appplication-specified options.  Propagate all application
+@@ -180,6 +298,35 @@ krb5_get_init_creds_password(krb5_context context,
+                              krb5_deltat start_time,
+                              const char *in_tkt_service,
+                              krb5_get_init_creds_opt *options)
++{
++    /*
++     * We call our own private function that returns the as_reply back to
++     * the caller.  This structure contains information, such as
++     * key-expiration and last-req fields.  Entities such as pam_krb5 can
++     * use this information to provide account/password expiration warnings.
++     * The original "prompter" interface is not granular enough for PAM,
++     * as it will perform all passes w/o coordination with other modules.
++     */
++    return (k5_get_init_creds_password(context, creds, client, password,
++                                           prompter, data, start_time,
++                                           in_tkt_service, options, NULL));
++}
++
++/*
++ * See krb5_get_init_creds_password()'s comments for the justification of this
++ * private function.  Caller must free ptr_as_reply if non-NULL.
++ */
++krb5_error_code KRB5_CALLCONV
++k5_get_init_creds_password(krb5_context context,
++                             krb5_creds *creds,
++                             krb5_principal client,
++                             const char *password,
++                             krb5_prompter_fct prompter,
++                             void *data,
++                             krb5_deltat start_time,
++                             const char *in_tkt_service,
++                             krb5_get_init_creds_opt *options,
++			     krb5_kdc_rep **ptr_as_reply)
+ {
+     krb5_error_code ret;
+     int use_primary;
+@@ -388,13 +535,20 @@ krb5_get_init_creds_password(krb5_context context,
+         goto cleanup;
+ 
+ cleanup:
++    if (ret == 0)
++        warn_pw_expiry(context, options, prompter, data, in_tkt_service,
++                       as_reply);
+     free(chpw_opts);
+     zapfree(gakpw.storage.data, gakpw.storage.length);
+     memset(pw0array, 0, sizeof(pw0array));
+     memset(pw1array, 0, sizeof(pw1array));
+     krb5_free_cred_contents(context, &chpw_creds);
+-    if (as_reply)
+-        krb5_free_kdc_rep(context, as_reply);
++    if (as_reply != NULL) {
++	if (ptr_as_reply == NULL)
++	    krb5_free_kdc_rep(context, as_reply);
++	else
++	    *ptr_as_reply = as_reply;
++    }
+     k5_clear_error(&errsave);
+ 
+     return(ret);

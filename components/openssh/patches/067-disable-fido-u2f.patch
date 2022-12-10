@@ -1,0 +1,205 @@
+#
+# OpenSSH 8.2 delivered support for FIDO/U2F hardware authenticators.
+# OpenSSH client side of FIDO support depends on libfido2 library
+# and its dependencies (currently libcbor library, but there might
+# be more in future) which is currently not available in Solaris.
+# Thus, the patch removes mentions of FIDO/U2F suppport
+# from OpenSSH client man pages. The server side remains FIDO capable
+# which means that the server accepts FIDO keys.
+#
+# As such, this is Solaris specific patch.
+#
+--- old/ssh-keygen.1	2022-10-26 15:00:03.210123548 +0200
++++ new/ssh-keygen.1	2022-10-26 15:00:39.316799077 +0200
+@@ -51,7 +51,7 @@
+ .Op Fl m Ar format
+ .Op Fl N Ar new_passphrase
+ .Op Fl O Ar option
+-.Op Fl t Cm dsa | ecdsa | ecdsa-sk | ed25519 | ed25519-sk | rsa
++.Op Fl t Cm dsa | ecdsa | ed25519 | rsa
+ .Op Fl w Ar provider
+ .Nm ssh-keygen
+ .Fl p
+@@ -291,7 +291,7 @@ flag determines the key length by select
+ curve sizes: 256, 384 or 521 bits.
+ Attempting to use bit lengths other than these three values for ECDSA keys
+ will fail.
+-ECDSA-SK, Ed25519 and Ed25519-SK keys have a fixed length and the
++Ed25519 key has a fixed length and the
+ .Fl b
+ flag will be ignored.
+ .It Fl C Ar comment
+@@ -574,14 +574,12 @@ by key ID or serial number.
+ See the
+ .Sx KEY REVOCATION LISTS
+ section for details.
+-.It Fl t Cm dsa | ecdsa | ecdsa-sk | ed25519 | ed25519-sk | rsa
++.It Fl t Cm dsa | ecdsa | ed25519 | rsa
+ Specifies the type of key to create.
+ The possible values are
+ .Dq dsa ,
+ .Dq ecdsa ,
+-.Dq ecdsa-sk ,
+ .Dq ed25519 ,
+-.Dq ed25519-sk ,
+ or
+ .Dq rsa .
+ .Pp
+@@ -977,7 +975,8 @@ of user presence (e.g. by having the use
+ This option only makes sense for the FIDO authenticator algorithms
+ .Cm ecdsa-sk
+ and
+-.Cm ed25519-sk .
++.Cm ed25519-sk
++which are currently not supported on Solaris.
+ .Pp
+ .It Ic source-address Ns = Ns Ar address_list
+ Restrict the source addresses from which the certificate is considered valid.
+@@ -1151,18 +1150,16 @@ user2@example.com namespaces="file" ssh-
+ .It Ev SSH_SK_PROVIDER
+ Specifies a path to a library that will be used when loading any
+ FIDO authenticator-hosted keys, overriding the default of using
+-the built-in USB HID support.
++the built-in USB HID support. Not supported on Solaris.
+ .El
+ .Sh FILES
+ .Bl -tag -width Ds -compact
+ .It Pa ~/.ssh/id_dsa
+ .It Pa ~/.ssh/id_ecdsa
+-.It Pa ~/.ssh/id_ecdsa_sk
+ .It Pa ~/.ssh/id_ed25519
+-.It Pa ~/.ssh/id_ed25519_sk
+ .It Pa ~/.ssh/id_rsa
+-Contains the DSA, ECDSA, authenticator-hosted ECDSA, Ed25519,
+-authenticator-hosted Ed25519 or RSA authentication identity of the user.
++Contains the DSA, ECDSA, Ed25519
++or RSA authentication identity of the user.
+ This file should not be readable by anyone but the user.
+ It is possible to
+ specify a passphrase when generating the key; that passphrase will be
+@@ -1175,12 +1172,10 @@ will read this file when a login attempt
+ .Pp
+ .It Pa ~/.ssh/id_dsa.pub
+ .It Pa ~/.ssh/id_ecdsa.pub
+-.It Pa ~/.ssh/id_ecdsa_sk.pub
+ .It Pa ~/.ssh/id_ed25519.pub
+-.It Pa ~/.ssh/id_ed25519_sk.pub
+ .It Pa ~/.ssh/id_rsa.pub
+-Contains the DSA, ECDSA, authenticator-hosted ECDSA, Ed25519,
+-authenticator-hosted Ed25519 or RSA public key for authentication.
++Contains the DSA, ECDSA, Ed25519
++or RSA public key for authentication.
+ The contents of this file should be added to
+ .Pa ~/.ssh/authorized_keys
+ on all machines
+--- old/ssh_config.5	2022-10-26 15:00:03.215617631 +0200
++++ new/ssh_config.5	2022-10-26 15:00:39.322233616 +0200
+@@ -903,15 +903,12 @@ The default for this option is:
+ ecdsa-sha2-nistp256-cert-v01@openssh.com,
+ ecdsa-sha2-nistp384-cert-v01@openssh.com,
+ ecdsa-sha2-nistp521-cert-v01@openssh.com,
+-sk-ecdsa-sha2-nistp256-cert-v01@openssh.com,
+ ssh-ed25519-cert-v01@openssh.com,
+-sk-ssh-ed25519-cert-v01@openssh.com,
+ rsa-sha2-512-cert-v01@openssh.com,
+ rsa-sha2-256-cert-v01@openssh.com,
+ ssh-rsa-cert-v01@openssh.com,
+ ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,
+-sk-ecdsa-sha2-nistp256@openssh.com,
+-ssh-ed25519,sk-ssh-ed25519@openssh.com,
++ssh-ed25519,
+ rsa-sha2-512,rsa-sha2-256,ssh-rsa
+ .Ed
+ .Pp
+@@ -940,15 +937,12 @@ The default for this option is:
+ ecdsa-sha2-nistp256-cert-v01@openssh.com,
+ ecdsa-sha2-nistp384-cert-v01@openssh.com,
+ ecdsa-sha2-nistp521-cert-v01@openssh.com,
+-sk-ecdsa-sha2-nistp256-cert-v01@openssh.com,
+ ssh-ed25519-cert-v01@openssh.com,
+-sk-ssh-ed25519-cert-v01@openssh.com,
+ rsa-sha2-512-cert-v01@openssh.com,
+ rsa-sha2-256-cert-v01@openssh.com,
+ ssh-rsa-cert-v01@openssh.com,
+ ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,
+-sk-ecdsa-sha2-nistp256@openssh.com,
+-ssh-ed25519,sk-ssh-ed25519@openssh.com,
++ssh-ed25519,
+ rsa-sha2-512,rsa-sha2-256,ssh-rsa
+ .Ed
+ .Pp
+@@ -1452,15 +1446,12 @@ The default for this option is:
+ ecdsa-sha2-nistp256-cert-v01@openssh.com,
+ ecdsa-sha2-nistp384-cert-v01@openssh.com,
+ ecdsa-sha2-nistp521-cert-v01@openssh.com,
+-sk-ecdsa-sha2-nistp256-cert-v01@openssh.com,
+ ssh-ed25519-cert-v01@openssh.com,
+-sk-ssh-ed25519-cert-v01@openssh.com,
+ rsa-sha2-512-cert-v01@openssh.com,
+ rsa-sha2-256-cert-v01@openssh.com,
+ ssh-rsa-cert-v01@openssh.com,
+ ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,
+-sk-ecdsa-sha2-nistp256@openssh.com,
+-ssh-ed25519,sk-ssh-ed25519@openssh.com,
++ssh-ed25519,
+ rsa-sha2-512,rsa-sha2-256,ssh-rsa
+ .Ed
+ .Pp
+--- old/ssh.1	2022-10-26 15:00:03.221160973 +0200
++++ new/ssh.1	2022-10-26 15:00:39.327544161 +0200
+@@ -289,9 +289,7 @@ public key authentication is read.
+ The default is
+ .Pa ~/.ssh/id_dsa ,
+ .Pa ~/.ssh/id_ecdsa ,
+-.Pa ~/.ssh/id_ecdsa_sk ,
+ .Pa ~/.ssh/id_ed25519 ,
+-.Pa ~/.ssh/id_ed25519_sk
+ and
+ .Pa ~/.ssh/id_rsa .
+ Identity files may also be specified on
+@@ -924,12 +922,8 @@ This stores the private key in
+ (DSA),
+ .Pa ~/.ssh/id_ecdsa
+ (ECDSA),
+-.Pa ~/.ssh/id_ecdsa_sk
+-(authenticator-hosted ECDSA),
+ .Pa ~/.ssh/id_ed25519
+ (Ed25519),
+-.Pa ~/.ssh/id_ed25519_sk
+-(authenticator-hosted Ed25519),
+ or
+ .Pa ~/.ssh/id_rsa
+ (RSA)
+@@ -938,12 +932,8 @@ and stores the public key in
+ (DSA),
+ .Pa ~/.ssh/id_ecdsa.pub
+ (ECDSA),
+-.Pa ~/.ssh/id_ecdsa_sk.pub
+-(authenticator-hosted ECDSA),
+ .Pa ~/.ssh/id_ed25519.pub
+ (Ed25519),
+-.Pa ~/.ssh/id_ed25519_sk.pub
+-(authenticator-hosted Ed25519),
+ or
+ .Pa ~/.ssh/id_rsa.pub
+ (RSA)
+@@ -1539,9 +1529,7 @@ above.
+ .Pp
+ .It Pa ~/.ssh/id_dsa
+ .It Pa ~/.ssh/id_ecdsa
+-.It Pa ~/.ssh/id_ecdsa_sk
+ .It Pa ~/.ssh/id_ed25519
+-.It Pa ~/.ssh/id_ed25519_sk
+ .It Pa ~/.ssh/id_rsa
+ Contains the private key for authentication.
+ These files
+@@ -1555,9 +1543,7 @@ sensitive part of this file using AES-12
+ .Pp
+ .It Pa ~/.ssh/id_dsa.pub
+ .It Pa ~/.ssh/id_ecdsa.pub
+-.It Pa ~/.ssh/id_ecdsa_sk.pub
+ .It Pa ~/.ssh/id_ed25519.pub
+-.It Pa ~/.ssh/id_ed25519_sk.pub
+ .It Pa ~/.ssh/id_rsa.pub
+ Contains the public key for authentication.
+ These files are not

@@ -1,0 +1,8 @@
+test_dirdbm.py::DirDbmTests::test_rebuildInteraction FAILED
+test_failure.py::FailureTests::test_stringExceptionConstruction FAILED
+test_log.py::LogTests::test_warningToFile FAILED
+test_policies.py::ThrottlingTests::test_limit FAILED
+test_policies.py::ThrottlingTests::test_limit ERROR
+test_process.py::TestTwoProcessesBase::test_close FAILED
+test_ssl.py::StolenTCPTests::test_properlyCloseFiles FAILED
+6 failed, 2027 passed, 94 skipped, x warnings, 1 error

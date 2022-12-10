@@ -1,0 +1,3 @@
+OpenLDAP Server Administration:solaris:cmd:RO::/usr/lib/slapd:\
+uid=openldap;gid=openldap;\
+privs={net_privaddr}\:389/tcp,{net_privaddr}\:636/tcp

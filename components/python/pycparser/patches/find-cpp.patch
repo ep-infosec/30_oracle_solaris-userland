@@ -1,0 +1,67 @@
+Solaris doesn't deliver a /usr/bin/cpp.  We have our own cpp in
+/usr/lib/cpp, and we deliver GNU cpp in /usr/bin/gcpp, but we might not
+find those simply by looking in $PATH.  So if we fail, try extra hard to
+execute another cpp.  We try GNU's first, since it's more likely what folks
+using pycparser will expect (for instance, it handles C++-style comments).
+
+--- pycparser-2.21/pycparser/__init__.py
++++ pycparser-2.21/pycparser/__init__.py
+@@ -10,6 +10,7 @@
+ __all__ = ['c_lexer', 'c_parser', 'c_ast']
+ __version__ = '2.21'
+ 
++import errno
+ import io
+ from subprocess import check_output
+ from .c_parser import CParser
+@@ -29,24 +30,36 @@ def preprocess_file(filename, cpp_path='
+         When successful, returns the preprocessed file's contents.
+         Errors from cpp will be printed out.
+     """
+-    path_list = [cpp_path]
+-    if isinstance(cpp_args, list):
+-        path_list += cpp_args
+-    elif cpp_args != '':
+-        path_list += [cpp_args]
+-    path_list += [filename]
+-
+-    try:
+-        # Note the use of universal_newlines to treat all newlines
+-        # as \n for Python's purpose
+-        text = check_output(path_list, universal_newlines=True)
+-    except OSError as e:
++    cpp_list = [cpp_path, "/usr/bin/gcpp", "/usr/lib/cpp"]
++
++    for cpp_path in cpp_list:
++        path_list = [cpp_path]
++        if isinstance(cpp_args, list):
++            path_list += cpp_args
++        elif cpp_args != '':
++            path_list += [cpp_args]
++        path_list += [filename]
++
++        try:
++            # Note the use of universal_newlines to treat all newlines
++            # as \n for Python's purpose
++            text = check_output(path_list, universal_newlines=True)
++        except OSError as e:
++            # If cpp couldn't be found, just try the next one.
++            if e.errno == errno.ENOENT:
++                continue
++            # If we ran into some other error, raise a RuntimeError.
++            raise RuntimeError("Unable to invoke 'cpp'.\n" +
++                ('Original error: %s' % e))
++
++        return text
++
++    else:
++        # If we couldn't find a cpp, then raise a RuntimeError.
+         raise RuntimeError("Unable to invoke 'cpp'.  " +
+             'Make sure its path was passed correctly\n' +
+             ('Original error: %s' % e))
+ 
+-    return text
+-
+ 
+ def parse_file(filename, use_cpp=False, cpp_path='cpp', cpp_args='',
+                parser=None):

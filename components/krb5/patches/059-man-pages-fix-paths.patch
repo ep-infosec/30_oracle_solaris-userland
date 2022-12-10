@@ -1,0 +1,180 @@
+#
+# This patch modifies the path for the KDC specific files which are stored by
+# default on Solaris /var/krb5.
+#
+# Note: It is not intended that these changes are to be contributed to MIT as
+# MIT will be modifying the way the KDC path is handled here in a future
+# update.
+# Patch source: in-house
+#
+--- a/src/man/kadm5.acl.man
++++ b/src/man/kadm5.acl.man
+@@ -38,8 +38,8 @@ For operations that affect principals, the ACL file also controls
+ which principals can operate on which other principals.
+ .sp
+ The default location of the Kerberos ACL file is
+-\fB@LOCALSTATEDIR@\fP\fB/krb5kdc\fP\fB/kadm5.acl\fP  unless this is overridden by the \fIacl_file\fP
+-variable in kdc.conf(5)\&.
++\fB@LOCALSTATEDIR@\fP\fB/krb5\fP\fB/kadm5.acl\fP  unless this is overridden by the \fIacl_file\fP
++variable in \fIkdc.conf(5)\fP\&.
+ .SH SYNTAX
+ .sp
+ Empty lines and lines starting with the sharp sign (\fB#\fP) are
+--- a/src/man/kadmind.man
++++ b/src/man/kadmind.man
+@@ -67,8 +67,8 @@ settings.
+ .B kadm5.acl(5)
+ kadmind\(aqs ACL (access control list) tells it which principals are
+ allowed to perform administration actions.  The pathname to the
+-ACL file can be specified with the \fBacl_file\fP kdc.conf(5)
+-variable; by default, it is \fB@LOCALSTATEDIR@\fP\fB/krb5kdc\fP\fB/kadm5.acl\fP\&.
++ACL file can be specified with the \fBacl_file\fP \fIkdc.conf(5)\fP
++variable; by default, it is \fB@LOCALSTATEDIR@\fP\fB/krb5\fP\fB/kadm5.acl\fP\&.
+ .UNINDENT
+ .sp
+ After the server begins running, it puts itself in the background and
+--- a/src/man/kdb5_ldap_util.man
++++ b/src/man/kdb5_ldap_util.man
+@@ -321,7 +321,7 @@ to the LDAP server.  Options:
+ .TP
+ \fB\-f\fP \fIfilename\fP
+ Specifies the complete path of the service password file. By
+-default, \fB/usr/local/var/service_passwd\fP is used.
++default, \fB@LOCALSTATEDIR@\fP\fB/krb5\fP\fB/service_passwd\fP is used.
+ .TP
+ .B \fIname\fP
+ Specifies the name of the object whose password is to be stored.
+--- a/src/man/kdc.conf.man
++++ b/src/man/kdc.conf.man
+@@ -39,7 +39,7 @@ KDC programs mentioned, krb5.conf and kdc.conf will be merged into a
+ single configuration profile.
+ .sp
+ Normally, the kdc.conf file is found in the KDC state directory,
+-\fB@LOCALSTATEDIR@\fP\fB/krb5kdc\fP\&.  You can override the default location by setting the
++\fB@LOCALSTATEDIR@\fP\fB/krb5\fP\&.  You can override the default location by setting the
+ environment variable \fBKRB5_KDC_PROFILE\fP\&.
+ .sp
+ Please note that you need to restart the KDC daemon for any configuration
+@@ -157,8 +157,8 @@ The following tags may be specified in a [realms] subsection:
+ kadmind(8) uses to determine which principals are allowed
+ which permissions on the Kerberos database.  To operate without an
+ ACL file, set this relation to the empty string with \fBacl_file =
+-""\fP\&.  The default value is \fB@LOCALSTATEDIR@\fP\fB/krb5kdc\fP\fB/kadm5.acl\fP\&.  For more
+-information on Kerberos ACL file see kadm5.acl(5)\&.
++""\fP\&.  The default value is \fB@LOCALSTATEDIR@\fP\fB/krb5\fP\fB/kadm5.acl\fP\&.  For more
++information on Kerberos ACL file see \fIkadm5.acl(5)\fP\&.
+ .TP
+ \fBdatabase_module\fP
+ (String.)  This relation indicates the name of the configuration
+@@ -171,7 +171,7 @@ values will be used for all database parameters.
+ (String, deprecated.)  This relation specifies the location of the
+ Kerberos database for this realm, if the DB2 module is being used
+ and the \fI\%[dbmodules]\fP configuration section does not specify a
+-database name.  The default value is \fB@LOCALSTATEDIR@\fP\fB/krb5kdc\fP\fB/principal\fP\&.
++database name.  The default value is \fB@LOCALSTATEDIR@\fP\fB/krb5\fP\fB/principal\fP\&.
+ .TP
+ \fBdefault_principal_expiration\fP
+ (abstime string.)  Specifies the default expiration date of
+@@ -369,7 +369,7 @@ assigned port for kadmind is 749, which is used by default.
+ .TP
+ \fBkey_stash_file\fP
+ (String.)  Specifies the location where the master key has been
+-stored (via kdb5_util stash).  The default is \fB@LOCALSTATEDIR@\fP\fB/krb5kdc\fP\fB/.k5.REALM\fP, where \fIREALM\fP is the Kerberos realm.
++stored (via kdb5_util stash).  The default is \fB@LOCALSTATEDIR@\fP\fB/krb5\fP\fB/.k5.REALM\fP, where \fIREALM\fP is the Kerberos realm.
+ .TP
+ \fBkdc_listen\fP
+ (Whitespace\- or comma\-separated list.)  Specifies the UDP
+@@ -561,7 +561,7 @@ The following tags may be specified in a [dbmodules] subsection:
+ .TP
+ \fBdatabase_name\fP
+ This DB2\-specific tag indicates the location of the database in
+-the filesystem.  The default is \fB@LOCALSTATEDIR@\fP\fB/krb5kdc\fP\fB/principal\fP\&.
++the filesystem.  The default is \fB@LOCALSTATEDIR@\fP\fB/krb5\fP\fB/principal\fP\&.
+ .TP
+ \fBdb_library\fP
+ This tag indicates the name of the loadable database module.  The
+@@ -790,8 +790,8 @@ In the following example, the logging messages from the KDC will go to
+ the console and to the system log under the facility LOG_DAEMON with
+ default severity of LOG_INFO; and the logging messages from the
+ administrative server will be appended to the file
+-\fB/var/adm/kadmin.log\fP and sent to the device \fB/dev/tty04\fP\&.
+-\fB/var/adm/kadmin.log\fP is rotated between twenty-one log files with a
++\fB/var/krb5/kadmin.log\fP and sent to the device \fB/dev/tty04\fP\&.
++\fB/var/krb5/kadmin.log\fP is rotated between twenty-one log files with a
+ specified time interval of a day.
+ .INDENT 0.0
+ .INDENT 3.5
+@@ -801,7 +801,7 @@ specified time interval of a day.
+ [logging]
+     kdc = CONSOLE
+     kdc = SYSLOG:INFO:DAEMON
+-    admin_server = FILE:/var/adm/kadmin.log
++    admin_server = FILE:/var/krb5/kadmin.log
+     admin_server = DEVICE=/dev/tty04
+     admin_server_rotate = {
+         period = 1d
+@@ -827,10 +827,10 @@ For each token type, the following tags may be specified:
+ This is the server to send the RADIUS request to.  It can be a
+ hostname with optional port, an ip address with optional port, or
+ a Unix domain socket address.  The default is
+-\fB@LOCALSTATEDIR@\fP\fB/krb5kdc\fP\fB/<name>.socket\fP\&.
++\fB@LOCALSTATEDIR@\fP\fB/krb5\fP\fB/<name>.socket\fP\&.
+ .TP
+-\fBsecret\fP
+-This tag indicates a filename (which may be relative to \fB@LOCALSTATEDIR@\fP\fB/krb5kdc\fP)
++.B \fBsecret\fP
++This tag indicates a filename (which may be relative to \fB@LOCALSTATEDIR@\fP\fB/krb5\fP)
+ containing the secret used to encrypt the RADIUS packets.  The
+ secret should appear in the first line of the file by itself;
+ leading and trailing whitespace on the line will be removed.  If
+@@ -1221,8 +1221,8 @@ Here\(aqs an example of a kdc.conf file:
+     }
+ 
+ [logging]
+-    kdc = FILE:/usr/local/var/krb5kdc/kdc.log
+-    admin_server = FILE:/usr/local/var/krb5kdc/kadmin.log
++    kdc = FILE:/var/krb5/kdc.log
++    admin_server = FILE:/var/krb5/kadmin.log
+ 
+ [dbdefaults]
+     ldap_kerberos_container_dn = cn=krbcontainer,dc=mit,dc=edu
+@@ -1247,7 +1247,7 @@ Here\(aqs an example of a kdc.conf file:
+ .UNINDENT
+ .SH FILES
+ .sp
+-\fB@LOCALSTATEDIR@\fP\fB/krb5kdc\fP\fB/kdc.conf\fP
++\fB@LOCALSTATEDIR@\fP\fB/krb5\fP\fB/kdc.conf\fP
+ .SH SEE ALSO
+ .sp
+ krb5.conf(5), krb5kdc(8), kadm5.acl(5)
+--- a/src/man/kprop.man
++++ b/src/man/kprop.man
+@@ -54,7 +54,7 @@ Specifies the realm of the primary server.
+ \fB\-f\fP \fIfile\fP
+ Specifies the filename where the dumped principal database file is
+ to be found; by default the dumped database file is normally
+-\fB@LOCALSTATEDIR@\fP\fB/krb5kdc\fP\fB/replica_datatrans\fP\&.
++\fB@LOCALSTATEDIR@\fP\fB/krb5\fP\fB/slave_datatrans\fP\&.
+ .TP
+ \fB\-P\fP \fIport\fP
+ Specifies the port to use to contact the kpropd(8) server
+--- a/src/man/kpropd.man
++++ b/src/man/kpropd.man
+@@ -109,7 +109,7 @@ default, the primary admin server is contacted.
+ .TP
+ \fB\-f\fP \fIfile\fP
+ Specifies the filename where the dumped principal database file is
+-to be stored; by default the dumped database file is \fB@LOCALSTATEDIR@\fP\fB/krb5kdc\fP\fB/from_master\fP\&.
++to be stored; by default the dumped database file is \fB@LOCALSTATEDIR@\fP\fB/krb5\fP\fB/from_master\fP\&.
+ .TP
+ \fB\-F\fP \fIkerberos_db\fP
+ Path to the Kerberos database file, if not the default.
+@@ -134,7 +134,7 @@ is only useful in combination with the \fB\-S\fP option.
+ .TP
+ \fB\-a\fP \fIacl_file\fP
+ Allows the user to specify the path to the kpropd.acl file; by
+-default the path used is \fB@LOCALSTATEDIR@\fP\fB/krb5kdc\fP\fB/kpropd.acl\fP\&.
++default the path used is \fB@LOCALSTATEDIR@\fP\fB/krb5\fP\fB/kpropd.acl\fP\&.
+ .TP
+ \fB\-\-pid\-file\fP=\fIpid_file\fP
+ In standalone mode, write the process ID of the daemon into

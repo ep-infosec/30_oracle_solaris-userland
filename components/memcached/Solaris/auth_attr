@@ -1,0 +1,2 @@
+solaris.smf.value.memcached:RO::Change Memcached value properties::
+solaris.smf.manage.memcached:RO::Manage Memcached service states::

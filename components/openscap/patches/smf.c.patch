@@ -1,0 +1,338 @@
+diff -ruN openscap-1.3.4.org/CMakeLists.txt openscap-1.3.4/CMakeLists.txt
+--- openscap-1.3.4.org/CMakeLists.txt	2021-04-19 21:59:34.225082992 +0000
++++ openscap-1.3.4/CMakeLists.txt	2021-04-19 22:01:04.917892811 +0000
+@@ -290,6 +290,7 @@
+ 
+ # SOLARIS PROBES
+ cmake_dependent_option(OPENSCAP_PROBE_SOLARIS_ISAINFO "Solaris isainfo probe" ON "ENABLE_PROBES_SOLARIS" OFF)
++cmake_dependent_option(OPENSCAP_PROBE_SOLARIS_SMF "Solaris smf probe" ON "ENABLE_PROBES_SOLARIS" OFF)
+ 
+ # WINDOWS PROBES
+ cmake_dependent_option(OPENSCAP_PROBE_WINDOWS_ACCESSTOKEN "Windows accesstoken probe" ON "ENABLE_PROBES_WINDOWS" OFF)
+@@ -419,6 +420,7 @@
+ 
+ message(STATUS "Solaris probes: ${ENABLE_PROBES_SOLARIS}")
+ message(STATUS "  Solaris isainfo probe: ${OPENSCAP_PROBE_SOLARIS_ISAINFO}")
++message(STATUS "  Solaris smf probe: ${OPENSCAP_PROBE_SOLARIS_SMF}")
+ message(STATUS " ")
+ 
+ 
+diff -ruN openscap-1.3.4.org/config.h.in openscap-1.3.4/config.h.in
+--- openscap-1.3.4.org/config.h.in	2021-04-19 21:59:34.248015540 +0000
++++ openscap-1.3.4/config.h.in	2021-04-19 22:01:04.918371207 +0000
+@@ -110,6 +110,7 @@
+ #cmakedefine OPENSCAP_PROBE_LINUX_SYSTEMDUNITDEPENDENCY
+ #cmakedefine OPENSCAP_PROBE_LINUX_SYSTEMDUNITPROPERTY
+ #cmakedefine OPENSCAP_PROBE_SOLARIS_ISAINFO
++#cmakedefine OPENSCAP_PROBE_SOLARIS_SMF
+ #cmakedefine OPENSCAP_PROBE_UNIX_DNSCACHE
+ #cmakedefine OPENSCAP_PROBE_UNIX_FILE
+ #cmakedefine OPENSCAP_PROBE_UNIX_FILEEXTENDEDATTRIBUTE
+diff -ruN openscap-1.3.4.org/src/OVAL/probes/probe-table.c openscap-1.3.4/src/OVAL/probes/probe-table.c
+--- openscap-1.3.4.org/src/OVAL/probes/probe-table.c	2021-04-19 21:59:33.847887070 +0000
++++ openscap-1.3.4/src/OVAL/probes/probe-table.c	2021-04-19 22:01:04.919295214 +0000
+@@ -131,6 +131,10 @@
+ #include "unix/solaris/isainfo_probe.h"
+ #endif
+ 
++#ifdef OPENSCAP_PROBE_SOLARIS_SMF
++#include "unix/solaris/smf.h"
++#endif
++
+ #ifdef OPENSCAP_PROBE_UNIX_DNSCACHE
+ #include "unix/dnscache_probe.h"
+ #endif
+@@ -291,6 +295,9 @@
+ #ifdef OPENSCAP_PROBE_SOLARIS_ISAINFO
+ 	{OVAL_SOLARIS_ISAINFO, NULL, isainfo_probe_main, NULL, NULL},
+ #endif
++#ifdef OPENSCAP_PROBE_SOLARIS_SMF
++	{OVAL_SOLARIS_SMF, NULL, smf_probe_main, NULL, NULL},
++#endif
+ #ifdef OPENSCAP_PROBE_UNIX_DNSCACHE
+ 	{OVAL_UNIX_DNSCACHE, NULL, dnscache_probe_main, NULL, NULL},
+ #endif
+diff -ruN openscap-1.3.4.org/src/OVAL/probes/unix/solaris/CMakeLists.txt openscap-1.3.4/src/OVAL/probes/unix/solaris/CMakeLists.txt
+--- openscap-1.3.4.org/src/OVAL/probes/unix/solaris/CMakeLists.txt	2021-04-19 21:59:33.857029686 +0000
++++ openscap-1.3.4/src/OVAL/probes/unix/solaris/CMakeLists.txt	2021-04-19 22:01:04.919786324 +0000
+@@ -5,6 +5,12 @@
+ 	)
+ endif()
+ 
++if(OPENSCAP_PROBE_SOLARIS_SMF)
++	list(APPEND SOLARIS_PROBES_SOURCES
++		"smf.c"
++		"smf.h"
++	)
++endif()
+ add_library(solaris_probes_object OBJECT ${SOLARIS_PROBES_SOURCES})
+ set_oscap_generic_properties(solaris_probes_object)
+-target_include_directories(solaris_probes_object PRIVATE ${SOLARIS_PROBES_INCLUDE_DIRECTORIES})
+\ No newline at end of file
++target_include_directories(solaris_probes_object PRIVATE ${SOLARIS_PROBES_INCLUDE_DIRECTORIES})
+diff -ruN openscap-1.3.4.org/src/OVAL/probes/unix/solaris/smf.c openscap-1.3.4/src/OVAL/probes/unix/solaris/smf.c
+--- openscap-1.3.4.org/src/OVAL/probes/unix/solaris/smf.c	1969-12-31 16:00:00.000000000 +0000
++++ openscap-1.3.4/src/OVAL/probes/unix/solaris/smf.c	2021-04-19 22:03:11.303556397 +0000
+@@ -0,0 +1,238 @@
++#ifdef HAVE_CONFIG_H
++#include <config.h>
++#endif
++
++#include "probe-api.h"
++
++#if	defined(__SVR4) && defined(__sun)
++/*
++ * smf probe:
++ *
++ * fmri
++ * service_name
++ * service_state
++ * protocol
++ * server_executable
++ * server_arguements
++ * exec_as_user
++ */
++
++
++#include <stdlib.h>
++#include <string.h>
++#include <stdio.h>
++#include <errno.h>
++#include <sys/stat.h>
++#include <ctype.h>
++#include <sys/types.h>
++#include <limits.h>
++#include <unistd.h>
++#include <libscf.h>
++#include <libscf_priv.h>
++#include "_seap.h"
++#include "probe/entcmp.h"
++#include <stdlib.h>
++#include "common/debug_priv.h"
++
++#ifndef SCF_PG_START
++#define	SCF_PG_START	"start"
++#endif
++
++/* Convenience structure for the results being reported */
++struct result_info {
++	const char *fmri;
++	char *service_name;
++	char *service_state;
++	char *protocol;
++	char *server_executable;
++	char *server_arguments;
++	char *exec_as_user;
++};
++
++static void
++toUpperCase(char *str)
++{
++	int i = 0;
++
++	if (str != NULL) {
++		while (str[i] != '\0') {
++			str[i] = toupper(str[i]);
++			i++;
++		}
++	}
++}
++
++static char *
++strdup_check(char *p)
++{
++	char *ret;
++
++	if ((ret = strdup(p)) == NULL) {
++		oscap_dlprintf(DBG_E, "Error: Out of Memory error.\n");
++		exit(PROBE_ENOMEM);
++	}
++	return (ret);
++}
++
++static void
++get_smf_prop_val(scf_handle_t *h, const char *fmri,
++    const char *prop_grp_name, const char *prop_name, char **val)
++{
++	scf_simple_prop_t *prop;
++	char *prop_val;
++	*val = NULL;
++
++	if ((prop = scf_simple_prop_get(h, fmri, prop_grp_name,
++	    prop_name)) == NULL) {
++		if (scf_error() == SCF_ERROR_NOT_FOUND) {
++			oscap_dlprintf(DBG_E, "Error: Specified service "
++			    " %s has no %s/%s property.\n",
++			    fmri, prop_grp_name, prop_name);
++		} else if (scf_error() == SCF_ERROR_INVALID_ARGUMENT) {
++			oscap_dlprintf(DBG_E, "Error: Invalid service "
++			    " %s does not exist.\n",
++			    fmri);
++		}
++	} else {
++		if ((prop_val =
++		    scf_simple_prop_next_astring(prop)) == NULL) {
++			oscap_dlprintf(DBG_E,
++			    "Error: Could not read "
++			    " %s/%s property of %s.\n",
++			    prop_grp_name,
++			    prop_name,
++			    fmri);
++		} else if (prop_val[0] != '\0') {
++			*val = strdup_check(prop_val);
++		}
++		scf_simple_prop_free(prop);
++	}
++}
++
++
++static void
++report_finding(struct result_info *res, probe_ctx *ctx)
++{
++	SEXP_t *item;
++
++	oscap_dlprintf(DBG_I, "In report_finding.\n");
++	item = probe_item_create(OVAL_SOLARIS_SMF, NULL,
++	    "fmri", OVAL_DATATYPE_STRING, res->fmri,
++	    "service_name", OVAL_DATATYPE_STRING, res->service_name,
++	    "service_state", OVAL_DATATYPE_STRING, res->service_state,
++	    "protocol", OVAL_DATATYPE_STRING, res->protocol,
++	    "server_executable", OVAL_DATATYPE_STRING,
++	    res->server_executable,
++	    "server_arguments", OVAL_DATATYPE_STRING,
++	    res->server_arguments,
++	    "exec_as_user", OVAL_DATATYPE_STRING, res->exec_as_user,
++	    NULL);
++	probe_item_collect(ctx, item);
++}
++
++static int
++collect_smf_info(char *fmri, probe_ctx *ctx)
++{
++	struct result_info r;
++	int rc = 0;
++	char *tmp;
++	scf_handle_t *scf_hdl = NULL;
++	scf_instance_t *inst = NULL;
++	scf_service_t *svc = NULL;
++
++
++	oscap_dlprintf(DBG_I, "In collect_smf_info.\n");
++	memset(&r, 0, sizeof (r));
++	r.fmri = fmri;
++	if ((scf_hdl = scf_handle_create(SCF_VERSION)) == NULL ||
++	    scf_handle_bind(scf_hdl) != 0 ||
++	    (svc = scf_service_create(scf_hdl)) == NULL ||
++	    (inst = scf_instance_create(scf_hdl)) == NULL) {
++		rc = PROBE_EFATAL;
++		goto cleanup;
++	}
++	/* To check if service exists */
++	get_smf_prop_val(scf_hdl, r.fmri, SCF_PG_RESTARTER,
++	    SCF_PROPERTY_STATE, &(r.service_state));
++	if (scf_error() == SCF_ERROR_NOT_FOUND) {
++		if (scf_handle_decode_fmri(scf_hdl, fmri, NULL, svc,
++		    inst, NULL, NULL, SCF_DECODE_FMRI_EXACT) != 0 || 
++		    scf_error() == SCF_ERROR_NOT_FOUND) {
++			oscap_dlprintf(DBG_I,"decode_fmri failed.\n");
++			goto cleanup;
++		}
++	}
++	if (r.service_state != NULL &&
++	    r.service_state[0] != '\0')
++		toUpperCase(r.service_state);
++	get_smf_prop_val(scf_hdl, r.fmri, SCF_PG_START,
++	    SCF_PROPERTY_EXEC, &(r.server_executable));
++	get_smf_prop_val(scf_hdl, r.fmri, SCF_PG_START,
++	    SCF_PROPERTY_USER, &(r.exec_as_user));
++	/*
++	 * At this point the fmri we have is valid because
++	 * we were able to locate it and get info on the
++	 * above listed properties. Now trying to parse
++	 * the fmri to only get the service:instance name.
++	 * So skipping the scope and service prefix. If we
++	 * did not find the scope and service prefix, we
++	 * return the full fmri that was passed in.
++	 */
++	if ((tmp = strstr(fmri, SCF_FMRI_SCOPE_PREFIX)) != NULL) 
++		tmp += sizeof(SCF_FMRI_SCOPE_PREFIX) - 1;
++	else
++		tmp = fmri;
++	if ((tmp = strstr(tmp, SCF_FMRI_SERVICE_PREFIX)) != NULL)
++		tmp += sizeof(SCF_FMRI_SERVICE_PREFIX) - 1;
++	else
++		tmp = fmri;
++	asprintf(&r.service_name, "%s", tmp);
++	report_finding(&r, ctx);
++	free(r.protocol);
++	free(r.service_state);
++	free(r.server_executable);
++	free(r.server_arguments);
++	free(r.exec_as_user);
++cleanup:
++	free(r.service_name);
++	scf_service_destroy(svc);
++	scf_instance_destroy(inst);
++	if (scf_hdl != NULL)
++		scf_handle_unbind(scf_hdl);
++	scf_handle_destroy(scf_hdl);
++	return (rc);
++}
++
++int
++smf_probe_main(probe_ctx *ctx, void *arg)
++{
++	SEXP_t *fmri, *fmri_val, *probe_in;
++	char *fmri_str;
++	int rc;
++
++	probe_in = probe_ctx_getobject(ctx);
++	if (probe_in == NULL) {
++		oscap_dlprintf(DBG_E, "No object in context.\n");
++		return (PROBE_ENOVAL);
++	}
++	fmri = probe_obj_getent(probe_in, "fmri", 1);
++	if (fmri == NULL) {
++		oscap_dlprintf(DBG_E, "No fmri in context.\n");
++		return (PROBE_ENOVAL);
++	}
++	fmri_val = probe_ent_getval(fmri);
++	fmri_str = SEXP_string_cstr(fmri_val);
++	oscap_dlprintf(DBG_I, "fmri in context: %s.\n", fmri_str);
++	rc = collect_smf_info(fmri_str, ctx);
++	free(fmri_str);
++	SEXP_free(fmri_val);
++	SEXP_free(fmri);
++	return (rc);
++} 
++#else
++
++int smf_probe_main(probe_ctx *ctx, void *probe_arg)
++{
++        return(PROBE_EOPNOTSUPP);
++}
++#endif
+diff -ruN openscap-1.3.4.org/src/OVAL/probes/unix/solaris/smf.h openscap-1.3.4/src/OVAL/probes/unix/solaris/smf.h
+--- openscap-1.3.4.org/src/OVAL/probes/unix/solaris/smf.h	1969-12-31 16:00:00.000000000 +0000
++++ openscap-1.3.4/src/OVAL/probes/unix/solaris/smf.h	2021-04-19 22:01:04.921287499 +0000
+@@ -0,0 +1,20 @@
++/**
++ * @file smf.h
++ * @brief smf probe
++ * This is a include file for smf.c.
++ */
++
++
++#ifndef OPENSCAP_SMF_PROBE_H
++#define OPENSCAP_SMF_PROBE_H
++
++#include "probe-api.h"
++
++int smf_probe_main(probe_ctx *ctx, void *probe_arg);
++
++#endif /* OPENSCAP_ISAINFO_PROBE_H */
++
++
++
++
++

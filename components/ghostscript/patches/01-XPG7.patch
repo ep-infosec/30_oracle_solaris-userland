@@ -1,0 +1,216 @@
+In house patch to use XPG7 standard
+NOTE : This patch will not be pushed upstream, as community is using
+       XPG5 standards.
+
+
+diff --git a/base/unistd_.h b/base/unistd_.h
+index 0ac355c..cada9f7 100644
+--- a/base/unistd_.h
++++ b/base/unistd_.h
+@@ -49,9 +49,9 @@
+ #  define isatty(fd) _isatty(fd)
+ #  define setmode(fd, mode) _setmode(fd, mode)
+ #else
+-   /* _XOPEN_SOURCE 500 define is needed to get
++   /* _XOPEN_SOURCE 700 define is needed to get
+     * access to pread and pwrite */
+-#  define _XOPEN_SOURCE 500
++#  define _XOPEN_SOURCE 700
+ #  define __USE_UNIX98
+ #  include <unistd.h>
+ #endif
+diff --git a/configure.ac b/configure.ac
+index 1532609..37cdeaf 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -738,7 +738,7 @@ AC_CHECK_FUNCS([pread pwrite], [HAVE_PRE
+ 
+ if test "x$HAVE_PREAD_PWRITE" != "x"; then
+   save_cflags=$CFLAGS
+-  CFLAGS="$CFLAGS -D__USE_UNIX98=1 -D_XOPEN_SOURCE=500"
++  CFLAGS="$CFLAGS -D__USE_UNIX98=1 -D_XOPEN_SOURCE=700"
+   AC_CHECK_DECLS([pwrite,pread], [], [HAVE_PREAD_PWRITE=])
+   CFLAGS=$save_cflags
+   if test "x$HAVE_PREAD_PWRITE" != "x"; then
+diff --git a/contrib/pcl3/eprn/eprnfs.c b/contrib/pcl3/eprn/eprnfs.c
+index d1557f4..ce950fd 100644
+--- a/contrib/pcl3/eprn/eprnfs.c
++++ b/contrib/pcl3/eprn/eprnfs.c
+@@ -25,7 +25,7 @@
+ /*****************************************************************************/
+ 
+ #ifndef _XOPEN_SOURCE
+-#define _XOPEN_SOURCE	500
++#define _XOPEN_SOURCE	700
+ #endif
+ 
+ #include "gdeveprn.h"
+diff --git a/contrib/pcl3/eprn/eprnparm.c b/contrib/pcl3/eprn/eprnparm.c
+index 1d989c4..9ed30fe 100644
+--- a/contrib/pcl3/eprn/eprnparm.c
++++ b/contrib/pcl3/eprn/eprnparm.c
+@@ -35,7 +35,7 @@
+ /*****************************************************************************/
+ 
+ #ifndef _XOPEN_SOURCE
+-#define _XOPEN_SOURCE   500
++#define _XOPEN_SOURCE   700
+ #endif
+ 
+ /* Special Aladdin header, must be included before <sys/types.h> on some
+diff --git a/contrib/pcl3/eprn/eprnrend.c b/contrib/pcl3/eprn/eprnrend.c
+index 2da1f9c..c0179e6 100644
+--- a/contrib/pcl3/eprn/eprnrend.c
++++ b/contrib/pcl3/eprn/eprnrend.c
+@@ -47,7 +47,7 @@
+ /*****************************************************************************/
+ 
+ #ifndef _XOPEN_SOURCE
+-#define _XOPEN_SOURCE	500
++#define _XOPEN_SOURCE	700
+ #endif
+ 
+ /* Special Aladdin header, must be included before <sys/types.h> on some
+diff --git a/contrib/pcl3/eprn/gdeveprn.c b/contrib/pcl3/eprn/gdeveprn.c
+index 4c9226c..91b3c7d 100644
+--- a/contrib/pcl3/eprn/gdeveprn.c
++++ b/contrib/pcl3/eprn/gdeveprn.c
+@@ -36,7 +36,7 @@
+ /*****************************************************************************/
+ 
+ #ifndef _XOPEN_SOURCE
+-#define _XOPEN_SOURCE   500
++#define _XOPEN_SOURCE   700
+ #endif
+ 
+ /* Preprocessor symbol with version-dependent default */
+diff --git a/contrib/pcl3/eprn/mediasize.c b/contrib/pcl3/eprn/mediasize.c
+index 21c6a26..d95a959 100644
+--- a/contrib/pcl3/eprn/mediasize.c
++++ b/contrib/pcl3/eprn/mediasize.c
+@@ -14,7 +14,7 @@
+ /*****************************************************************************/
+ 
+ #ifndef _XOPEN_SOURCE
+-#define _XOPEN_SOURCE	500
++#define _XOPEN_SOURCE	700
+ #endif
+ 
+ #include "std.h"
+diff --git a/contrib/pcl3/eprn/pagecount.c b/contrib/pcl3/eprn/pagecount.c
+index a635bd4..2317f2d 100644
+--- a/contrib/pcl3/eprn/pagecount.c
++++ b/contrib/pcl3/eprn/pagecount.c
+@@ -19,7 +19,7 @@ int dummy;
+ /*****************************************************************************/
+ 
+ #ifndef _XOPEN_SOURCE
+-#define _XOPEN_SOURCE	500
++#define _XOPEN_SOURCE	700
+ #endif
+ 
+ #include "std.h"
+diff --git a/contrib/pcl3/src/gdevpcl3.c b/contrib/pcl3/src/gdevpcl3.c
+index 6b6468e..d684beb 100644
+--- a/contrib/pcl3/src/gdevpcl3.c
++++ b/contrib/pcl3/src/gdevpcl3.c
+@@ -26,7 +26,7 @@
+ /*****************************************************************************/
+ 
+ #ifndef _XOPEN_SOURCE
+-#define _XOPEN_SOURCE   500
++#define _XOPEN_SOURCE   700
+ #endif
+ 
+ /* Special Aladdin header, must be included before <sys/types.h> on some
+diff --git a/contrib/pcl3/src/pcl3opts.c b/contrib/pcl3/src/pcl3opts.c
+index edd28de..9ac1dbc 100644
+--- a/contrib/pcl3/src/pcl3opts.c
++++ b/contrib/pcl3/src/pcl3opts.c
+@@ -16,7 +16,7 @@
+ /*****************************************************************************/
+ 
+ #ifndef _XOPEN_SOURCE
+-#define _XOPEN_SOURCE	500
++#define _XOPEN_SOURCE	700
+ #endif
+ 
+ /* Standard headers */
+diff --git a/contrib/pcl3/src/pclcap.c b/contrib/pcl3/src/pclcap.c
+index 77f52aa..9bf872d 100644
+--- a/contrib/pcl3/src/pclcap.c
++++ b/contrib/pcl3/src/pclcap.c
+@@ -14,7 +14,7 @@
+ /*****************************************************************************/
+ 
+ #ifndef _XOPEN_SOURCE
+-#define _XOPEN_SOURCE	500
++#define _XOPEN_SOURCE	700
+ #endif
+ 
+ /* Standard headers */
+diff --git a/contrib/pcl3/src/pclcomp.c b/contrib/pcl3/src/pclcomp.c
+index ea849ec..cc6c749 100644
+--- a/contrib/pcl3/src/pclcomp.c
++++ b/contrib/pcl3/src/pclcomp.c
+@@ -19,7 +19,7 @@
+ /*****************************************************************************/
+ 
+ #ifndef _XOPEN_SOURCE
+-#define _XOPEN_SOURCE	500
++#define _XOPEN_SOURCE	700
+ #endif
+ 
+ /* Interface definition */
+diff --git a/contrib/pcl3/src/pclgen.c b/contrib/pcl3/src/pclgen.c
+index e6a9c96..1b06570 100644
+--- a/contrib/pcl3/src/pclgen.c
++++ b/contrib/pcl3/src/pclgen.c
+@@ -52,7 +52,7 @@
+ /*****************************************************************************/
+ 
+ #ifndef _XOPEN_SOURCE
+-#define _XOPEN_SOURCE	500
++#define _XOPEN_SOURCE	700
+ #endif
+ 
+ /* Standard headers */
+diff --git a/contrib/pcl3/src/pclscan.c b/contrib/pcl3/src/pclscan.c
+index 1919ec1..ef6dab1 100644
+--- a/contrib/pcl3/src/pclscan.c
++++ b/contrib/pcl3/src/pclscan.c
+@@ -14,7 +14,7 @@
+ /*****************************************************************************/
+ 
+ #ifndef _XOPEN_SOURCE
+-#define _XOPEN_SOURCE	500
++#define _XOPEN_SOURCE	700
+ #endif
+ #ifndef _XOPEN_SOURCE_EXTENDED
+ #define _XOPEN_SOURCE_EXTENDED	1
+diff --git a/contrib/pcl3/src/pclsize.c b/contrib/pcl3/src/pclsize.c
+index 831b82b..3a322db 100644
+--- a/contrib/pcl3/src/pclsize.c
++++ b/contrib/pcl3/src/pclsize.c
+@@ -14,7 +14,7 @@
+ /*****************************************************************************/
+ 
+ #ifndef _XOPEN_SOURCE
+-#define _XOPEN_SOURCE	500
++#define _XOPEN_SOURCE	700
+ #endif
+ 
+ /* Standard headers */
+diff --git a/freetype/src/tools/ftrandom/ftrandom.c b/freetype/src/tools/ftrandom/ftrandom.c
+index ab62429..8630947 100644
+--- a/freetype/src/tools/ftrandom/ftrandom.c
++++ b/freetype/src/tools/ftrandom/ftrandom.c
+@@ -29,7 +29,7 @@ /* modified by Werner Lemberg <wl@gnu.or
+ /* This file is now part of the FreeType library */
+ 
+ 
+-#define _XOPEN_SOURCE 600 /* for `kill', `strdup', `random', and `srandom' */
++#define _XOPEN_SOURCE 700 /* for `kill', `strdup', `random', and `srandom' */
+ 
+ 
+ #include <stdio.h>

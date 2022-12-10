@@ -1,0 +1,424 @@
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+
+#
+# Copyright (c) 2015, 2022, Oracle and/or its affiliates.
+#
+
+<transform file path=usr.*/man/.+ -> \
+    default mangler.man.stability "pass-through volatile">
+set name=pkg.fmri \
+    value=pkg:/gnome/window-manager/mutter@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION)
+set name=pkg.summary value="The GNOME window and compositing manager"
+set name=com.oracle.info.baid value=$(COMPONENT_BAID)
+set name=com.oracle.info.description value=$(COMPONENT_NAME)
+set name=info.classification \
+    value="org.opensolaris.category.2008:Desktop (GNOME)/Window Managers"
+set name=info.source-url value=$(COMPONENT_ARCHIVE_URL)
+set name=info.upstream-url value=$(COMPONENT_PROJECT_URL)
+set name=org.opensolaris.arc-caseid value=PSARC/2016/396
+set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
+file path=usr/bin/mutter
+file path=usr/include/mutter-9/clutter/cally/cally-actor.h
+file path=usr/include/mutter-9/clutter/cally/cally-clone.h
+file path=usr/include/mutter-9/clutter/cally/cally-factory.h
+file path=usr/include/mutter-9/clutter/cally/cally-main.h
+file path=usr/include/mutter-9/clutter/cally/cally-root.h
+file path=usr/include/mutter-9/clutter/cally/cally-stage.h
+file path=usr/include/mutter-9/clutter/cally/cally-text.h
+file path=usr/include/mutter-9/clutter/cally/cally-util.h
+file path=usr/include/mutter-9/clutter/cally/cally.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-action.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-actor-meta.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-actor.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-align-constraint.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-animatable.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-autocleanups.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-backend.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-bin-layout.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-bind-constraint.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-binding-pool.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-blur-effect.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-box-layout.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-brightness-contrast-effect.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-cairo.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-canvas.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-child-meta.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-click-action.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-clone.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-color-static.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-color.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-colorize-effect.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-constraint.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-container.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-content.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-deform-effect.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-deprecated.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-desaturate-effect.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-effect.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-enum-types.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-enums.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-event.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-feature.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-fixed-layout.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-flow-layout.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-frame-clock.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-frame.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-gesture-action.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-grid-layout.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-image.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-input-device-tool.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-input-device.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-input-focus.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-input-method.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-interval.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-keyframe-transition.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-keymap.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-keysyms.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-layout-manager.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-layout-meta.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-macros.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-main.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-marshal.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-mutter.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-offscreen-effect.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-page-turn-effect.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-paint-context.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-paint-node.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-paint-nodes.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-pan-action.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-path-constraint.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-path.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-pick-context.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-property-transition.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-rotate-action.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-script.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-scriptable.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-scroll-actor.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-seat.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-settings.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-shader-effect.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-shader-types.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-snap-constraint.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-stage-manager.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-stage-view.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-stage.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-swipe-action.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-tap-action.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-text-buffer.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-text.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-texture-content.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-timeline.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-transition-group.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-transition.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-types.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-units.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-virtual-input-device.h
+file path=usr/include/mutter-9/clutter/clutter/clutter-zoom-action.h
+file path=usr/include/mutter-9/clutter/clutter/clutter.h
+file path=usr/include/mutter-9/clutter/clutter/deprecated/clutter-container.h
+file path=usr/include/mutter-9/clutter/clutter/deprecated/clutter-timeline.h
+file path=usr/include/mutter-9/cogl/cogl-pango/cogl-pango.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-atlas-texture.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-attribute-buffer.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-attribute.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-bitmap.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-buffer.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-color.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-context.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-defines.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-depth-state.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-display.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-egl-defines.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-egl.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-fence.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-frame-info.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-framebuffer.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-glib-source.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-glx.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-graphene.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-gtype-private.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-index-buffer.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-indices.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-macros.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-matrix-stack.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-meta-texture.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-object.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-offscreen.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-onscreen-template.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-onscreen.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-output.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-pipeline-layer-state.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-pipeline-state.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-pipeline.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-pixel-buffer.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-pixel-format.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-poll.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-primitive-texture.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-primitive.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-renderer.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-scanout.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-snippet.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-sub-texture.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-swap-chain.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-texture-2d-sliced.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-texture-2d.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-texture-pixmap-x11.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-texture.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-trace.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-types.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-version.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-xlib-renderer.h
+file path=usr/include/mutter-9/cogl/cogl/cogl-xlib.h
+file path=usr/include/mutter-9/cogl/cogl/cogl.h
+file path=usr/include/mutter-9/cogl/cogl/cogl1-context.h
+file path=usr/include/mutter-9/cogl/cogl/deprecated/cogl-auto-texture.h
+file path=usr/include/mutter-9/cogl/cogl/deprecated/cogl-clutter.h
+file path=usr/include/mutter-9/cogl/cogl/deprecated/cogl-material-compat.h
+file path=usr/include/mutter-9/cogl/cogl/deprecated/cogl-shader.h
+file path=usr/include/mutter-9/cogl/cogl/deprecated/cogl-type-casts.h
+file path=usr/include/mutter-9/cogl/cogl/gl-prototypes/cogl-core-functions.h
+file path=usr/include/mutter-9/cogl/cogl/gl-prototypes/cogl-gles2-functions.h
+file path=usr/include/mutter-9/cogl/cogl/gl-prototypes/cogl-glsl-functions.h
+file path=usr/include/mutter-9/cogl/cogl/gl-prototypes/cogl-in-gles-core-functions.h
+file path=usr/include/mutter-9/cogl/cogl/gl-prototypes/cogl-in-gles2-core-functions.h
+file path=usr/include/mutter-9/meta/barrier.h
+file path=usr/include/mutter-9/meta/boxes.h
+file path=usr/include/mutter-9/meta/common.h
+file path=usr/include/mutter-9/meta/compositor-mutter.h
+file path=usr/include/mutter-9/meta/compositor.h
+file path=usr/include/mutter-9/meta/display.h
+file path=usr/include/mutter-9/meta/group.h
+file path=usr/include/mutter-9/meta/keybindings.h
+file path=usr/include/mutter-9/meta/main.h
+file path=usr/include/mutter-9/meta/meta-backend.h
+file path=usr/include/mutter-9/meta/meta-background-actor.h
+file path=usr/include/mutter-9/meta/meta-background-content.h
+file path=usr/include/mutter-9/meta/meta-background-group.h
+file path=usr/include/mutter-9/meta/meta-background-image.h
+file path=usr/include/mutter-9/meta/meta-background.h
+file path=usr/include/mutter-9/meta/meta-close-dialog.h
+file path=usr/include/mutter-9/meta/meta-context.h
+file path=usr/include/mutter-9/meta/meta-cursor-tracker.h
+file path=usr/include/mutter-9/meta/meta-dnd.h
+file path=usr/include/mutter-9/meta/meta-enum-types.h
+file path=usr/include/mutter-9/meta/meta-enums.h
+file path=usr/include/mutter-9/meta/meta-idle-monitor.h
+file path=usr/include/mutter-9/meta/meta-inhibit-shortcuts-dialog.h
+file path=usr/include/mutter-9/meta/meta-later.h
+file path=usr/include/mutter-9/meta/meta-launch-context.h
+file path=usr/include/mutter-9/meta/meta-monitor-manager.h
+file path=usr/include/mutter-9/meta/meta-plugin.h
+file path=usr/include/mutter-9/meta/meta-remote-access-controller.h
+file path=usr/include/mutter-9/meta/meta-selection-source-memory.h
+file path=usr/include/mutter-9/meta/meta-selection-source.h
+file path=usr/include/mutter-9/meta/meta-selection.h
+file path=usr/include/mutter-9/meta/meta-settings.h
+file path=usr/include/mutter-9/meta/meta-shadow-factory.h
+file path=usr/include/mutter-9/meta/meta-shaped-texture.h
+file path=usr/include/mutter-9/meta/meta-sound-player.h
+file path=usr/include/mutter-9/meta/meta-stage.h
+file path=usr/include/mutter-9/meta/meta-startup-notification.h
+file path=usr/include/mutter-9/meta/meta-window-actor.h
+file path=usr/include/mutter-9/meta/meta-window-group.h
+file path=usr/include/mutter-9/meta/meta-window-shape.h
+file path=usr/include/mutter-9/meta/meta-workspace-manager.h
+file path=usr/include/mutter-9/meta/meta-x11-display.h
+file path=usr/include/mutter-9/meta/meta-x11-errors.h
+file path=usr/include/mutter-9/meta/prefs.h
+file path=usr/include/mutter-9/meta/theme.h
+file path=usr/include/mutter-9/meta/types.h
+file path=usr/include/mutter-9/meta/util.h
+file path=usr/include/mutter-9/meta/window.h
+file path=usr/include/mutter-9/meta/workspace.h
+link path=usr/lib/$(MACH64)/libmutter-9.so target=libmutter-9.so.0
+link path=usr/lib/$(MACH64)/libmutter-9.so.0 target=libmutter-9.so.0.0.0
+file path=usr/lib/$(MACH64)/libmutter-9.so.0.0.0 \
+    pkg.depend.bypass-generate=libGL.so.1
+link path=usr/lib/$(MACH64)/libmutter-clutter-9.so \
+    target=mutter-9/libmutter-clutter-9.so
+link path=usr/lib/$(MACH64)/libmutter-clutter-9.so.0 \
+    target=mutter-9/libmutter-clutter-9.so.0
+link path=usr/lib/$(MACH64)/libmutter-clutter-9.so.0.0.0 \
+    target=mutter-9/libmutter-clutter-9.so.0.0.0
+link path=usr/lib/$(MACH64)/libmutter-cogl-9.so \
+    target=mutter-9/libmutter-cogl-9.so
+link path=usr/lib/$(MACH64)/libmutter-cogl-9.so.0 \
+    target=mutter-9/libmutter-cogl-9.so.0
+link path=usr/lib/$(MACH64)/libmutter-cogl-9.so.0.0.0 \
+    target=mutter-9/libmutter-cogl-9.so.0.0.0
+link path=usr/lib/$(MACH64)/libmutter-cogl-pango-9.so \
+    target=mutter-9/libmutter-cogl-pango-9.so
+link path=usr/lib/$(MACH64)/libmutter-cogl-pango-9.so.0 \
+    target=mutter-9/libmutter-cogl-pango-9.so.0
+link path=usr/lib/$(MACH64)/libmutter-cogl-pango-9.so.0.0.0 \
+    target=mutter-9/libmutter-cogl-pango-9.so.0.0.0
+file path=usr/lib/$(MACH64)/mutter-9/Cally-9.gir
+file path=usr/lib/$(MACH64)/mutter-9/Cally-9.typelib
+file path=usr/lib/$(MACH64)/mutter-9/Clutter-9.gir
+file path=usr/lib/$(MACH64)/mutter-9/Clutter-9.typelib
+file path=usr/lib/$(MACH64)/mutter-9/Cogl-9.gir
+file path=usr/lib/$(MACH64)/mutter-9/Cogl-9.typelib
+file path=usr/lib/$(MACH64)/mutter-9/CoglPango-9.gir
+file path=usr/lib/$(MACH64)/mutter-9/CoglPango-9.typelib
+file path=usr/lib/$(MACH64)/mutter-9/Meta-9.gir
+file path=usr/lib/$(MACH64)/mutter-9/Meta-9.typelib
+link path=usr/lib/$(MACH64)/mutter-9/libmutter-clutter-9.so \
+    target=libmutter-clutter-9.so.0
+link path=usr/lib/$(MACH64)/mutter-9/libmutter-clutter-9.so.0 \
+    target=libmutter-clutter-9.so.0.0.0
+file path=usr/lib/$(MACH64)/mutter-9/libmutter-clutter-9.so.0.0.0
+link path=usr/lib/$(MACH64)/mutter-9/libmutter-cogl-9.so \
+    target=libmutter-cogl-9.so.0
+link path=usr/lib/$(MACH64)/mutter-9/libmutter-cogl-9.so.0 \
+    target=libmutter-cogl-9.so.0.0.0
+file path=usr/lib/$(MACH64)/mutter-9/libmutter-cogl-9.so.0.0.0
+link path=usr/lib/$(MACH64)/mutter-9/libmutter-cogl-pango-9.so \
+    target=libmutter-cogl-pango-9.so.0
+link path=usr/lib/$(MACH64)/mutter-9/libmutter-cogl-pango-9.so.0 \
+    target=libmutter-cogl-pango-9.so.0.0.0
+file path=usr/lib/$(MACH64)/mutter-9/libmutter-cogl-pango-9.so.0.0.0
+file path=usr/lib/$(MACH64)/mutter-9/plugins/libdefault.so
+file path=usr/lib/$(MACH64)/pkgconfig/libmutter-9.pc
+file path=usr/lib/$(MACH64)/pkgconfig/mutter-clutter-9.pc
+file path=usr/lib/$(MACH64)/pkgconfig/mutter-cogl-9.pc
+file path=usr/lib/$(MACH64)/pkgconfig/mutter-cogl-pango-9.pc
+file path=usr/lib/mutter-restart-helper mode=0555
+file path=usr/share/GConf/gsettings/mutter-schemas.convert
+file path=usr/share/applications/mutter.desktop
+file path=usr/share/glib-2.0/schemas/org.gnome.mutter.gschema.xml
+file path=usr/share/glib-2.0/schemas/org.gnome.mutter.wayland.gschema.xml
+file path=usr/share/gnome-control-center/keybindings/50-mutter-navigation.xml
+file path=usr/share/gnome-control-center/keybindings/50-mutter-system.xml
+file path=usr/share/gnome-control-center/keybindings/50-mutter-windows.xml
+file path=usr/share/locale/am/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/ar/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/as/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/ast/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/az/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/be/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/be@latin/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/bg/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/bn/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/bn_IN/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/br/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/bs/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/ca/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/ca@valencia/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/cs/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/cy/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/da/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/de/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/dz/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/el/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/en_CA/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/en_GB/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/eo/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/es/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/et/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/eu/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/fa/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/fi/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/fr/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/fur/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/ga/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/gd/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/gl/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/gu/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/ha/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/he/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/hi/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/hr/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/hu/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/hy/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/id/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/ig/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/is/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/it/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/ja/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/ka/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/kk/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/kn/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/ko/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/ku/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/la/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/lt/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/lv/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/mai/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/mg/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/mk/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/ml/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/mn/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/mr/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/ms/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/nb/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/nds/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/ne/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/nl/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/nn/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/oc/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/or/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/pa/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/pl/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/pt/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/pt_BR/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/ro/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/ru/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/rw/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/si/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/sk/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/sl/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/sq/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/sr/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/sr@latin/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/sv/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/ta/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/te/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/tg/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/th/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/tk/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/tr/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/ug/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/uk/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/vi/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/wa/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/xh/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/yo/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/zh_CN/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/zh_HK/LC_MESSAGES/mutter.mo
+file path=usr/share/locale/zh_TW/LC_MESSAGES/mutter.mo
+file path=usr/share/man/man1/mutter.1
+license mutter.license license=GPLv2
+depend type=require fmri=__TBD \
+    pkg.debug.depend.reason=src/backends/meta-input-settings.c \
+    pkg.tmp.gsettings-schema=org.gnome.desktop.peripherals
+depend type=require fmri=__TBD pkg.debug.depend.reason=src/core/keybindings.c \
+    pkg.tmp.gsettings-schema=org.gnome.desktop.wm.keybindings
+depend type=require fmri=__TBD pkg.debug.depend.reason=src/core/prefs.c \
+    pkg.tmp.gsettings-schema=org.gnome.desktop.input-sources
+depend type=require fmri=__TBD pkg.debug.depend.reason=src/core/prefs.c \
+    pkg.tmp.gsettings-schema=org.gnome.desktop.interface
+depend type=require fmri=__TBD pkg.debug.depend.reason=src/core/prefs.c \
+    pkg.tmp.gsettings-schema=org.gnome.desktop.wm.preferences
+depend type=require fmri=__TBD pkg.debug.depend.reason=src/core/prefs.c \
+    pkg.tmp.gsettings-schema=org.gnome.settings-daemon.peripherals
+depend type=require fmri=__TBD pkg.debug.depend.reason=src/core/prefs.c \
+    pkg.tmp.gsettings-schema=org.gnome.settings-daemon.plugins.xsettings

@@ -1,0 +1,190 @@
+# Copyright (c) 2016, 2021, Oracle and/or its affiliates.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, and/or sell copies of the Software, and to permit persons
+# to whom the Software is furnished to do so, provided that the above
+# copyright notice(s) and this permission notice appear in all copies of
+# the Software and that both the above copyright notice(s) and this
+# permission notice appear in supporting documentation.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+# OF THIRD PARTY RIGHTS. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+# HOLDERS INCLUDED IN THIS NOTICE BE LIABLE FOR ANY CLAIM, OR ANY SPECIAL
+# INDIRECT OR CONSEQUENTIAL DAMAGES, OR ANY DAMAGES WHATSOEVER RESULTING
+# FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
+# NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
+# WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+# 
+# Except as contained in this notice, the name of a copyright holder
+# shall not be used in advertising or otherwise to promote the sale, use
+# or other dealings in this Software without prior written authorization
+# of the copyright holder.
+#
+
+diff --git a/include/drm/drm.h b/include/drm/drm.h
+index 438abde..360cf2c 100644
+--- a/include/drm/drm.h
++++ b/include/drm/drm.h
+@@ -42,7 +42,7 @@
+ #include <asm/ioctl.h>
+ typedef unsigned int drm_handle_t;
+ 
+-#else /* One of the BSDs */
++#else /* One of the BSDs or Solaris */
+ 
+ #include <stdint.h>
+ #include <sys/ioccom.h>
+@@ -56,9 +56,39 @@ typedef uint32_t __u32;
+ typedef int64_t  __s64;
+ typedef uint64_t __u64;
+ typedef size_t   __kernel_size_t;
++
++#if defined(__SOLARIS__) || defined(__sun)
++#include <sys/types32.h>
++typedef unsigned long long drm_handle_t;
++
++#else /* !__SOLARIS__ */
+ typedef unsigned long drm_handle_t;
++#endif  /* __SOLARIS__ || __sun */
+ 
+-#endif
++#endif /* __linux__ */
++
++/* Solaris-specific. */
++#if defined(__SOLARIS__) || defined(__sun)
++
++#define        _IOC_NRBITS     8
++#define        _IOC_TYPEBITS   8
++#define        _IOC_SIZEBITS   13
++#define        _IOC_DIRBITS    3
++
++#define        _IOC_NRSHIFT    0
++#define        _IOC_TYPESHIFT  (_IOC_NRSHIFT + _IOC_NRBITS)
++#define        _IOC_SIZESHIFT  (_IOC_TYPESHIFT + _IOC_TYPEBITS)
++#define        _IOC_DIRSHIFT   (_IOC_SIZESHIFT + _IOC_SIZEBITS)
++
++#define        _IOC(dir, type, nr, size) \
++       (((dir) /* already shifted */) | \
++       ((type) << _IOC_TYPESHIFT) | \
++       ((nr)   << _IOC_NRSHIFT) | \
++       ((size) << _IOC_SIZESHIFT))
++
++#define _IOC_TYPE(req) ((req >> _IOC_TYPESHIFT) & ((1 << _IOC_TYPEBITS) -1))
++
++#endif /* __Solaris__ or __sun */
+ 
+ #if defined(__cplusplus)
+ extern "C" {
+@@ -215,11 +245,11 @@ struct drm_ctx_priv_map {
+  * \sa drmAddMap().
+  */
+ struct drm_map {
+-	unsigned long offset;	 /**< Requested physical address (0 for SAREA)*/
++	unsigned long long offset;	 /**< Requested physical address (0 for SAREA)*/
+ 	unsigned long size;	 /**< Requested physical size (bytes) */
+ 	enum drm_map_type type;	 /**< Type of memory to map */
+ 	enum drm_map_flags flags;	 /**< Flags */
+-	void *handle;		 /**< User-space: "Handle" to pass to mmap() */
++	unsigned long long handle;		 /**< User-space: "Handle" to pass to mmap() */
+ 				 /**< Kernel-space: kernel-virtual address */
+ 	int mtrr;		 /**< MTRR slot used */
+ 	/*   Private data */
+@@ -327,18 +357,22 @@ enum drm_dma_flags {
+  *
+  * \sa drmAddBufs().
+  */
++
++typedef enum {
++       _DRM_PAGE_ALIGN = 0x01, /**< Align on page boundaries for DMA */
++       _DRM_AGP_BUFFER = 0x02, /**< Buffer is in AGP space */
++       _DRM_SG_BUFFER  = 0x04, /**< Scatter/gather memory buffer */
++       _DRM_FB_BUFFER  = 0x08, /**< Buffer is in frame buffer */
++       _DRM_PCI_BUFFER_RO = 0x10 /**< Map PCI DMA buffer read-only */
++} drm_buf_flag;
++
++
+ struct drm_buf_desc {
+ 	int count;		 /**< Number of buffers of this size */
+ 	int size;		 /**< Size in bytes */
+ 	int low_mark;		 /**< Low water mark */
+ 	int high_mark;		 /**< High water mark */
+-	enum {
+-		_DRM_PAGE_ALIGN = 0x01,	/**< Align on page boundaries for DMA */
+-		_DRM_AGP_BUFFER = 0x02,	/**< Buffer is in AGP space */
+-		_DRM_SG_BUFFER = 0x04,	/**< Scatter/gather memory buffer */
+-		_DRM_FB_BUFFER = 0x08,	/**< Buffer is in frame buffer */
+-		_DRM_PCI_BUFFER_RO = 0x10 /**< Map PCI DMA buffer read-only */
+-	} flags;
++	drm_buf_flag flags;
+ 	unsigned long agp_start; /**<
+ 				  * Start address of where the AGP buffers are
+ 				  * in the AGP aperture
+@@ -384,6 +418,7 @@ struct drm_buf_map {
+ 	void *virtual;		/**< Mmap'd area in user-virtual */
+ #endif
+ 	struct drm_buf_pub *list;	/**< Buffer information */
++	int fd;
+ };
+ 
+ /**
+@@ -495,8 +530,13 @@ struct drm_wait_vblank_request {
+ struct drm_wait_vblank_reply {
+ 	enum drm_vblank_seq_type type;
+ 	unsigned int sequence;
++#if defined(__sun)
++       time_t tval_sec;
++       suseconds_t tval_usec;
++#else
+ 	long tval_sec;
+ 	long tval_usec;
++#endif
+ };
+ 
+ /**
+@@ -813,10 +853,10 @@ extern "C" {
+ #endif
+ 
+ #define DRM_IOCTL_BASE			'd'
+-#define DRM_IO(nr)			_IO(DRM_IOCTL_BASE,nr)
+-#define DRM_IOR(nr,type)		_IOR(DRM_IOCTL_BASE,nr,type)
+-#define DRM_IOW(nr,type)		_IOW(DRM_IOCTL_BASE,nr,type)
+-#define DRM_IOWR(nr,type)		_IOWR(DRM_IOCTL_BASE,nr,type)
++#define DRM_IO(nr)                     _IO(DRM_IOCTL_BASE, (nr))
++#define DRM_IOR(nr,type)               _IOR(DRM_IOCTL_BASE, (nr), type)
++#define DRM_IOW(nr,type)               _IOW(DRM_IOCTL_BASE, (nr), type)
++#define DRM_IOWR(nr,type)              _IOWR(DRM_IOCTL_BASE, (nr), type)
+ 
+ #define DRM_IOCTL_VERSION		DRM_IOWR(0x00, struct drm_version)
+ #define DRM_IOCTL_GET_UNIQUE		DRM_IOWR(0x01, struct drm_unique)
+@@ -976,8 +1016,13 @@ struct drm_event {
+ struct drm_event_vblank {
+ 	struct drm_event base;
+ 	__u64 user_data;
++#if defined(__sun)
++       time_t tv_sec;
++       suseconds_t tv_usec;
++#else
+ 	__u32 tv_sec;
+ 	__u32 tv_usec;
++#endif
+ 	__u32 sequence;
+ 	__u32 crtc_id; /* 0 on older kernels that do not support this */
+ };
+diff --git a/include/drm/drm_fourcc.h b/include/drm/drm_fourcc.h
+index 5c69090..0fad35a 100644
+--- a/include/drm/drm_fourcc.h
++++ b/include/drm/drm_fourcc.h
+@@ -69,7 +69,7 @@ extern "C" {
+ #define fourcc_code(a, b, c, d) ((__u32)(a) | ((__u32)(b) << 8) | \
+ 				 ((__u32)(c) << 16) | ((__u32)(d) << 24))
+ 
+-#define DRM_FORMAT_BIG_ENDIAN (1<<31) /* format is big endian instead of little endian */
++#define DRM_FORMAT_BIG_ENDIAN (1UL<<31) /* format is big endian instead of little endian */
+ 
+ /* Reserve 0 for the invalid format specifier */
+ #define DRM_FORMAT_INVALID	0

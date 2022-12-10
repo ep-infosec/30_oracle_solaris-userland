@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
+<!--
+  Copyright (c) 2007, 2018, Oracle and/or its affiliates. All rights reserved.
+
+    NOTE:  This service manifest is not editable; its contents will
+    be overwritten by package or patch operations, including
+    operating system upgrade.  Make customizations in a different
+    file.
+-->
+
+<service_bundle type='manifest' name='memcached' >
+<service name='application/database/memcached' type='service' version='1' >
+<create_default_instance enabled='false' />
+
+
+   <dependency
+      name='network'
+      grouping='require_all'
+      restart_on='none'
+      type='service'>
+      <service_fmri value='svc:/milestone/network:default' />
+   </dependency>
+
+   <dependency
+      name='name-services'
+      grouping='require_all'
+      restart_on='none'
+      type='service'>
+      <service_fmri value='svc:/milestone/name-services:default' />
+   </dependency>
+
+   <exec_method 
+      type='method' 
+      name='start'
+      exec='/lib/svc/method/memcached start'
+      timeout_seconds='-1' />
+
+   <exec_method 
+      type='method' 
+      name='stop'
+      exec='/lib/svc/method/memcached stop %{restarter/contract}'
+      timeout_seconds='60' />
+
+    <property_group name='memcached' type='application'>
+       <propval name='options' type='astring' value='' />
+       <propval name='value_authorization' type='astring' value='solaris.smf.value.memcached' />
+       <propval name='action_authorization' type='astring' value='solaris.smf.manage.memcached' />
+    </property_group>
+
+    <stability value='Evolving' />
+
+    <template>
+      <common_name>
+         <loctext xml:lang='C'>memcached %%%VERSION%%%</loctext>
+      </common_name>
+      <documentation>
+         <manpage title='memcached' section='8' manpath='/usr/share/man' />
+      </documentation>
+    </template>
+
+</service>
+</service_bundle>

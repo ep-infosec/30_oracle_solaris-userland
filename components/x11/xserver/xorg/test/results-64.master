@@ -1,0 +1,9 @@
+PASS: tests
+SKIP: scripts/xvfb-piglit.sh
+# TOTAL: 2
+# PASS:  1
+# SKIP:  1
+# XFAIL: 0
+# FAIL:  0
+# XPASS: 0
+# ERROR: 0

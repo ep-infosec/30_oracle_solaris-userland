@@ -1,0 +1,84 @@
+$(@D)/libsm
+make t-event  t-exc  t-rpool  t-string  t-smstdio  t-fget  t-match  t-strio  t-heap  t-fopen  t-strl  t-strrevcmp  t-types  t-path  t-float  t-scanf  t-shm  t-sem  t-inet6_ntop  t-qic 
+"t-types.c", line 64: warning: integer overflow detected: op "-"
+make check-TESTS
+8 of 8 tests completed successfully
+This test may hang. If there is no output within twelve seconds, abort it
+and recompile with -DSM_CONF_SETITIMER=0
+PASS: t-event
+4 of 4 tests completed successfully
+PASS: t-exc
+2 of 2 tests completed successfully
+PASS: t-rpool
+4 of 4 tests completed successfully
+PASS: t-string
+6 of 6 tests completed successfully
+PASS: t-smstdio
+78 of 78 tests completed successfully
+PASS: t-fget
+12 of 12 tests completed successfully
+PASS: t-match
+1 of 1 tests completed successfully
+PASS: t-strio
+3 of 3 tests completed successfully
+PASS: t-heap
+3 of 3 tests completed successfully
+PASS: t-fopen
+44 of 44 tests completed successfully
+PASS: t-strl
+6 of 6 tests completed successfully
+PASS: t-strrevcmp
+Your C compiler maybe issued a warning during compilation,
+please IGNORE the compiler warning!.
+12 of 12 tests completed successfully
+PASS: t-types
+4 of 4 tests completed successfully
+PASS: t-path
+4 of 4 tests completed successfully
+PASS: t-float
+If tests for "h == 2" fail, check whether size_t is signed on your OS.
+If that is the case, add -DSM_CONF_BROKEN_SIZE_T to confENVDEF
+and start over. Otherwise contact sendmail.org.
+6 of 6 tests completed successfully
+PASS: t-scanf
+2 of 2 tests completed successfully
+5 of 5 tests completed successfully
+PASS: t-shm
+3 of 3 tests completed successfully
+This test takes about 8 seconds.
+If it takes longer than 30 seconds, please interrupt it
+and compile again without semaphore support, i.e.,-DSM_CONF_SEM=0
+6 of 6 tests completed successfully
+This test takes about 8 seconds.
+If it takes longer than 30 seconds, please interrupt it
+and compile again without semaphore support, i.e.,-DSM_CONF_SEM=0
+PASS: t-sem
+39 of 39 tests completed successfully
+PASS: t-inet6_ntop
+114 of 114 tests completed successfully
+PASS: t-qic
+===================
+All 20 tests passed
+===================
+$(@D)/libmilter
+make 
+make check-TESTS
+$(@D)/sendmail
+make 
+make check-TESTS
+$(@D)/test
+Using M4=/usr/bin/gm4
+if [ -r /usr/include/sysexits.h ]; \
+then \
+	ln -s /usr/include/sysexits.h; \
+fi
+t_dropgid.c:
+t_dropgid.c:
+t_exclopen.c:
+t_pathconf.c:
+t_seteuid.c:
+t_setgid.c:
+t_setreuid.c:
+t_setuid.c:
+make 
+make check-TESTS

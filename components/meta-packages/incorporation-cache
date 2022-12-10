@@ -1,0 +1,43 @@
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+# Copyright (c) 2016, 2020, Oracle and/or its affiliates.
+#
+
+#
+# This file specifies additional packages to be included when the
+# userland-incorporator runs to generate incorporations, to allow packages
+# which were not built in the Userland gate to be incorporated.
+#
+# Adding packages to this file should be a very rare occasion discussed
+# first with the gatekeepers, generally only for special cases like merging
+# consolidations or special builds that cannot be part of the main Userland
+# gate build for some reason.
+#
+# Packages should be removed from this file when they are integrated to the
+# normal Userland gate builds.
+#
+# lines are in the format:
+#    incorporation-name:package@version
+# or for platform-specific entries:
+#    incorporation-name:package@version=arch
+# lines beginning with hash (#) are ignored
+#
+

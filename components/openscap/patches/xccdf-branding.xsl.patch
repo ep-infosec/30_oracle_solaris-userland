@@ -1,0 +1,118 @@
+diff -ruN openscap-1.3.4.org/xsl/xccdf-branding.xsl openscap-1.3.4/xsl/xccdf-branding.xsl
+--- openscap-1.3.4.org/xsl/xccdf-branding.xsl	2021-03-04 01:23:52.895766216 +0000
++++ openscap-1.3.4/xsl/xccdf-branding.xsl	2021-03-04 01:26:45.458876916 +0000
+@@ -43,23 +43,75 @@
+     1) Round all positions to 1 decimal place
+     2) Remove inkscape, RDF, DC and other metadata
+     -->
+-
+-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="52" height="52" id="svg2"><g transform="matrix(0.75266991,0,0,0.75266991,-17.752968,-104.57468)" id="g32"><path d="m 24.7,173.5 c 0,-9 3.5,-17.5 9.9,-23.9 6.8,-6.8 15.7,-10.4 25,-10 8.6,0.3 16.9,3.9 22.9,9.8 6.4,6.4 9.9,14.9 10,23.8 0.1,9.1 -3.5,17.8 -10,24.3 -13.2,13.2 -34.7,13.1 -48,-0.1 -1.5,-1.5 -1.9,-4.2 0.2,-6.2 l 9,-9 c -2,-3.6 -4.9,-13.1 2.6,-20.7 7.6,-7.6 18.6,-6 24.4,-0.2 3.3,3.3 5.1,7.6 5.1,12.1 0.1,4.6 -1.8,9.1 -5.3,12.5 -4.2,4.2 -10.2,5.8 -16.1,4.4 -1.5,-0.4 -2.4,-1.9 -2.1,-3.4 0.4,-1.5 1.9,-2.4 3.4,-2.1 4.1,1 8,-0.1 10.9,-2.9 2.3,-2.3 3.6,-5.3 3.6,-8.4 0,0 0,-0.1 0,-0.1 0,-3 -1.3,-5.9 -3.5,-8.2 -3.9,-3.9 -11.3,-4.9 -16.5,0.2 -6.3,6.3 -1.6,14.1 -1.6,14.2 1.5,2.4 0.7,5 -0.9,6.3 l -8.4,8.4 c 9.9,8.9 27.2,11.2 39.1,-0.8 5.4,-5.4 8.4,-12.5 8.4,-20 0,-0.1 0,-0.2 0,-0.3 -0.1,-7.5 -3,-14.6 -8.4,-19.9 -5,-5 -11.9,-8 -19.1,-8.2 -7.8,-0.3 -15.2,2.7 -20.9,8.4 -8.7,8.7 -8.7,19 -7.9,24.3 0.3,2.4 1.1,4.9 2.2,7.3 0.6,1.4 0,3.1 -1.4,3.7 -1.4,0.6 -3.1,0 -3.7,-1.4 -1.3,-2.9 -2.2,-5.8 -2.6,-8.7 -0.3,-1.7 -0.4,-3.5 -0.4,-5.2 z" id="path34" style="fill:#12497f"/></g></svg>
++<svg
++     version="1.1"
++     xmlns="http://www.w3.org/2000/svg"
++     xmlns:xlink="http://www.w3.org/1999/xlink"
++     width="100px" height="45px"
++     viewBox="0 0 100 45" preserveAspectRatio="none">
++   <g>
++   <image alt="Oracle Solaris" width="100" height="45"
++    xlink:href="data:image/png;base64,
++iVBORw0KGgoAAAANSUhEUgAAAGQAAAAtCAIAAADX11mnAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
++AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAABmJLR0QA/wD/AP+gvaeTAAAA
++CXBIWXMAAC4jAAAuIwF4pT92AAAAB3RJTUUH4QsYBywfQsdcOAAACHpJREFUaN7tmX1MU9cbx597
++b1tsS5H6tkmVQLoxUsfmYh2ZhUpJnC7Ekujm4oRsIXN/EJyJui5hMInKFFmMnTBfAhsZhqSa+TIz
++5W04gWXKnDG6DERliqIIUmQFem57zzn742IF7AvF5Ie/pN/cP27P+Z7nnPPp6XPuPWUopRDSxMRO
++9QD+nxSCFYRCsIJQCFYQCsEKQiFYQSgEKwiFYAWh5wmWIIDLNdWDAD9jkEykOf3nH2y1ktpawNhL
++tUrFvfsu9+mnoFAAgPDZZ+Snn3yFYhYtkmzbxrz00vgu/vzTbTZTp1P644+syTS+WX8/Li3Fx47B
++0NDTMbmMDGbxYmHjRua116RHj/qbyMOHeM8eUl8PAwNe4nz0Ecydi7du5bKzuc8/99Y+kPAvv6DI
++SATg/+IXLCB37lBK3RkZAZzR0aSnZ0wfguBassRTS+320ZWko4OPjfUZ7cUXSU8PPnIEAfCJiX4m
++Qi5f5ufO9Rln/nxqtwvbt/OLFrnXrfMaIQAs0tmJpk9HALxej2tqaH//uIvcvStYrfysWQjAtXQp
++JUSE5c7Le9qMz5/no6IQgLBjxxhWRUUIAE2bxs+YgQDcH3/8pM7l4hcuRAD8Cy8IpaXk3r3xYR0O
++SmlgWAjxOh0C4GNjhYoK0ts7Ps7QEKWUPHgg7N1LLl2aDCx3bi4C4LVacUw+mba0IKkUAeDGRhGW
++UFjo1Sl89RUCcKWnP2l76xaKiEAA7vx8cc5IKsVNTSPr+tgxBIDCwsiVK34GEBAWrqpCACgigty4
++QSerADmL1NcDAGexQHi4HxuzeDGbnEwaGmhjo79wPI+PHwcAZs6cxx0QISsL/v2XWbhQkp8PEgn7
++9tuktlbIypJdvgwKBampAQDWbGYSEuAZRP74AwCYsDBcUODdwXGSkhL/05xQgmfU6sCeV16Bhgba
++1fVkfFVVQl7eGJPDQR8+BKWS++QTsQB//z1paACOk3zzDUilACA5cMD16qv0+nVcXMxt3QoIjQR/
++RvX0AADt7cWHD3tn9eWX/kkFhsWo1RSANDWx773nzycI5NdfAYDR6+nZs2IZ+8EH3PCwkJMDPP8k
++oFYrsVoZvR4AaHc3tlgAgE1Kgnv3iM020tBgIHV1wo4dbHo6o9UCADl9GgoKgOMmDys2FgCYqCjJ
++d995rWeXLg0cxP+vVKioEFMGPnXKt0lwWywIAMnlpLt7XM7Cp06NbKZqNT59mrrdnnauVavEbQif
++P4+mTXt6h3K99Rbp6EBhYQhA2LmTYjzpnEWuXkUsiwDcX3wx6ZzFUP8npYS4TSbS2AgA7IoVzJtv
++MrNmjWF97Ro5d47+9RcASIqLuS1bhMxMfPiwpLCQy80d8bS2upcto11dzPz5kh9+YFNSAID8/LPb
++bAZCpDYbu2YNsdnIb7+NjozLysDplBQV0f5+vGsXADCvv84ajczLL48fZEQEo1C416xhZs9mV670
++PhGlEhQKXFQEAMwbb7AmExMTM94TGcllZk5+ZVFKqcPhWrtW/Fp8XpGRQkmJ+M173w37+ni9HgEg
++pVIoL6d9fbxGgwBc77/vq1t3Xh4CQOHh5O+/hcJCpFL56l04dGhk0/R9CV9/TSl15+d7XcIjnsrK
++Z1tZHqZtbeTcOTFNjldMDPvOO54VR06coFevMiYTm5Q0xma344oKGBoClmUSE+nvvwMA++GHTHS0
++9y4dDmy1AqVMSgqbnEwfPCDV1dDZ6WU5ZGcDpfjbb70+lwMAyGTcpk3iBkJ7e2ltLe3oGO9Rq7mc
++HP8QJgorJHi+XqSfe4VgBaEQrCAUghWEAsMaGBjYuXNnampqcnJyTk7O9evX/ZiLi4uPHz8+wb43
++b9581O/x0/OmALAopWaz2Wq1Llu2bO3atXV1dSaTyel0+vIfOXKkubl5gn1fuXLlzp07U00gGPl/
++DGtvbweAysdPaxcuXFi+fPndu3fFj3a7vaampq2tTRAEsUSv12/atEm8dzqdTU1Nzc3Ng4ODHr/D
++4RgYGHj06JH40el0ilX9/f11dXV9fX2Tfhf5HygArOHhYZlMlpiYWF1dLc7Qo927d8tkspiYGKVS
++uXLlSoTQaFj379+PiYlJSEhYsGCBRqO5efMmpXTVqlXx8fFyuTw9PZ1SajAYysrKKKVlZWXh4eGx
++sbEqlSo3N3eqmUwWFqX05MmTcXFxACCXy1NSUk6cOEEpbW1tlUqlhw4dEu+VSmVFRcVoWC0tLRkZ
++GQghhJBGo9m/fz+lNDs7OyIiwrPWPLC0Wu3GjRsppQcPHjQYDFPNxKcCJ3iz2dza2nr79u2SkpLh
++4eHVq1dfunTp2rVrbrd73bp1ABAfH28wGM6cOTO6VUJCgkajMRqNRqOxr69v3rx5YnlaWprBYFAq
++laPNqamp+/btMxqNnZ2d5eXlU52ZfCoArI6OjszMzO7u7ujo6KysrPr6eoyxZ0PEj//sGRwcZNkx
++oSwWi81mKyoqKi8vnzlzpqd81thDC1GlpaXV1dUmk6mysnLFihWEkKnGMilYUqnUZrNZLJZbt251
++dXVt27aNYZi4uDidTieTyQ4cOAAAZ8+ebWlpSUtLG93wxo0bOp1uyZIldru9a9Tx6dPCGCclJTU3
++NxcUFKxfv76np8fPbjvFCvhD3bNnj0qlEs3Tp08Xsw+ltKSkRC6Xz5kzRyaTbdmyBWM8OmdVVVUp
++FAq1Wq3VaqOiovbu3SvmrA0bNngie3LW9u3blUrl7NmzVSrVrl27pjo1+dSETh14nm9vb+c4TqvV
++hoWFecoRQhcvXtTpdDNmzBBLnE4nx3EymUysbWtr0+l0lFKWZaVSqcvlAgCxVjRIJBKJRCLeY4xZ
++lpXL5VO9fnwqdEQThELvhkEoBCsIhWAFoRCsIBSCFYRCsIJQCFYQCsEKQv8Bfn1Ur+ciK/AAAAAl
++dEVYdGRhdGU6Y3JlYXRlADIwMTctMTEtMjRUMDc6NDQ6MzErMDA6MDBBkd8mAAAAJXRFWHRkYXRl
++Om1vZGlmeQAyMDE3LTExLTI0VDA3OjQ0OjMxKzAwOjAwMMxnmgAAABl0RVh0U29mdHdhcmUAQWRv
++YmUgSW1hZ2VSZWFkeXHJZTwAAAAASUVORK5CYII="/> </g> </svg>
+ </xsl:template>
+ 
+ <xsl:template name="xccdf-report-header">
+     <nav class="navbar navbar-default">
+-        <div class="navbar-header" style="float: none">
++	<div class="navbar-header" style="width:100%; height:100%; padding-bottom:5px; float:none">
+             <a class="navbar-brand" href="#">
+                 <xsl:call-template name="xccdf-branding-logo"/>
+             </a>
+-            <div><h1>OpenSCAP Evaluation Report</h1></div>
++	    <div style="padding-left:30px; text-align:left;"><h2>Compliance Report</h2></div>	
+         </div>
+     </nav>
+ </xsl:template>
+ 
+ <xsl:template name="xccdf-report-footer">
+     <footer id="footer">
++	<!--
+         <div class="container">
+             <p class="muted credit">
+                 Generated using <a href="http://open-scap.org">OpenSCAP</a>
+@@ -68,22 +120,24 @@
+                 </xsl:if>
+             </p>
+         </div>
++	-->
+     </footer>
+ </xsl:template>
+ 
+ <xsl:template name="xccdf-guide-header">
+     <nav class="navbar navbar-default">
+-        <div class="navbar-header" style="float: none">
++	<div class="navbar-header" style="width:100%; height:100%; padding-bottom:5px;float:none">
+             <a class="navbar-brand" href="#">
+                 <xsl:call-template name="xccdf-branding-logo"/>
+             </a>
+-            <div><h1>OpenSCAP Security Guide</h1></div>
++	    <div style="padding-left:30px; text-align:left;"><h2>Security Guide</h2></div>
+         </div>
+     </nav>
+ </xsl:template>
+ 
+ <xsl:template name="xccdf-guide-footer">
+     <footer id="footer">
++        <!--
+         <div class="container">
+             <p class="muted credit">
+                 Generated using <a href="http://open-scap.org">OpenSCAP</a>
+@@ -92,6 +146,7 @@
+                 </xsl:if>
+             </p>
+         </div>
++	-->
+     </footer>
+ </xsl:template>
+ 

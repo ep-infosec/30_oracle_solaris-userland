@@ -1,0 +1,22 @@
+--- tcl8.6.7/library/init.tcl
++++ tcl8.6.7/library/init.tcl
+@@ -43,6 +43,19 @@ if {![info exists auto_path]} {
+ 	set auto_path $env(TCLLIBPATH)
+     } else {
+ 	set auto_path ""
++        # Add in $MACH64 library directory (if needed).
++        if {$tcl_platform(wordSize) == 8} {
++            if {$tcl_platform(machine) eq "i86pc"} {
++                set plat_dir "/usr/lib/amd64"
++            } else {
++                set plat_dir "/usr/lib/sparcv9"
++            }
++            foreach Dir [list [file join $plat_dir [file tail $::tcl_library]] $plat_dir] {
++                if {$Dir ni $::auto_path} {
++                    lappend ::auto_path $Dir
++                }
++            }
++        }
+     }
+ }
+ namespace eval tcl {

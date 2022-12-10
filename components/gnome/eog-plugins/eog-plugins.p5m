@@ -1,0 +1,142 @@
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+
+#
+# Copyright (c) 2016, 2021, Oracle and/or its affiliates.
+#
+
+<transform file path=usr.*/man/.+ -> \
+    default mangler.man.stability "pass-through volatile">
+set name=pkg.fmri \
+    value=pkg:/image/viewer/eog/eog-plugins@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION)
+set name=pkg.summary value="A collection of extra eog plugins"
+set name=com.oracle.info.baid value=$(COMPONENT_BAID)
+set name=com.oracle.info.description \
+    value="eog-plugins is a collection of plugins for use with the Eye of GNOME Image Viewer."
+set name=info.classification \
+    value="org.opensolaris.category.2008:Applications/Graphics and Imaging"
+set name=info.source-url value=$(COMPONENT_ARCHIVE_URL)
+set name=info.upstream-url value=$(COMPONENT_PROJECT_URL)
+set name=org.opensolaris.arc-caseid value=LSARC/2010/039
+set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
+file path=usr/lib/$(MACH64)/eog/plugins/exif-display.plugin
+file path=usr/lib/$(MACH64)/eog/plugins/export-to-folder.plugin
+file path=usr/lib/$(MACH64)/eog/plugins/export-to-folder.py
+file path=usr/lib/$(MACH64)/eog/plugins/fit-to-width.plugin
+file path=usr/lib/$(MACH64)/eog/plugins/fullscreenbg.plugin
+file path=usr/lib/$(MACH64)/eog/plugins/fullscreenbg.py
+file path=usr/lib/$(MACH64)/eog/plugins/hide-titlebar.plugin
+file path=usr/lib/$(MACH64)/eog/plugins/libexif-display.so
+file path=usr/lib/$(MACH64)/eog/plugins/libfit-to-width.so
+file path=usr/lib/$(MACH64)/eog/plugins/libhide-titlebar.so
+file path=usr/lib/$(MACH64)/eog/plugins/liblight-theme.so
+file path=usr/lib/$(MACH64)/eog/plugins/libmap.so
+file path=usr/lib/$(MACH64)/eog/plugins/libpostasa.so
+file path=usr/lib/$(MACH64)/eog/plugins/libsend-by-mail.so
+file path=usr/lib/$(MACH64)/eog/plugins/light-theme.plugin
+file path=usr/lib/$(MACH64)/eog/plugins/map.plugin
+file path=usr/lib/$(MACH64)/eog/plugins/maximize-windows.plugin
+file path=usr/lib/$(MACH64)/eog/plugins/maximize-windows.py
+file path=usr/lib/$(MACH64)/eog/plugins/postasa.plugin
+file path=usr/lib/$(MACH64)/eog/plugins/pythonconsole.plugin
+file path=usr/lib/$(MACH64)/eog/plugins/pythonconsole/__init__.py
+file path=usr/lib/$(MACH64)/eog/plugins/pythonconsole/config.py
+file path=usr/lib/$(MACH64)/eog/plugins/pythonconsole/console.py
+file path=usr/lib/$(MACH64)/eog/plugins/send-by-mail.plugin
+file path=usr/lib/$(MACH64)/eog/plugins/slideshowshuffle.plugin
+file path=usr/lib/$(MACH64)/eog/plugins/slideshowshuffle.py
+file path=usr/share/appdata/eog-exif-display.metainfo.xml
+file path=usr/share/appdata/eog-export-to-folder.metainfo.xml
+file path=usr/share/appdata/eog-fit-to-width.metainfo.xml
+file path=usr/share/appdata/eog-fullscreenbg.metainfo.xml
+file path=usr/share/appdata/eog-hide-titlebar.metainfo.xml
+file path=usr/share/appdata/eog-light-theme.metainfo.xml
+file path=usr/share/appdata/eog-map.metainfo.xml
+file path=usr/share/appdata/eog-maximize-windows.metainfo.xml
+file path=usr/share/appdata/eog-postasa.metainfo.xml
+file path=usr/share/appdata/eog-pythonconsole.metainfo.xml
+file path=usr/share/appdata/eog-send-by-mail.metainfo.xml
+file path=usr/share/appdata/eog-slideshowshuffle.metainfo.xml
+file path=usr/share/eog/plugins/export-to-folder/preferences_dialog.ui
+file path=usr/share/eog/plugins/fullscreenbg/preferences_dialog.ui
+file path=usr/share/eog/plugins/pythonconsole/config.ui
+file path=usr/share/glib-2.0/schemas/org.gnome.eog.plugins.exif-display.gschema.xml
+file path=usr/share/glib-2.0/schemas/org.gnome.eog.plugins.export-to-folder.gschema.xml
+file path=usr/share/glib-2.0/schemas/org.gnome.eog.plugins.fullscreenbg.gschema.xml
+file path=usr/share/glib-2.0/schemas/org.gnome.eog.plugins.pythonconsole.gschema.xml
+file path=usr/share/locale/ar/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/as/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/be@latin/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/bg/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/bn_IN/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/bs/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/ca/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/ca@valencia/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/cs/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/da/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/de/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/el/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/en_GB/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/es/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/eu/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/fi/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/fr/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/fur/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/gl/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/gu/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/he/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/hr/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/hu/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/id/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/it/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/ja/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/kn/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/ko/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/lt/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/lv/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/mk/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/ml/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/mr/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/nb/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/nl/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/oc/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/or/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/pa/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/pl/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/pt/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/pt_BR/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/ro/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/ru/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/sk/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/sl/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/sq/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/sr/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/sr@latin/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/sv/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/ta/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/te/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/tr/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/uk/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/vi/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/zh_CN/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/zh_HK/LC_MESSAGES/eog-plugins.mo
+file path=usr/share/locale/zh_TW/LC_MESSAGES/eog-plugins.mo
+license eog-plugins.license license=GPLv2

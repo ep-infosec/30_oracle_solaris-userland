@@ -1,0 +1,196 @@
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+
+#
+# Copyright (c) 2012, 2022, Oracle and/or its affiliates.
+#
+
+<transform file path=usr.*/man/.+ -> default mangler.man.stability "pass-through uncommitted">
+set name=pkg.fmri \
+    value=pkg:/system/storage/sg3_utils@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION)
+set name=pkg.summary value="Utilities for devices that use SCSI command sets"
+set name=pkg.description \
+    value='Collection of utilities for devices that use the SCSI command set. Includes utilities to copy data based on "dd" syntax and semantics (called sg_dd, sgp_dd and sgm_dd); check INQUIRY data and VPD pages (sg_inq); check mode and log pages (sginfo, sg_modes and sg_logs); spin up and down disks (sg_start); do self tests (sg_senddiag); and various other functions. Warning: Some of these tools access the internals of your system and the incorrect usage of them may render your system inoperable.'
+set name=com.oracle.info.baid value=$(COMPONENT_BAID)
+set name=com.oracle.info.description value="the sg3_utils SCSI utilities"
+set name=info.classification \
+    value="org.opensolaris.category.2008:Applications/System Utilities"
+set name=info.source-url value=$(COMPONENT_ARCHIVE_URL)
+set name=info.upstream-url value=$(COMPONENT_PROJECT_URL)
+set name=org.opensolaris.arc-caseid value=PSARC/2009/029 value=PSARC/2015/193 \
+    value=PSARC/2017/163 value=PSARC/2020/045
+set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
+file sg3_utils-exec_attr path=etc/security/exec_attr.d/system:storage:sg3_utils
+file sg3_utils-prof_attr path=etc/security/prof_attr.d/system:storage:sg3_utils
+file path=usr/bin/scsi_mandat
+file path=usr/bin/scsi_readcap
+file path=usr/bin/scsi_ready
+file path=usr/bin/scsi_satl
+file path=usr/bin/scsi_start
+file path=usr/bin/scsi_stop
+file path=usr/bin/scsi_temperature
+file path=usr/bin/sg_bg_ctl
+file path=usr/bin/sg_compare_and_write
+file path=usr/bin/sg_decode_sense
+file path=usr/bin/sg_format
+file path=usr/bin/sg_get_config
+file path=usr/bin/sg_get_elem_status
+file path=usr/bin/sg_get_lba_status
+file path=usr/bin/sg_ident
+file path=usr/bin/sg_inq
+file path=usr/bin/sg_logs
+file path=usr/bin/sg_luns
+file path=usr/bin/sg_modes
+file path=usr/bin/sg_opcodes
+file path=usr/bin/sg_persist
+file path=usr/bin/sg_prevent
+file path=usr/bin/sg_raw
+file path=usr/bin/sg_rdac
+file path=usr/bin/sg_read_attr
+file path=usr/bin/sg_read_block_limits
+file path=usr/bin/sg_read_buffer
+file path=usr/bin/sg_read_long
+file path=usr/bin/sg_readcap
+file path=usr/bin/sg_reassign
+file path=usr/bin/sg_referrals
+file path=usr/bin/sg_rep_pip
+file path=usr/bin/sg_rep_zones
+file path=usr/bin/sg_requests
+file path=usr/bin/sg_reset_wp
+file path=usr/bin/sg_rmsn
+file path=usr/bin/sg_rtpg
+file path=usr/bin/sg_safte
+file path=usr/bin/sg_sanitize
+file path=usr/bin/sg_sat_identify
+file path=usr/bin/sg_sat_phy_event
+file path=usr/bin/sg_sat_read_gplog
+file path=usr/bin/sg_sat_set_features
+file path=usr/bin/sg_seek
+file path=usr/bin/sg_senddiag
+file path=usr/bin/sg_ses
+file path=usr/bin/sg_ses_microcode
+file path=usr/bin/sg_start
+file path=usr/bin/sg_stpg
+file path=usr/bin/sg_stream_ctl
+file path=usr/bin/sg_sync
+file path=usr/bin/sg_timestamp
+file path=usr/bin/sg_turs
+file path=usr/bin/sg_unmap
+file path=usr/bin/sg_verify
+file path=usr/bin/sg_vpd
+file path=usr/bin/sg_wr_mode
+file path=usr/bin/sg_write_buffer
+file path=usr/bin/sg_write_long
+file path=usr/bin/sg_write_same
+file path=usr/bin/sg_write_verify
+file path=usr/bin/sg_write_x
+file path=usr/bin/sg_zone
+file path=usr/include/scsi/sg_cmds.h
+file path=usr/include/scsi/sg_cmds_basic.h
+file path=usr/include/scsi/sg_cmds_extra.h
+file path=usr/include/scsi/sg_cmds_mmc.h
+file path=usr/include/scsi/sg_lib.h
+file path=usr/include/scsi/sg_lib_data.h
+file path=usr/include/scsi/sg_pr2serr.h
+file path=usr/include/scsi/sg_pt.h
+file path=usr/include/scsi/sg_pt_nvme.h
+file path=usr/include/scsi/sg_unaligned.h
+link path=usr/lib/$(MACH64)/libsgutils2-$(COMPONENT_VERSION).so.2 \
+    target=libsgutils2-$(COMPONENT_VERSION).so.2.0.0
+file path=usr/lib/$(MACH64)/libsgutils2-$(COMPONENT_VERSION).so.2.0.0
+link path=usr/lib/$(MACH64)/libsgutils2.so \
+    target=libsgutils2-$(COMPONENT_VERSION).so.2.0.0
+link path=usr/lib/libsgutils2-$(COMPONENT_VERSION).so.2 \
+    target=libsgutils2-$(COMPONENT_VERSION).so.2.0.0
+file path=usr/lib/libsgutils2-$(COMPONENT_VERSION).so.2.0.0
+link path=usr/lib/libsgutils2.so \
+    target=libsgutils2-$(COMPONENT_VERSION).so.2.0.0
+file path=usr/share/man/man8/scsi_mandat.8
+file path=usr/share/man/man8/scsi_readcap.8
+file path=usr/share/man/man8/scsi_ready.8
+file path=usr/share/man/man8/scsi_satl.8
+file path=usr/share/man/man8/scsi_start.8
+file path=usr/share/man/man8/scsi_stop.8
+file path=usr/share/man/man8/scsi_temperature.8
+file path=usr/share/man/man8/sg3_utils.8
+file path=usr/share/man/man8/sg_bg_ctl.8
+file path=usr/share/man/man8/sg_compare_and_write.8
+file path=usr/share/man/man8/sg_decode_sense.8
+file path=usr/share/man/man8/sg_format.8
+file path=usr/share/man/man8/sg_get_config.8
+file path=usr/share/man/man8/sg_get_elem_status.8
+file path=usr/share/man/man8/sg_get_lba_status.8
+file path=usr/share/man/man8/sg_ident.8
+file path=usr/share/man/man8/sg_inq.8
+file path=usr/share/man/man8/sg_logs.8
+file path=usr/share/man/man8/sg_luns.8
+file path=usr/share/man/man8/sg_modes.8
+file path=usr/share/man/man8/sg_opcodes.8
+file path=usr/share/man/man8/sg_persist.8
+file path=usr/share/man/man8/sg_prevent.8
+file path=usr/share/man/man8/sg_raw.8
+file path=usr/share/man/man8/sg_rdac.8
+file path=usr/share/man/man8/sg_read_attr.8
+file path=usr/share/man/man8/sg_read_block_limits.8
+file path=usr/share/man/man8/sg_read_buffer.8
+file path=usr/share/man/man8/sg_read_long.8
+file path=usr/share/man/man8/sg_readcap.8
+file path=usr/share/man/man8/sg_reassign.8
+file path=usr/share/man/man8/sg_referrals.8
+file path=usr/share/man/man8/sg_rep_pip.8
+file path=usr/share/man/man8/sg_rep_zones.8
+file path=usr/share/man/man8/sg_requests.8
+file path=usr/share/man/man8/sg_reset_wp.8
+file path=usr/share/man/man8/sg_rmsn.8
+file path=usr/share/man/man8/sg_rtpg.8
+file path=usr/share/man/man8/sg_safte.8
+file path=usr/share/man/man8/sg_sanitize.8
+file path=usr/share/man/man8/sg_sat_identify.8
+file path=usr/share/man/man8/sg_sat_phy_event.8
+file path=usr/share/man/man8/sg_sat_read_gplog.8
+file path=usr/share/man/man8/sg_sat_set_features.8
+file path=usr/share/man/man8/sg_seek.8
+file path=usr/share/man/man8/sg_senddiag.8
+file path=usr/share/man/man8/sg_ses.8
+file path=usr/share/man/man8/sg_ses_microcode.8
+file path=usr/share/man/man8/sg_start.8
+file path=usr/share/man/man8/sg_stpg.8
+file path=usr/share/man/man8/sg_stream_ctl.8
+file path=usr/share/man/man8/sg_sync.8
+file path=usr/share/man/man8/sg_timestamp.8
+file path=usr/share/man/man8/sg_turs.8
+file path=usr/share/man/man8/sg_unmap.8
+file path=usr/share/man/man8/sg_verify.8
+file path=usr/share/man/man8/sg_vpd.8
+file path=usr/share/man/man8/sg_wr_mode.8
+file path=usr/share/man/man8/sg_write_buffer.8
+file path=usr/share/man/man8/sg_write_long.8
+file path=usr/share/man/man8/sg_write_same.8
+file path=usr/share/man/man8/sg_write_verify.8
+file path=usr/share/man/man8/sg_write_x.8
+file path=usr/share/man/man8/sg_zone.8
+license sg3_utils.license license="BSD, GPLv2"
+
+# sg3_utils was previously in the 'desktop' consolidation. This optional
+# dependency is here to facilitate the safe transfer of the package
+# to the 'userland' consolidation.
+depend type=optional \
+    fmri=consolidation/desktop/desktop-incorporation@5.12-5.12.0.0.0.4.0

@@ -1,0 +1,42 @@
+diff -ruN openscap-1.3.4.org/src/common/debug.c openscap-1.3.4/src/common/debug.c
+--- openscap-1.3.4.org/src/common/debug.c	2021-02-26 02:48:31.471176244 +0000
++++ openscap-1.3.4/src/common/debug.c	2021-02-26 02:54:58.199179304 +0000
+@@ -136,7 +136,7 @@
+ bool oscap_set_verbose(const char *verbosity_level, const char *filename)
+ {
+ 	if (verbosity_level == NULL) {
+-		verbosity_level = "WARNING";
++		return true;
+ 	}
+ 	__debuglog_level = oscap_verbosity_level_from_cstr(verbosity_level);
+ 	if (__debuglog_level == DBG_UNKNOWN) {
+@@ -209,7 +209,11 @@
+ 	default:
+ 		l = '0';
+ 	}
++#if !defined(__SVR4) && !defined (__sun)
+ 	fprintf(__debuglog_fp, "%c: %s: ", l, GET_PROGRAM_NAME);
++#else
++	fprintf(__debuglog_fp, "%c: %ld: ", l, (long) getpid());
++#endif
+ 	for (int i = 0; i < indent; i++) {
+ 		fprintf(__debuglog_fp, "  ");
+ 	}
+@@ -232,12 +236,17 @@
+ 	/* XXX: non-portable usage of pthread_t */
+ 	unsigned long long tid = (unsigned long long) thread;
+ #endif
++#if !defined(__SVR4) && !defined (__sun)
+ 	fprintf(__debuglog_fp, " [%s(%ld):%s(%llx):%s:%zu:%s]",
+ 		GET_PROGRAM_NAME, (long) getpid(), thread_name,
+ 		tid, f, line, fn);
+ #else
+ 	fprintf(__debuglog_fp, " [%ld:%s:%zu:%s]", (long) getpid(),
+ 		f, line, fn);
++#endif
++#else
++	fprintf(__debuglog_fp, " [%ld:%s:%zu:%s]", (long) getpid(),
++		f, line, fn);
+ #endif
+ }
+ 

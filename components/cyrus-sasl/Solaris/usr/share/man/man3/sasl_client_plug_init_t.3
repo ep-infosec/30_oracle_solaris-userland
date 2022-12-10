@@ -1,0 +1,52 @@
+'\" te
+.\" Copyright (C) 1998-2003, Carnegie Mellon Univeristy.  All Rights Reserved.
+.\" Portions Copyright (C) 2003, Sun Microsystems, Inc. All Rights Reserved
+.TH sasl_client_plug_init_t 3SASL "27 Oct 2003" SASL "SASL man pages"
+.SH NAME
+sasl_client_plug_init_t \- client plug-in entry point
+
+.SH SYNOPSIS
+.nf
+cc [ flag ... ] file ... -lsasl   [ library ... ]
+.B #include <sasl/saslplug.h>
+
+.BI "int sasl_client_plug_init_t(const sasl_utils_t *" utils ", "
+.BI "                                      int " max_version ", "
+.BI "                                     int *" out_version ", "
+.BI "                        sasl_client_plug_t **" pluglist ", "
+.BI "                                       int *" plugcount "); "
+.fi
+
+.SH DESCRIPTION
+The 
+.B sasl_client_plug_init_t()
+callback function is the client plug-in entry point.
+
+.SH PARAMETERS
+.I utils
+The utility callback functions.
+
+.I max_version
+The highest client plug-in version supported.
+
+.I out_version
+The client plug-in version of the result..
+
+.I pluglist
+The list of client mechanism plug-ins.
+
+.I plugcount
+The number of client mechanism plug-ins.
+
+.SH "RETURN VALUES"
+Like other SASL callback functions, sasl_client_plug_init_t() returns an integer that corresponds to a SASL error code. See <sasl.h> for a complete list of SASL error codes.
+
+.SH ERRORS
+.TP 0.8i
+SASL_OK
+The call to sasl_client_plug_init_t() was successful.
+
+See sasl_errors(3SASL) for information on SASL error codes.
+
+.SH "SEE ALSO"
+sasl_errors(3SASL)

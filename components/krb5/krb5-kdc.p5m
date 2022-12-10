@@ -1,0 +1,82 @@
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+# Copyright (c) 2015, 2021, Oracle and/or its affiliates.
+#
+
+<transform file path=usr.*/man/.+ -> default mangler.man.stability "pass-through committed">
+set name=pkg.fmri \
+    value=pkg:/security/kerberos-5/kdc@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION)
+set name=pkg.summary value="Kerberos V5 Key Distribution Center (KDC)"
+set name=pkg.description \
+    value="The Kerberos service is a client-server architecture that provides secure transactions over networks and offers strong, single sign-on user authentication, as well as integrity and privacy.  The server package provides for the administration of Kerberos principals, policies, and service key tables (keytabs).  It can also be used to configure master and slave Key Distribution Centers (KDCs)."
+set name=com.oracle.info.baid value=$(COMPONENT_BAID)
+set name=com.oracle.info.description \
+    value="Kerberos V5 Key Distribution Center (KDC)"
+set name=info.classification value=org.opensolaris.category.2008:System/Security
+set name=info.source-url value=$(COMPONENT_ARCHIVE_URL)
+set name=info.upstream-url value=$(COMPONENT_PROJECT_URL)
+set name=org.opensolaris.arc-caseid value=PSARC/2015/144 value=PSARC/2016/244 \
+    value=PSARC/2017/089 value=PSARC/2018/046
+set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
+file Solaris/kadmin.xml path=lib/svc/manifest/network/security/kadmin.xml \
+    restart_fmri=svc:/system/manifest-import:default
+file Solaris/krb5_prop.xml \
+    path=lib/svc/manifest/network/security/krb5_prop.xml \
+    restart_fmri=svc:/system/manifest-import:default
+file Solaris/krb5kdc.xml path=lib/svc/manifest/network/security/krb5kdc.xml \
+    restart_fmri=svc:/system/manifest-import:default
+file path=usr/lib/$(MACH64)/krb5/plugins/audit/solaris.so
+file path=usr/lib/$(MACH64)/krb5/plugins/kdb/db2.so
+file path=usr/lib/$(MACH64)/krb5/plugins/kdb/kldap.so
+link path=usr/lib/$(MACH64)/libkdb_ldap.so target=libkdb_ldap.so.1.0
+link path=usr/lib/$(MACH64)/libkdb_ldap.so.1 target=libkdb_ldap.so.1.0
+file path=usr/lib/$(MACH64)/libkdb_ldap.so.1.0
+file usr/sbin/kadmind path=usr/lib/krb5/kadmind mode=0500
+file usr/sbin/kprop path=usr/lib/krb5/kprop mode=0555
+file usr/sbin/kpropd path=usr/lib/krb5/kpropd mode=0555
+file usr/sbin/krb5kdc path=usr/lib/krb5/krb5kdc mode=0500
+file path=usr/lib/krb5/plugins/audit/solaris.so
+file path=usr/lib/krb5/plugins/kdb/db2.so
+file path=usr/lib/krb5/plugins/kdb/kldap.so
+link path=usr/lib/libkdb_ldap.so target=libkdb_ldap.so.1.0
+link path=usr/lib/libkdb_ldap.so.1 target=libkdb_ldap.so.1.0
+file path=usr/lib/libkdb_ldap.so.1.0
+file path=usr/sbin/kadmin.local
+file path=usr/sbin/kdb5_ldap_util
+file path=usr/sbin/kdb5_util
+link path=usr/sbin/kprop target=../lib/krb5/kprop
+file path=usr/sbin/kproplog
+file src/plugins/kdb/ldap/libkdb_ldap/kerberos.ldif \
+    path=usr/share/lib/ldif/kerberos.ldif
+file src/plugins/kdb/ldap/libkdb_ldap/kerberos.schema \
+    path=usr/share/lib/ldif/kerberos.schema
+file path=usr/share/man/man5/kadm5.acl.5
+file path=usr/share/man/man5/kdc.conf.5
+file path=usr/share/man/man8/kadmin.local.8
+file path=usr/share/man/man8/kadmind.8
+file path=usr/share/man/man8/kdb5_ldap_util.8
+file path=usr/share/man/man8/kdb5_util.8
+file path=usr/share/man/man8/kprop.8
+file path=usr/share/man/man8/kpropd.8
+file path=usr/share/man/man8/kproplog.8
+file path=usr/share/man/man8/krb5kdc.8
+license krb5.license license="BSD, BSD-like (KerberosV5)"
+depend type=require fmri=system/security/kerberos-5

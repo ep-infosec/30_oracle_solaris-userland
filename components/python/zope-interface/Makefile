@@ -1,0 +1,72 @@
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+
+#
+# Copyright (c) 2013, 2022, Oracle and/or its affiliates.
+#
+
+include ../../../make-rules/shared-macros.mk
+COMPILER=	gcc
+
+COMPONENT_NAME=		zope.interface
+COMPONENT_VERSION=	4.6.0
+COMPONENT_PROJECT_URL=	http://zope.org/Wikis/Interfaces/FrontPage
+COMPONENT_SRC=		$(COMPONENT_NAME)-$(COMPONENT_VERSION)
+COMPONENT_ARCHIVE=	$(COMPONENT_SRC).tar.gz
+COMPONENT_ARCHIVE_HASH= \
+    sha256:1b3d0dcabc7c90b470e59e38a9acaa361be43b3a6ea644c0063951964717f0e5
+COMPONENT_ARCHIVE_URL=	$(call pypi_url)
+COMPONENT_BUGDB=	python-mod/zope
+COMPONENT_ANITYA_ID=	4112
+
+COMPONENT_BAID=		62056
+
+include $(WS_MAKE_RULES)/prep.mk
+include $(WS_MAKE_RULES)/setup.py.mk
+include $(WS_MAKE_RULES)/ips.mk
+
+COMPONENT_TEST_DIR =	$(PROTO_DIR)$(PYTHON_VENDOR_PACKAGES_BASE)
+COMPONENT_TEST_CMD =	$(PYTHON) -m unittest discover -s zope/interface -t .
+COMPONENT_TEST_ARGS =
+
+$(BUILD_DIR)/%-2.7/.tested: COMPONENT_TEST_DIR =   $(SOURCE_DIR)/src
+$(BUILD_DIR)/%-2.7/.tested: COMPONENT_TEST_CMD =   $(PYTHON) -m pytest
+
+COMPONENT_SYSTEM_TEST_DIR =	$(SOURCE_DIR)/src
+COMPONENT_SYSTEM_TEST_CMD =	$(PYTHON) -m pytest
+COMPONENT_SYSTEM_TEST_ARGS =
+
+ASLR_MODE = $(ASLR_NOT_APPLICABLE)
+
+# common targets
+build:		$(BUILD_32_and_64)
+
+install:	$(INSTALL_32_and_64)
+
+test:		$(TEST_32_and_64)
+
+system-test:    $(SYSTEM_TEST_32_and_64)
+
+REQUIRED_PACKAGES += system/library
+
+# Testing related components
+REQUIRED_PACKAGES += library/python/coverage
+REQUIRED_PACKAGES += library/python/nose

@@ -1,0 +1,26 @@
+# Update doc files regarding JIT support on Solaris.
+# Patch was developed in-house and is not appropriate for upstream.
+
+--- pcre2-10.40/doc/pcre2jit.3
++++ pcre2-10.40/doc/pcre2jit.3
+@@ -36,6 +36,8 @@ platforms:
+   SPARC 32-bit
+ .sp
+ If --enable-jit is set on an unsupported platform, compilation fails.
++.sp
++JIT support is not available on Solaris.
+ .P
+ A program can tell if JIT support is available by calling \fBpcre2_config()\fP
+ with the PCRE2_CONFIG_JIT option. The result is 1 when JIT is available, and 0
+--- pcre2-10.40/doc/html/pcre2jit.html
++++ pcre2-10.40/doc/html/pcre2jit.html
+@@ -63,6 +63,9 @@ platforms:
+ If --enable-jit is set on an unsupported platform, compilation fails.
+ </P>
+ <P>
++JIT support is not available on Solaris.
++</P>
++<P>
+ A program can tell if JIT support is available by calling <b>pcre2_config()</b>
+ with the PCRE2_CONFIG_JIT option. The result is 1 when JIT is available, and 0
+ otherwise. However, a simple program does not need to check this in order to

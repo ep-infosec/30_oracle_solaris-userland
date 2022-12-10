@@ -1,0 +1,13 @@
+Solaris specific patch to add information about rsync not supporting NFSv4 ACLs.
+
+--- rsync-3.2.5/rsync.1.orig	2022-08-25 15:14:08.201983218 +0200
++++ rsync-3.2.5/rsync.1	2022-08-25 15:16:00.426739227 +0200
+@@ -1469,6 +1469,8 @@
+ The source and destination systems must have compatible ACL entries for
+ this option to work properly.  See the \fB\-\-fake-super\fP option for a
+ way to backup and restore ACLs that are not compatible.
++.IP
++Note, that rsync does not support NFSv4 ACLs.
+ .IP "\fB\-\-xattrs\fP, \fB\-X\fP"
+ This option causes rsync to update the destination extended attributes to
+ be the same as the source ones.

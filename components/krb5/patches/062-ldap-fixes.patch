@@ -1,0 +1,82 @@
+#
+# Fix up some issues with the KDB LDAP backend.  One involves providing a
+# default for the service password and is associated with this ticket: Ticket
+# #8295 kdb5_ldap_stash_service_password() stash file logic needs tweaking
+#
+# Another issue deals with potential memory leaks:
+# Ticket #8331 potential memleak of pol_entry->name in populate_policy()
+#
+# I've also alerted MIT to the fact that the ldap_handle.c code can leak LDAP
+# handles.  They've said I don't need to open a ticket on this since it isn't
+# user visible:
+#
+# On 12/23/2015 02:43 PM, Will Fiveash wrote:
+# > On Fri, Dec 18, 2015 at 07:47:49PM -0500, Greg Hudson wrote:
+# >> On 12/18/2015 07:27 PM, Will Fiveash wrote:
+# >>> Shouldn't the code unbind the ldap_handle?
+# >>
+# >> Probably.  In practice the KDC process is going to exit anyway, so it's
+# >> not a leak with any consequences.
+# >>
+# >> That whole area of code is a bit of a mess; it maintains a pool of LDAP
+# >> handles but we only ever use the first one.  (Or that was my reading the
+# >> last time I looked at it.)
+# >
+# > Should I open a ticket on this?
+# 
+# I think we don't need a ticket for this, since it isn't really a
+# user-visible bug.
+# Patch source: in-house
+--- a/src/plugins/kdb/ldap/libkdb_ldap/ldap_handle.c
++++ b/src/plugins/kdb/ldap/libkdb_ldap/ldap_handle.c
+@@ -108,6 +108,7 @@ krb5_ldap_cleanup_handles(krb5_ldap_server_info *ldap_server_info)
+         ldap_server_handle = ldap_server_info->ldap_server_handles;
+         ldap_server_info->ldap_server_handles = ldap_server_handle->next;
+         /* ldap_unbind_s(ldap_server_handle); */
++        ldap_unbind_s(ldap_server_handle->ldap_handle);
+         free (ldap_server_handle);
+         ldap_server_handle = NULL;
+     }
+--- a/src/plugins/kdb/ldap/libkdb_ldap/ldap_misc.c
++++ b/src/plugins/kdb/ldap/libkdb_ldap/ldap_misc.c
+@@ -361,6 +361,17 @@ krb5_ldap_read_server_params(krb5_context context, char *conf_section,
+                                   &ldap_context->service_password_file);
+         if (ret)
+             return ret;
++
++        if (ldap_context->service_password_file == NULL) {
++            ret = profile_get_string (context->profile, KDB_MODULE_DEF_SECTION,
++                                     KRB5_CONF_LDAP_SERVICE_PASSWORD_FILE,
++                                     NULL,
++                                     DEF_SERVICE_PASSWD_FILE,
++                                     &ldap_context->service_password_file);
++
++            if (ret)
++                return ret;
++        }
+     }
+ 
+     if (ldap_context->sasl_mech == NULL) {
+--- a/src/plugins/kdb/ldap/libkdb_ldap/ldap_misc.h
++++ b/src/plugins/kdb/ldap/libkdb_ldap/ldap_misc.h
+@@ -36,6 +36,8 @@
+ #ifndef _HAVE_LDAP_MISC_H
+ #define _HAVE_LDAP_MISC_H 1
+ 
++#define DEF_SERVICE_PASSWD_FILE KDC_DIR "/service_passwd"
++
+ /* misc functions */
+ 
+ krb5_boolean
+--- a/src/plugins/kdb/ldap/libkdb_ldap/ldap_pwd_policy.c
++++ b/src/plugins/kdb/ldap/libkdb_ldap/ldap_pwd_policy.c
+@@ -461,7 +461,8 @@ krb5_ldap_iterate_password_policy(krb5_context context, char *match_expr,
+     }
+ 
+ cleanup:
+-    free(entry);
++    if (st && entry)
++        krb5_db_free_policy(context, entry);
+     free(policy);
+     ldap_msgfree(result);
+     krb5_ldap_put_handle_to_pool(ldap_context, ldap_server_handle);

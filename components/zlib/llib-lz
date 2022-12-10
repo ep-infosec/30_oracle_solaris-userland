@@ -1,0 +1,129 @@
+/*
+ * CDDL HEADER START
+ *
+ * The contents of this file are subject to the terms of the
+ * Common Development and Distribution License (the "License").
+ * You may not use this file except in compliance with the License.
+ *
+ * You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+ * or http://www.opensolaris.org/os/licensing.
+ * See the License for the specific language governing permissions
+ * and limitations under the License.
+ *
+ * When distributing Covered Code, include this CDDL HEADER in each
+ * file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+ * If applicable, add the following below this CDDL HEADER, with the
+ * fields enclosed by brackets "[]" replaced with your own identifying
+ * information: Portions Copyright [yyyy] [name of copyright owner]
+ *
+ * CDDL HEADER END
+ */
+
+/*
+ * Copyright (c) 2000, 2022, Oracle and/or its affiliates.
+ */
+
+/* LINTLIBRARY */
+/* PROTOLIB1 */
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdarg.h>
+#include <zlib.h>
+
+const char *zlibVersion(void);
+int deflateInit_(z_streamp strm, int level, const char *version,
+    int stream_size);
+int deflateInit2_(z_streamp strm, int  level, int  method, int windowBits,
+    int memLevel, int strategy, const char *version, int stream_size);
+int deflate(z_streamp strm, int flush);
+int deflateGetDictionary(z_streamp strm, Bytef *dictionary, uInt *dictLength);
+int deflateSetDictionary(z_streamp strm, const Bytef *dictionary,
+    uInt dictLength);
+int deflateCopy(z_streamp dest, z_streamp source);
+int deflateReset(z_streamp strm);
+int deflateParams(z_streamp strm, int level, int strategy);
+int deflateEnd(z_streamp strm);
+int deflateTune(z_streamp strm, int good_length, int max_lazy, int nice_length, int max_chain);
+uLong deflateBound(z_streamp strm, uLong sourceLen);
+int deflatePending(z_streamp strm, unsigned *pending, int *bits);
+int deflatePrime(z_streamp strm, int bits, int value);
+int deflateSetHeader(z_streamp strm, gz_headerp head);
+int inflateCopy(z_streamp dest, z_streamp source);
+int inflatePrime(z_streamp strm, int bits, int value);
+long inflateMark(z_streamp strm);
+int inflateGetHeader(z_streamp strm, gz_headerp head);
+int inflateBack(z_streamp strm, in_func in, void FAR *in_desc, out_func out, void FAR *out_desc);
+int inflateBackEnd(z_streamp strm);
+int inflateInit_(z_streamp strm, const char *version, int stream_size);
+int inflateInit2_(z_streamp strm, int  windowBits, const char *version,
+    int stream_size);
+int inflateBackInit_(z_streamp strm, int windowBits, unsigned char FAR *window,
+    const char *version, int stream_size);
+int inflate(z_streamp strm, int flush);
+int inflateSetDictionary(z_streamp strm, const Bytef *dictionary,
+    uInt dictLength);
+int inflateGetDictionary(z_streamp strm, Bytef *dictionary, uInt  *dictLength);
+int inflateSync(z_streamp strm);
+int inflateReset(z_streamp strm);
+int inflateReset2(z_streamp strm, int windowBits);
+int inflateEnd(z_streamp strm);
+int compress(Bytef *dest, uLongf *destLen, const Bytef *source,
+    uLong sourceLen);
+int compress2(Bytef *dest, uLongf *destLen, const Bytef *source,
+    uLong sourceLen, int level);
+uLong compressBound(uLong sourceLen);
+int uncompress(Bytef *dest, uLongf *destLen, const Bytef *source,
+    uLong sourceLen);
+int uncompress2(Bytef *dest, uLongf *destLen, const Bytef *source,
+    uLong *sourceLen);
+gzFile gzopen(const char *path, const char *mode);
+gzFile gzopen64(const char *path, const char *mode);
+gzFile gzdopen(int fd, const char *mode);
+int gzbuffer(gzFile file, unsigned size);
+int gzsetparams(gzFile file, int level, int strategy);
+int gzread(gzFile file, voidp buf, unsigned len);
+int gzwrite(gzFile file, voidpc buf, unsigned len);
+int gzprintf(gzFile file, const char *format, ...);
+int gzputs(gzFile file, const char *s);
+char *gzgets(gzFile file, char *buf, int len);
+int gzungetc(int c, gzFile file);
+int gzputc(gzFile file, int c);
+int gzflush(gzFile file, int flush);
+z_size_t gzfread(voidp buf, z_size_t size, z_size_t nitems, gzFile file);
+z_size_t gzfwrite(voidpc buf, z_size_t size, z_size_t nitems, gzFile file);
+z_off_t gzseek(gzFile file, z_off_t offset, int whence);
+z_off64_t gzseek64(gzFile, z_off64_t, int);
+int gzrewind(gzFile file);
+z_off_t gztell(gzFile file);
+z_off64_t gztell64(gzFile file);
+z_off_t gzoffset(gzFile file);
+z_off64_t gzoffset64(gzFile file);
+int gzeof(gzFile file);
+int gzclose(gzFile file);
+int gzclose_r(gzFile file);
+int gzclose_w(gzFile file);
+int gzdirect(gzFile file);
+void gzclearerr(gzFile file);
+const char *gzerror(gzFile file, int *errnum);
+uLong adler32(uLong adler, const Bytef *buf, uInt len);
+uLong adler32_combine(uLong adler1, uLong adler2, z_off_t len2);
+uLong adler32_combine64(uLong adler1, uLong adler2, z_off64_t len2);
+uLong adler32_z(uLong adler, const Bytef *buf, z_size_t len);
+uLong crc32(uLong crc, const Bytef *buf, uInt len);
+uLong crc32_combine(uLong crc1, uLong crc2, z_off_t len2);
+uLong crc32_combine_gen(z_off_t len2);
+uLong crc32_combine_gen64(z_off64_t);
+uLong crc32_combine_op(uLong crc1, uLong crc2, uLong op);
+uLong crc32_combine64(uLong crc1, uLong crc2, z_off64_t len2);
+uLong crc32_z(uLong adler, const Bytef *buf, z_size_t len);
+const char *zError(int err);
+uLong zlibCompileFlags(void);
+int inflateSyncPoint(z_streamp z);
+const z_crc_t *get_crc_table(void);
+int inflateUndermine(z_streamp, int);
+int inflateValidate(z_streamp, int);
+unsigned long inflateCodesUsed(z_streamp);
+int inflateResetKeep(z_streamp);
+int deflateResetKeep(z_streamp);
+int gzvprintf(gzFile file, const char *format, va_list va);

@@ -1,0 +1,228 @@
+#!/bin/ksh93 -p
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+
+#
+# Copyright (c) 2016, 2020, Oracle and/or its affiliates.
+#
+
+# Run this command as root to set up for sasl testsuite
+# creates a standard set of sasl users and makes them principals
+# -- create/recreate the KDC principal DB
+# -- create a sasldb
+
+
+export THIRTYTWO
+case `uname -p` in
+	i386)
+		THIRTYTWO="i86"
+		;;
+
+	sparc)	THIRTYTWO="sparcv7"
+		;;
+
+	*)  	echo "Architecture unknown"
+		exit 1
+		;;
+esac
+
+
+# realm used as default, edit if a different realm is desired.
+export realm="SASLTEST.NET"
+# realm for cross-realm auth.
+crossrealm=
+
+# password for all principals not added to keytab
+export passwd="1234"
+
+# Set this to the ID that is allowed to run kadmin
+# Be default you would do: "kadmin -p kdc/admin" and use the passwd above.
+admin_princ="kdc/admin"
+
+# used to determine if in
+# batch/non-intera/home/willf/app_support/etc/krb5/templates/db2ctive mode
+force='false'
+check_leaks='false'
+
+# keytab config file
+kt_config_file=
+num_keytabs=0
+set -A kt_transfer_command
+
+# should be null if setting up master kdc
+master_kdc=
+
+# get the base script name
+me=${0##*/}
+
+function usage {
+	cat >&2 <<EOF
+
+	-f: Force answer yes (non-interactive mode).  Use with caution as
+		this script will delete existing KDB.
+
+	-?: This help message.
+
+EOF
+	exit 1
+}
+
+function ask {
+	trap - ERR
+	# ask question, set global answer
+	typeset question=$1 default_answer=$2
+	if [ -z "$default_answer" ]; then
+		print "$question \c"
+	else
+		print "$question [$default_answer]: \c"
+	fi
+	read answer
+	[ -z "$answer" ] && answer="$default_answer"
+}
+
+function yesno {
+	trap - ERR
+	typeset question="$1"
+	# answer is a global set by ask
+	answer=
+	while [ -z "$answer" ]; do
+		ask "$question" 'n'
+		case $answer in
+			y|yes)	answer=yes;;
+			n|no)	answer=no;;
+			*)	answer=;;
+		esac
+	done
+}
+
+function ok_to_proceed {
+	trap - ERR
+	yesno "$@"
+	if [[ "$answer" == 'no' ]]; then
+		echo "Exiting, no action performed"
+		exit 1
+	fi
+}
+
+
+################################ Start of Main script #########################
+
+while getopts f flag
+do
+	case "$flag" in
+		f) force=true ;;
+		\?) usage ;;
+		*) usage ;;
+	esac
+done
+shift $((OPTIND - 1))
+
+if [ -n "$1" ] ; then
+	echo "'$1'" = $1
+	usage
+fi
+
+if [[ -f .setup ]]
+then
+	print -u2 "Notice: $me already run"
+	exit 0
+fi
+
+if [[ "$(/usr/bin/id -un)" != "root" ]]
+then
+	print -u2 "Error: $me must be run as root. aborting..."
+	exit 1
+fi
+
+#  Check for the testsuites we need
+if [[ ! -e ./testsuite || ! -e $THIRTYTWO/testsuite ]] 
+then
+	print -u2 \
+	 "Error: testsuite and $THIRTYTWO/testsuite must be in the local \
+directory, Aborting..."
+	exit 1
+fi
+ln -s $THIRTYTWO 32
+
+export SASL_PACKAGES_NEEDED="system/library/security/sasl/crammd5 \
+	system/library/security/sasl/digestmd5 \
+	system/library/security/sasl/anonymous "
+
+
+export MYLOC=`pwd`
+if [[ ! -f /etc/sasl2/TestSuite.conf ]] ; then
+	(cd /etc/sasl2 && ln -s $MYLOC/TestSuite.conf . )
+else
+	print -u2 "Please rename /etc/sasl2/TestSuite.conf and try again"
+	exit 1
+fi
+
+if [[ ! -f /etc/resolv.conf ]]
+then
+	print -u2 "Error: need to configure /etc/resolv.conf."
+	exit 1
+fi
+
+if [[ -n "$fqdn" ]]
+then
+	host=$fqdn
+else
+	host=$(uname -n)
+fi
+
+if [[ -x /usr/sbin/nslookup ]]
+then
+	/usr/sbin/nslookup $host 2>/dev/null | grep '^Name:' |\
+		tr '[:upper:]' '[:lower:]' | read j fqdn
+elif [[ -x /usr/sbin/dig ]]
+then
+	/usr/sbin/dig +noall +search +answer $host 2>/dev/null |\
+		tr '[:upper:]' '[:lower:]' | read fqdn j
+	fqdn=${fqdn%.}
+fi
+
+if ! ping $fqdn >/dev/null
+then
+    print -u2 "Error: ping full hostname ${fqdn} failed. Aborting..."
+    exit 1
+fi
+
+# get time and DNS running
+
+if [[ ! -f /etc/inet/ntp.conf && -f /etc/inet/ntp.client ]]
+then
+	cp /etc/inet/ntp.client /etc/inet/ntp.conf
+fi
+if [[ -f /etc/inet/ntp.conf ]]
+then
+	svcadm enable -s svc:/network/ntp:default
+fi
+
+. ./setup-for-mit
+if (( $? != 0 ))
+then
+        print -u2 "Setup failed"
+        exit 1
+fi
+
+
+print "$passwd" | kinit ken
+touch .setup

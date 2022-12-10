@@ -1,0 +1,438 @@
+# This patch comes from Oracle. It turns the component into
+# a well-behaving SMF service. It adds code manipulating service
+# properties, service instances, and also provides security
+# in cooperation with the service manifest (especially, extra
+# privileges are dropped when not needed).
+#
+# This patch is not going to upstream, the changes are Solaris-specific.
+
+--- a/Makefile
++++ b/Makefile
+@@ -3,7 +3,7 @@
+ CFLAGS+= -m64 -errwarn
+ 
+ PROG=pflogd
+-SRCS=pflogd.c privsep.c privsep_fdpass.c
++SRCS=pflogd.c privsep.c privsep_fdpass.c smf-config.c
+ OBJS=$(SRCS:.c=.o)
+ MAN=pflogd.8
+ 
+--- a/pflogd.8
++++ b/pflogd.8
+@@ -33,7 +33,7 @@
+ .Sh SYNOPSIS
+ .Nm pflogd
+ .Bk -words
+-.Op Fl "Dx"
++.Op Fl C Ar new-pflog-instance-name | Fl c Ar pflog-instance-name
+ .Op Fl d Ar delay
+ .Op Fl f Ar filename
+ .Op Fl i Ar interface
+@@ -60,6 +60,7 @@ option of
+ hopefully offline in case there are bugs in the packet parsing code of
+ .Xr tcpdump 8 .
+ .Pp
++
+ .Nm
+ closes and then re-opens the log file when it receives
+ .Dv SIGHUP ,
+@@ -101,22 +102,52 @@ is received.
+ .Pp
+ The options are as follows:
+ .Bl -tag -width Ds
+-.It Fl D
+-Debugging mode.
++.It Fl C Ar new-pflog-instance-name
++Creates a new
+ .Nm
+-does not disassociate from the controlling terminal.
++instance with the specified name. If additional options are used to specify
++configuration, it is stored into the
++.Xr smf 7
++repository. Default values are used for
++.Xr smf 7
++properties unless overriden by a command-line option. The exception is
++pflog/interface (set to equal the instance name) and pflog/logfile
++(set to a file with name equal to the instance name followed by the
++.Pa .pkt
++extension located inside the
++.Pa /var/log/firewall/pflog/
++directory) if the service instance name forms a valid linkname. If the
++service instance name is not a valid linkname, the values must be
++given explicitly.
++.It Fl c Ar pflog-instance-name
++Shows/changes the configuration of the given
++.Nm
++instance in
++.Xr smf 7
++repository. Attributes specified by additional options are placed into the
++.Xr smf 7
++repository.
+ .It Fl d Ar delay
+ Time in seconds to delay between automatic flushes of the file.
+ This may be specified with a value between 5 and 3600 seconds.
+ If not specified, the default is 60 seconds.
+ .It Fl f Ar filename
+-Log output filename.
++Log output filename. When neither
++.Fl C
++nor
++.Fl c
++is used, the default value
++.Pa pflog.pkt
++is used.
+ .It Fl i Ar interface
+ Specifies the capture link interface to use.
+-By default,
+-.Nm
+-will use
+-.Pa pflog0 .
++When neither
++.Fl C
++nor
++.Fl c
++is used, the default value
++.Pa pflog0
++is assumed.
+ .It Fl s Ar snaplen
+ Analyze at most the first
+ .Ar snaplen
+@@ -124,8 +155,6 @@ bytes of data from each packet rather than the default of 160.
+ The default of 160 is adequate for IP, ICMP, TCP, and UDP headers but may
+ truncate protocol information for other protocols.
+ Other file parsers may desire a higher snaplen.
+-.It Fl x
+-Check the integrity of an existing log file, and return.
+ .It Ar expression
+ Selects which packets will be dumped, using the regular language of
+ .Xr tcpdump 8 .
+@@ -164,11 +193,59 @@ The direction was inbound.
+ The direction was outbound.
+ .El
+ .El
+-.Sh FILES
+-.Bl -tag -width /var/run/pflogd.pid -compact
+-.It Pa /var/log/firewall/pflog/pflog0.pkt
+-Default log file.
++.Sh SOLARIS
++The
++.Nm
++daemon must be started as an
++.Xr smf 7
++service with the following FMRI:
++.Bd -literal -offset indent
++svc:/network/firewall/pflog
++.Ed
++.Pp
++Command line options described above are set via the following
++.Xr smf 7
++properties.
++.Bl -tag -width "pflog/interface" -offset 3n -compact
++.It pflog/delay
++Automatic flush interval.
++The default value is 60.
++Used as the argument for the
++.Fl d
++option.
++.It pflog/filter
++Packet filter expression in
++.Xr tcpdump 8
++format.
++No expression is defined by default.
++.It pflog/interface
++The capture link name from which to read packets.
++Used as the argument for the
++.Fl i
++option.
++.It pflog/logfile
++Path to the logfile (for security reasons, only paths starting by the
++.Pa /var/log/firewall/
++directory are allowed.
++Used as the argument for the
++.Fl f
++option.
++.It pflog/snaplen
++An upper bound on how many bytes from each packet to analyze.
++The default value is 160.
++Used as the argument for the
++.Fl s
++option.
+ .El
++.Pp
++The start method creates a (temporal) capture link the particular
++instance is using.
++.Pp
++The refresh method sends
++.Dv SIGHUP
++to
++.Nm
++owned by particular service instance.
+ .Sh EXAMPLES
+ Log specific TCP packets to a different log file with a large snaplen
+ (useful with a
+@@ -202,6 +279,32 @@ the wi0 interface:
+ .Bd -literal -offset indent
+ # tcpdump -n -e -ttt -i pflog0 inbound and action block and on wi0
+ .Ed
++.Sh SECURITY
++The
++.Nm
++daemon is a privilege-aware application which runs as the
++.Dq daemon
++user possessing
++.Sy PRIV_NET_OBSERVABILITY
++privilege that is required for using
++.Xr bpf 7d
++to read packets. See
++.Xr privileges 7
++for details.
++The service start method uses
++.Xr dladm 8
++to create capture link if it does not exist already.
++.Pp
++To configure the
++.Nm
++service one has to obtain the
++.Sy solaris.smf.value.network.firewall
++authorization.
++To manage the service (disable/enable/refresh) one must have the
++.Sy solaris.smf.manage.network.firewall
++authorization.
++Both authorizations are granted through the Network Firewall Management profile.
++To create new service instances, you need the solaris.smf.modify authorization.
+ .Sh SEE ALSO
+ .Xr pcap 3 ,
+ .Xr pf.conf 5 ,
+--- a/pflogd.c
++++ b/pflogd.c
+@@ -54,6 +54,7 @@
+ #include <strings.h>
+ #include <zone.h>
+ #include <libuutil.h>
++#include "smf-config.h"
+ #else /* !_SOLARIS_ */
+ #include <util.h>
+ #endif	/* _SOLARIS_ */
+@@ -63,7 +64,7 @@ pcap_t *hpcap;
+ static FILE *dpcap;
+ 
+ int Debug = 0;
+-static int snaplen = DEF_SNAPLEN;
++static int64_t snaplen = DEF_SNAPLEN;
+ static int cur_snaplen = DEF_SNAPLEN;
+ 
+ volatile sig_atomic_t gotsig_close, gotsig_alrm, gotsig_hup, gotsig_usr1;
+@@ -75,7 +76,7 @@ char *filter = NULL;
+ char errbuf[PCAP_ERRBUF_SIZE];
+ 
+ int log_debug = 0;
+-unsigned int delay = FLUSH_DELAY;
++int64_t delay = FLUSH_DELAY;
+ 
+ char *copy_argv(char * const *);
+ void  dump_packet(u_char *, const struct pcap_pkthdr *, const u_char *);
+@@ -124,6 +125,15 @@ typedef struct pcap_pkthdr_file {
+ 
+ #endif	/* _SOLARIS_ */
+ 
++#ifdef	_SOLARIS_
++#define	PFLOGD_GETOPTS	"c:C:Dd:f:i:s:"
++#define	CFG_SETFLAG(_flags_, _f_)	((_flags_) |= (_f_))
++#define	SKIP_CHK(_x_)	((_x_) == NULL)
++#else /* !_SOLARIS_ */
++#define	PFLOGD_GETOPTS	"Dxd:f:i:s:"
++#define	CFG_SETFLAG(_flags_, _f_)
++#define	SKIP_CHK(_x_)	(1)
++#endif	/* _SOLARIS_ */
+ static int try_reset_dump(int);
+ 
+ /* buffer must always be greater than snaplen */
+@@ -292,6 +302,8 @@ int
+ init_pcap(void)
+ {
+ 	hpcap = pcap_open_live(interface, snaplen, 1, PCAP_TO_MS, errbuf);
++	DROP_PRIV(PRIV_NET_OBSERVABILITY);
++
+ 	if (hpcap == NULL) {
+ 		logmsg(LOG_ERR, "Failed to initialize: %s", errbuf);
+ 		return (-1);
+@@ -692,12 +704,20 @@ main(int argc, char **argv)
+ 	int ch, np, ret, Xflag = 0;
+ 	pcap_handler phandler = dump_packet;
+ 	const char *errstr = NULL;
++#ifdef	_SOLARIS_
++	unsigned int	create = 0;
++	unsigned int	cfg_flags = 0;
++	const char	*smf_instance = NULL;
++#endif	/* _SOLARIS_ */
++
++	DROP_PRIV(PRIV_SYS_IP_CONFIG);
++	DROP_PRIV(PRIV_PROC_EXEC);
+ 
+ 	ret = 0;
+ 
+ 	closefrom(STDERR_FILENO + 1);
+ 
+-	while ((ch = getopt(argc, argv, "Dxd:f:i:s:")) != -1) {
++	while ((ch = getopt(argc, argv, PFLOGD_GETOPTS)) != -1) {
+ 		switch (ch) {
+ 		case 'D':
+ 			Debug = 1;
+@@ -706,12 +726,15 @@ main(int argc, char **argv)
+ 			delay = strtonum(optarg, 5, 60*60, &errstr);
+ 			if (errstr)
+ 				usage();
++			CFG_SETFLAG(cfg_flags, SMF_CFG_DELAY_SET);
+ 			break;
+ 		case 'f':
+ 			filename = optarg;
++			CFG_SETFLAG(cfg_flags, SMF_CFG_LOGFILE_SET);
+ 			break;
+ 		case 'i':
+ 			interface = optarg;
++			CFG_SETFLAG(cfg_flags, SMF_CFG_INTERFACE_SET);
+ 			break;
+ 		case 's':
+ 			snaplen = strtonum(optarg, 0, PFLOGD_MAXSNAPLEN,
+@@ -720,10 +743,27 @@ main(int argc, char **argv)
+ 				snaplen = DEF_SNAPLEN;
+ 			if (errstr)
+ 				snaplen = PFLOGD_MAXSNAPLEN;
++			CFG_SETFLAG(cfg_flags, SMF_CFG_SNAPLEN_SET);
+ 			break;
++#ifndef	_SOLARIS_
++		/*
++		 * This option requires a special securing on Solaris as
++		 * pflogd will be started manually in the case it is used.
++		 * Also, some polishing is needed so that the response
++		 * from 'pflogd -x' is shown to the user and not put into
++		 * a logfile.
++		 */
+ 		case 'x':
+ 			Xflag++;
+ 			break;
++#endif /* !_SOLARIS_ */
++#ifdef	_SOLARIS_
++		case 'C': 
++			create = 1;	/* FALLTHRU */
++		case 'c':
++			smf_instance = optarg;
++			break;
++#endif	/* _SOLARIS_ */
+ 		default:
+ 			usage();
+ 		}
+@@ -734,14 +774,14 @@ main(int argc, char **argv)
+ 	argv += optind;
+ 
+ 	/* does interface exist */
+-	if (!if_exists(interface)) {
++	if (SKIP_CHK(smf_instance) && !if_exists(interface)) {
+ 		warn("Failed to initialize: %s", interface);
+ 		logmsg(LOG_ERR, "Failed to initialize: %s", interface);
+ 		logmsg(LOG_ERR, "Exiting, init failure");
+ 		exit(1);
+ 	}
+ 
+-	if (!Debug) {
++	if (SKIP_CHK(smf_instance) && !Debug) {
+ 		openlog("pflogd", LOG_PID | LOG_CONS, LOG_DAEMON);
+ 		if (daemon(0, 0)) {
+ 			logmsg(LOG_WARNING, "Failed to become daemon: %s",
+@@ -759,6 +799,31 @@ main(int argc, char **argv)
+ 			logmsg(LOG_NOTICE, "Failed to form filter expression");
+ 	}
+ 
++#ifdef	_SOLARIS_
++	if (smf_instance != NULL) {
++		if (filter != NULL) {
++			CFG_SETFLAG(cfg_flags, SMF_CFG_EXPRESSION_SET);
++		} else {
++			filter = "";
++		}
++		if ((cfg_flags == 0) && (create == 0)) {
++			if (smf_print_pflogcfg(smf_instance)) {
++				exit (-1);
++			}
++		} else {
++			smf_pflogd_cfg.cfg_set = cfg_flags;
++			smf_pflogd_cfg.cfg_expression = strdup(filter);
++			smf_pflogd_cfg.cfg_interface = strdup(interface);
++			smf_pflogd_cfg.cfg_logfile = strdup(filename);
++			smf_pflogd_cfg.cfg_delay = delay;
++			smf_pflogd_cfg.cfg_snaplen = snaplen;
++
++			smf_write_pflogcfg(smf_instance, create);
++		}
++		exit(0);
++	}
++#endif	/* _SOLARIS_ */
++
+ 	/* initialize pcap before dropping privileges */
+ 	if (init_pcap()) {
+ 		logmsg(LOG_ERR, "Exiting, init failure");
+@@ -770,7 +835,6 @@ main(int argc, char **argv)
+ 		logmsg(LOG_ERR, "unable to privsep");
+ 		exit(1);
+ 	}
+-
+ 	setproctitle("[initializing]");
+ 	/* Process is now unprivileged and inside a chroot */
+ #ifdef	_SOLARIS_
+--- a/pflogd.h
++++ b/pflogd.h
+@@ -18,6 +18,8 @@
+ 
+ #ifdef	_SOLARIS_
+ #include <limits.h>
++#include <sys/types.h>
++#include <priv.h>
+ #else /* !_SOLARIS_ */
+ #include <sys/limits.h>
+ #endif	/* _SOLARIS_ */
+@@ -55,3 +57,27 @@ void send_fd(int, int);
+ int  receive_fd(int);
+ 
+ extern int Debug;
++
++#ifdef _SOLARIS_
++#define DROP_PRIV(priv)                                         \
++	do {                                                    \
++		if (priv_set(PRIV_OFF, PRIV_PERMITTED, (priv),  \
++		    NULL) != 0) {                               \
++			fprintf(stderr,                         \
++			    "Unable to drop privileges.\n");    \
++			exit (-1);                              \
++		}                                               \
++	} while (0)
++
++#define DROP_PFLAG(flag)				\
++	do {						\
++		if (setpflags((flag), 0) != 0) {	\
++			fprintf(stderr,			\
++			    "Unable to drop pflag.\n");	\
++			exit (-1);			\
++		}					\
++} while (0)
++#else /* !_SOLARIS_ */
++#define DROP_PRIV(priv)
++#define DROP_PFLAG(flag)
++#endif /* _SOLARIS_ */
+--- a/privsep.c
++++ b/privsep.c
+@@ -112,6 +112,7 @@ priv_init(void)
+ #endif	/* !_SOLARIS_ */
+ 
+ 	child_pid = fork();
++	DROP_PRIV(PRIV_PROC_FORK);
+ 	if (child_pid < 0)
+ 		err(1, "fork() failed");
+ 
+@@ -133,6 +134,7 @@ priv_init(void)
+ 		if (setresuid(pw->pw_uid, pw->pw_uid, pw->pw_uid) == -1)
+ 			err(1, "setresuid() failed");
+ #endif	/* !_SOLARIS_ */
++		DROP_PFLAG(PRIV_XPOLICY);
+ 
+ 		close(socks[0]);
+ 		priv_fd = socks[1];

@@ -1,0 +1,35 @@
+diff --git a/sh.c b/sh.c
+index d7b5da3..44fac51 100644
+--- a/sh.c
++++ b/sh.c
+@@ -173,17 +173,10 @@ add_localedir_to_nlspath(const char *path)
+     size_t len;
+     int add_LOC = 1;
+     int add_lang = 1;
+-    char trypath[MAXPATHLEN];
+-    struct stat st;
+ 
+     if (path == NULL)
+         return;
+ 
+-    (void) xsnprintf(trypath, sizeof(trypath), "%s/C/LC_MESSAGES/tcsh.cat",
+-	path);
+-    if (stat(trypath, &st) == -1)
+-	return;
+-
+     if ((old = getenv("NLSPATH")) != NULL)
+         len = strlen(old) + 1;	/* don't forget the colon. */
+     else
+diff --git a/sh.func.c b/sh.func.c
+index 40ab3b3..28094e6 100644
+--- a/sh.func.c
++++ b/sh.func.c
+@@ -2671,6 +2671,8 @@ nlsinit(void)
+ 
+     if (adrof(STRcatalog) != NULL)
+ 	catalog = xasprintf("tcsh.%s", short2str(varval(STRcatalog)));
++/* for compatibility */
++#undef NL_CAT_LOCALE
+ #ifdef NL_CAT_LOCALE /* POSIX-compliant. */
+     /*
+      * Check if LC_MESSAGES is set in the environment and use it, if so.

@@ -1,0 +1,28 @@
+#
+# Copyright (c) 2015, 2021, Oracle and/or its affiliates.
+#
+
+mydir=lib$(S)crypto$(S)ucrypto$(S)hash_provider
+BUILDTOP=$(REL)..$(S)..$(S)..$(S)..
+LOCALINCLUDES = -I$(srcdir)/../../krb -I$(srcdir)/..
+
+STLIBOBJS= \
+	hash_md4.o 	\
+	hash_ucrypto.o
+
+OBJS=   $(OUTPRE)hash_md4.$(OBJEXT) 	\
+	$(OUTPRE)hash_ucrypto.$(OBJEXT)
+
+SRCS=	$(srcdir)/hash_md4.c 	\
+	$(srcdir)/hash_ucrypto.c
+
+all-unix: all-libobjs
+
+includes: depend
+
+depend: $(SRCS)
+
+clean-unix:: clean-libobjs
+
+@libobj_frag@
+

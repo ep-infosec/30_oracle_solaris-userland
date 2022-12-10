@@ -1,0 +1,19 @@
+/*
+ * Fix developed in-house.
+ * Upstream bug 693952, http://bugs.ghostscript.com/show_bug.cgi?id=693952#c2.
+ */
+NOTE : This patch will not be pushed upstream, as this is SPARC only issue
+       and others in community not facing this issue.
+
+diff --git a/base/gxsync.h b/base/gxsync.h
+index d3cf85e..928c780 100644
+--- a/base/gxsync.h
++++ b/base/gxsync.h
+@@ -58,6 +58,7 @@ gx_semaphore_t *gx_semaphore_label(gx_semaphore_t *mon, const char *name);
+ /* the event count is set to 1 (1st 'enter' succeeds immediately). */
+ typedef struct gx_monitor_s {
+     gs_memory_t *memory;	/* allocator to free memory */
++    int *dummy;			/* to address alignment issue on sparc */
+     gp_monitor native;		/* platform-dep impl, len is gp_monitor_sizeof() */
+ } gx_monitor_t;
+ 

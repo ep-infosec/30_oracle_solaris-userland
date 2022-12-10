@@ -1,0 +1,7 @@
+#
+# Copyright (c) 2019, Oracle and/or its affiliates. All rights reserved.
+#
+# PAM stack customized for FTP comes without pam_fm_notify.
+#
+session definitive	pam_user_policy.so.1
+session required	pam_unix_session.so.1

@@ -1,0 +1,15 @@
+Solaris specific patch to add syslog compatibility.
+Not for community.
+
+
+--- rsyslog-8.2002.0/runtime/rsyslog.h
++++ rsyslog-8.2002.0/runtime/rsyslog.h
+@@ -203,6 +203,8 @@
+ #endif
+ #define	LOG_AUTHPRIV	(10<<3)	/* security/authorization messages (private) */
+ #define	LOG_FTP		(11<<3)	/* ftp daemon */
++#define	LOG_AUDIT	(13<<3)	/* rfc5424 */
++#define	LOG_CRON2	(15<<3)	/* rfc5424 */
+ #if defined(_AIX)		/* AIXPORT : These are necessary for AIX */
+ #define	LOG_ASO		(12<<3) /* Active System Optimizer. Reserved for internal use */
+ #define	LOG_CAA		(15<<3) /* Cluster aware AIX subsystem */

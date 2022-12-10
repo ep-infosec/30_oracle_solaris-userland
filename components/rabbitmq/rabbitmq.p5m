@@ -1,0 +1,152 @@
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+
+#
+# Copyright (c) 2012, 2021, Oracle and/or its affiliates.
+#
+
+
+#
+<transform file path=usr/share/man/.+$ -> default mangler.man.stability "pass-through volatile">
+#
+set name=pkg.fmri \
+    value=pkg:/network/amqp/rabbitmq@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION)
+set name=pkg.summary value="A message broker implementing AMQP"
+set name=pkg.description \
+    value="RabbitMQ is message broker software written in Erlang that implements the Advanced Message Queuing Protocol (AMQP) standard."
+set name=com.oracle.info.baid value=$(COMPONENT_BAID)
+set name=com.oracle.info.description value="the RabbitMQ message broker"
+set name=info.classification \
+    value="org.opensolaris.category.2008:Web Services/Communications"
+set name=info.source-url value=$(COMPONENT_ARCHIVE_URL)
+set name=info.upstream value=rabbitmq-discuss@lists.rabbitmq.com
+set name=info.upstream-url value=$(COMPONENT_PROJECT_URL)
+set name=org.opensolaris.arc-caseid value=PSARC/2013/175
+set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
+#
+file files/rabbitmq.logadm.conf path=etc/logadm.d/rabbitmq.logadm.conf group=sys
+file files/rabbitmq-env.conf path=etc/rabbitmq/rabbitmq-env.conf mode=0644 \
+    overlay=allow preserve=renamenew
+file files/rabbitmq.config path=etc/rabbitmq/rabbitmq.config mode=0644 \
+    overlay=allow preserve=renamenew
+file files/rabbitmq.xml path=lib/svc/manifest/application/rabbitmq.xml
+file files/svc-rabbitmq path=lib/svc/method/rabbitmq \
+    disable_fmri=svc:/application/rabbitmq:default
+file files/rmq-mplex path=usr/bin/rabbitmq-plugins
+link path=usr/bin/rabbitmq-server target=rabbitmq-plugins
+link path=usr/bin/rabbitmqctl target=rabbitmq-plugins
+file path=usr/lib/rabbitmq/escript/rabbitmq-diagnostics
+hardlink path=usr/lib/rabbitmq/escript/rabbitmq-plugins \
+    target=rabbitmq-diagnostics
+hardlink path=usr/lib/rabbitmq/escript/rabbitmq-queues \
+    target=rabbitmq-diagnostics
+hardlink path=usr/lib/rabbitmq/escript/rabbitmq-upgrade \
+    target=rabbitmq-diagnostics
+hardlink path=usr/lib/rabbitmq/escript/rabbitmqctl target=rabbitmq-diagnostics
+file path=usr/lib/rabbitmq/plugins/README
+file path=usr/lib/rabbitmq/plugins/accept-0.3.5.ez
+file path=usr/lib/rabbitmq/plugins/amqp10_client-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/amqp10_common-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/amqp_client-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/aten-0.5.5.ez
+file path=usr/lib/rabbitmq/plugins/base64url-1.0.1.ez
+file path=usr/lib/rabbitmq/plugins/cowboy-2.8.0.ez
+file path=usr/lib/rabbitmq/plugins/cowlib-2.9.1.ez
+file path=usr/lib/rabbitmq/plugins/credentials_obfuscation-2.4.0.ez
+file path=usr/lib/rabbitmq/plugins/cuttlefish-3.0.0.ez
+file path=usr/lib/rabbitmq/plugins/eetcd-0.3.3.ez
+file path=usr/lib/rabbitmq/plugins/gen_batch_server-0.8.4.ez
+file path=usr/lib/rabbitmq/plugins/goldrush-0.1.9.ez
+file path=usr/lib/rabbitmq/plugins/gun-1.3.3.ez
+file path=usr/lib/rabbitmq/plugins/jose-1.11.1.ez
+file path=usr/lib/rabbitmq/plugins/jsx-3.1.0.ez
+file path=usr/lib/rabbitmq/plugins/lager-3.9.2.ez
+file path=usr/lib/rabbitmq/plugins/observer_cli-1.6.2.ez
+file path=usr/lib/rabbitmq/plugins/prometheus-4.6.0.ez
+file path=usr/lib/rabbitmq/plugins/ra-1.1.8.ez
+file path=usr/lib/rabbitmq/plugins/rabbit-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbit_common-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_amqp1_0-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_auth_backend_cache-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_auth_backend_http-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_auth_backend_ldap-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_auth_backend_oauth2-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_auth_mechanism_ssl-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_aws-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_consistent_hash_exchange-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_event_exchange-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_federation-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_federation_management-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_jms_topic_exchange-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_management-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_management_agent-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_mqtt-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_peer_discovery_aws-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_peer_discovery_common-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_peer_discovery_consul-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_peer_discovery_etcd-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_peer_discovery_k8s-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_prelaunch-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_prometheus-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_random_exchange-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_recent_history_exchange-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_sharding-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_shovel-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_shovel_management-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_stomp-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_top-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_tracing-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_trust_store-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_web_dispatch-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_web_mqtt-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/rabbitmq_web_stomp-$(COMPONENT_VERSION).ez
+file path=usr/lib/rabbitmq/plugins/ranch-2.0.0.ez
+file path=usr/lib/rabbitmq/plugins/recon-2.5.1.ez
+file path=usr/lib/rabbitmq/plugins/stdout_formatter-0.2.4.ez
+file path=usr/lib/rabbitmq/plugins/syslog-3.4.5.ez
+file path=usr/lib/rabbitmq/plugins/sysmon_handler-1.3.0.ez
+file path=usr/lib/rabbitmq/sbin/rabbitmq-defaults
+file path=usr/lib/rabbitmq/sbin/rabbitmq-diagnostics
+file path=usr/lib/rabbitmq/sbin/rabbitmq-env
+file path=usr/lib/rabbitmq/sbin/rabbitmq-plugins
+file path=usr/lib/rabbitmq/sbin/rabbitmq-queues
+file path=usr/lib/rabbitmq/sbin/rabbitmq-server
+file path=usr/lib/rabbitmq/sbin/rabbitmq-upgrade
+file path=usr/lib/rabbitmq/sbin/rabbitmqctl
+file path=usr/share/man/man5/rabbitmq-env.conf.5
+file path=usr/share/man/man8/rabbitmq-diagnostics.8
+file path=usr/share/man/man8/rabbitmq-plugins.8
+file path=usr/share/man/man8/rabbitmq-queues.8
+file path=usr/share/man/man8/rabbitmq-server.8
+file path=usr/share/man/man8/rabbitmq-upgrade.8
+file path=usr/share/man/man8/rabbitmqctl.8
+dir  path=var/lib/rabbitmq owner=rabbitmq
+dir  path=var/log/rabbitmq owner=rabbitmq
+#
+user username=rabbitmq gcos-field=RabbitMQ group=daemon \
+    home-dir=/var/lib/rabbitmq password=NP uid=48
+#
+license rabbitmq.license \
+    license="MPLv1.1, MPLv2.0, EPLv1.1, Apache 2.0, MIT, ISC, BSD, BSD-like"
+
+# force a dependency on the erlang runtime
+depend type=require fmri=__TBD pkg.debug.depend.file=erl \
+    pkg.debug.depend.path=usr/bin

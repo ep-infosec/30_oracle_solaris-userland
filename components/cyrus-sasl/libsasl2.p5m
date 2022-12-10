@@ -1,0 +1,254 @@
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+
+#
+# Copyright (c) 2016, 2021, Oracle and/or its affiliates.
+#
+
+<transform file path=usr.*/man/.+ -> default mangler.man.stability "pass-through volatile">
+<transform file path=(.+)/man/man3sasl/(.+).3sasl$ -> \
+    set action.hash %<1>/man/man3/%<2>.3>
+<transform file path=usr/share/doc/libsasl2/.* -> \
+    default facet.doc.html true>
+
+# openldap.p5m is dependent on this package inside the workspace, must
+# be kept in sync
+set name=pkg.fmri \
+    value=pkg:/system/library/security/libsasl2@$(COMPONENT_VERSION),$(BUILD_VERSION)
+#
+set name=pkg.summary \
+    value="Cyrus SASL - Simple Authentication and Security Layer"
+set name=com.oracle.info.baid value=$(COMPONENT_BAID)
+set name=com.oracle.info.description value="cyrus-sasl libsasl2 project"
+set name=info.classification \
+    value=org.opensolaris.category.2008:System/Libraries
+set name=info.source-url value=$(COMPONENT_ARCHIVE_URL)
+set name=info.upstream-url value=$(COMPONENT_PROJECT_URL)
+set name=org.opensolaris.arc-caseid value=PSARC/2015/194 value=PSARC/2016/158 \
+    value=PSARC/2018/052
+set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
+dir  path=etc/sasl2 owner=root group=sys mode=0755
+file README path=etc/sasl2/README
+file path=usr/include/sasl/hmac-md5.h
+file path=usr/include/sasl/md5.h
+file path=usr/include/sasl/md5global.h
+file path=usr/include/sasl/prop.h
+file path=usr/include/sasl/sasl.h
+file path=usr/include/sasl/saslplug.h
+file path=usr/include/sasl/saslutil.h
+link path=usr/lib/$(MACH64)/libsasl2.so target=libsasl2.so.3.0.0
+link path=usr/lib/$(MACH64)/libsasl2.so.3 target=libsasl2.so.3.0.0
+file path=usr/lib/$(MACH64)/libsasl2.so.3.0.0
+link path=usr/lib/$(MACH64)/llib-lsasl.ln target=llib-lsasl2.ln
+file path=usr/lib/$(MACH64)/llib-lsasl2.ln
+file path=usr/lib/$(MACH64)/pkgconfig/libsasl2.pc
+link path=usr/lib/libsasl2.so target=libsasl2.so.3.0.0
+link path=usr/lib/libsasl2.so.3 target=libsasl2.so.3.0.0
+file path=usr/lib/libsasl2.so.3.0.0
+link path=usr/lib/llib-lsasl.ln target=llib-lsasl2.ln
+file path=usr/lib/llib-lsasl2.ln
+file path=usr/lib/pkgconfig/libsasl2.pc
+link path=usr/lib/sasl2/$(MACH64)/libgssapiv2.so target=libgssapiv2.so.3.0.0
+link path=usr/lib/sasl2/$(MACH64)/libgssapiv2.so.3 target=libgssapiv2.so.3.0.0
+file path=usr/lib/sasl2/$(MACH64)/libgssapiv2.so.3.0.0
+link path=usr/lib/sasl2/$(MACH64)/liblogin.so target=liblogin.so.3.0.0
+link path=usr/lib/sasl2/$(MACH64)/liblogin.so.3 target=liblogin.so.3.0.0
+file path=usr/lib/sasl2/$(MACH64)/liblogin.so.3.0.0
+link path=usr/lib/sasl2/$(MACH64)/libotp.so target=libotp.so.3.0.0
+link path=usr/lib/sasl2/$(MACH64)/libotp.so.3 target=libotp.so.3.0.0
+file path=usr/lib/sasl2/$(MACH64)/libotp.so.3.0.0
+link path=usr/lib/sasl2/$(MACH64)/libplain.so target=libplain.so.3.0.0
+link path=usr/lib/sasl2/$(MACH64)/libplain.so.3 target=libplain.so.3.0.0
+file path=usr/lib/sasl2/$(MACH64)/libplain.so.3.0.0
+link path=usr/lib/sasl2/$(MACH64)/libsasldb.so target=libsasldb.so.3.0.0
+link path=usr/lib/sasl2/$(MACH64)/libsasldb.so.3 target=libsasldb.so.3.0.0
+file path=usr/lib/sasl2/$(MACH64)/libsasldb.so.3.0.0
+link path=usr/lib/sasl2/$(MACH64)/libscram.so target=libscram.so.3.0.0
+link path=usr/lib/sasl2/$(MACH64)/libscram.so.3 target=libscram.so.3.0.0
+file path=usr/lib/sasl2/$(MACH64)/libscram.so.3.0.0
+link path=usr/lib/sasl2/64 target=./$(MACH64)
+link path=usr/lib/sasl2/libgssapiv2.so target=libgssapiv2.so.3.0.0
+link path=usr/lib/sasl2/libgssapiv2.so.3 target=libgssapiv2.so.3.0.0
+file path=usr/lib/sasl2/libgssapiv2.so.3.0.0
+link path=usr/lib/sasl2/liblogin.so target=liblogin.so.3.0.0
+link path=usr/lib/sasl2/liblogin.so.3 target=liblogin.so.3.0.0
+file path=usr/lib/sasl2/liblogin.so.3.0.0
+link path=usr/lib/sasl2/libotp.so target=libotp.so.3.0.0
+link path=usr/lib/sasl2/libotp.so.3 target=libotp.so.3.0.0
+file path=usr/lib/sasl2/libotp.so.3.0.0
+link path=usr/lib/sasl2/libplain.so target=libplain.so.3.0.0
+link path=usr/lib/sasl2/libplain.so.3 target=libplain.so.3.0.0
+file path=usr/lib/sasl2/libplain.so.3.0.0
+link path=usr/lib/sasl2/libsasldb.so target=libsasldb.so.3.0.0
+link path=usr/lib/sasl2/libsasldb.so.3 target=libsasldb.so.3.0.0
+file path=usr/lib/sasl2/libsasldb.so.3.0.0
+link path=usr/lib/sasl2/libscram.so target=libscram.so.3.0.0
+link path=usr/lib/sasl2/libscram.so.3 target=libscram.so.3.0.0
+file path=usr/lib/sasl2/libscram.so.3.0.0
+file usr/lib/sasl2/sample-client \
+    path=usr/lib/sasl2/tests/$(MACH32)/sample-client mode=0554
+file usr/lib/sasl2/sample-server \
+    path=usr/lib/sasl2/tests/$(MACH32)/sample-server mode=0554
+file usr/lib/sasl2/testsuite path=usr/lib/sasl2/tests/$(MACH32)/testsuite \
+    mode=0554 facet.optional.test=true
+file usr/lib/sasl2/$(MACH64)/sample-client \
+    path=usr/lib/sasl2/tests/sample-client mode=0554
+file usr/lib/sasl2/$(MACH64)/sample-server \
+    path=usr/lib/sasl2/tests/sample-server mode=0554
+file testing.txt path=usr/lib/sasl2/tests/testing.txt
+file usr/sbin/testsaslauthd path=usr/lib/sasl2/tests/testsaslauthd mode=0554
+file usr/lib/sasl2/$(MACH64)/testsuite path=usr/lib/sasl2/tests/testsuite \
+    mode=0554 facet.optional.test=true
+file path=usr/sbin/pluginviewer
+file path=usr/sbin/saslauthd
+file path=usr/sbin/sasldblistusers2
+file path=usr/sbin/saslpasswd2
+file advanced.html path=usr/share/doc/libsasl2/advanced.html
+file appconvert.html path=usr/share/doc/libsasl2/appconvert.html
+file components.html path=usr/share/doc/libsasl2/components.html
+file draft-burdis-cat-srp-sasl-xx.txt \
+    path=usr/share/doc/libsasl2/draft-burdis-cat-srp-sasl-xx.txt
+file draft-ietf-sasl-anon-xx.txt \
+    path=usr/share/doc/libsasl2/draft-ietf-sasl-anon-xx.txt
+file draft-ietf-sasl-crammd5-xx.txt \
+    path=usr/share/doc/libsasl2/draft-ietf-sasl-crammd5-xx.txt
+file draft-ietf-sasl-gssapi-xx.txt \
+    path=usr/share/doc/libsasl2/draft-ietf-sasl-gssapi-xx.txt
+file draft-ietf-sasl-plain-xx.txt \
+    path=usr/share/doc/libsasl2/draft-ietf-sasl-plain-xx.txt
+file draft-ietf-sasl-rfc2222bis-xx.txt \
+    path=usr/share/doc/libsasl2/draft-ietf-sasl-rfc2222bis-xx.txt
+file draft-ietf-sasl-rfc2831bis-xx.txt \
+    path=usr/share/doc/libsasl2/draft-ietf-sasl-rfc2831bis-xx.txt
+file draft-ietf-sasl-saslprep-xx.txt \
+    path=usr/share/doc/libsasl2/draft-ietf-sasl-saslprep-xx.txt
+file draft-murchison-sasl-login-xx.txt \
+    path=usr/share/doc/libsasl2/draft-murchison-sasl-login-xx.txt
+file draft-newman-sasl-c-api-xx.txt \
+    path=usr/share/doc/libsasl2/draft-newman-sasl-c-api-xx.txt
+file draft-newman-sasl-passdss-xx.txt \
+    path=usr/share/doc/libsasl2/draft-newman-sasl-passdss-xx.txt
+file gssapi.html path=usr/share/doc/libsasl2/gssapi.html
+file index.html path=usr/share/doc/libsasl2/index.html
+file install.html path=usr/share/doc/libsasl2/install.html
+file macosx.html path=usr/share/doc/libsasl2/macosx.html
+file mechanisms.html path=usr/share/doc/libsasl2/mechanisms.html
+file options.html path=usr/share/doc/libsasl2/options.html
+file plugprog.html path=usr/share/doc/libsasl2/plugprog.html
+file programming.html path=usr/share/doc/libsasl2/programming.html
+file rfc1321.txt path=usr/share/doc/libsasl2/rfc1321.txt
+file rfc1939.txt path=usr/share/doc/libsasl2/rfc1939.txt
+file rfc2104.txt path=usr/share/doc/libsasl2/rfc2104.txt
+file rfc2195.txt path=usr/share/doc/libsasl2/rfc2195.txt
+file rfc2222.txt path=usr/share/doc/libsasl2/rfc2222.txt
+file rfc2243.txt path=usr/share/doc/libsasl2/rfc2243.txt
+file rfc2245.txt path=usr/share/doc/libsasl2/rfc2245.txt
+file rfc2289.txt path=usr/share/doc/libsasl2/rfc2289.txt
+file rfc2444.txt path=usr/share/doc/libsasl2/rfc2444.txt
+file rfc2595.txt path=usr/share/doc/libsasl2/rfc2595.txt
+file rfc2831.txt path=usr/share/doc/libsasl2/rfc2831.txt
+file rfc2945.txt path=usr/share/doc/libsasl2/rfc2945.txt
+file rfc3174.txt path=usr/share/doc/libsasl2/rfc3174.txt
+file sysadmin.html path=usr/share/doc/libsasl2/sysadmin.html
+file upgrading.html path=usr/share/doc/libsasl2/upgrading.html
+file windows.html path=usr/share/doc/libsasl2/windows.html
+link path=usr/share/man/man3sasl/prop_clear.3sasl target=sasl_auxprop.3sasl
+link path=usr/share/man/man3sasl/prop_dispose.3sasl target=sasl_auxprop.3sasl
+link path=usr/share/man/man3sasl/prop_dup.3sasl target=sasl_auxprop.3sasl
+link path=usr/share/man/man3sasl/prop_erase.3sasl target=sasl_auxprop.3sasl
+link path=usr/share/man/man3sasl/prop_format.3sasl target=sasl_auxprop.3sasl
+link path=usr/share/man/man3sasl/prop_get.3sasl target=sasl_auxprop.3sasl
+link path=usr/share/man/man3sasl/prop_getnames.3sasl target=sasl_auxprop.3sasl
+link path=usr/share/man/man3sasl/prop_new.3sasl target=sasl_auxprop.3sasl
+link path=usr/share/man/man3sasl/prop_request.3sasl target=sasl_auxprop.3sasl
+link path=usr/share/man/man3sasl/prop_set.3sasl target=sasl_auxprop.3sasl
+link path=usr/share/man/man3sasl/prop_setvals.3sasl target=sasl_auxprop.3sasl
+file path=usr/share/man/man3sasl/sasl.3sasl
+file path=usr/share/man/man3sasl/sasl_authorize_t.3sasl
+file path=usr/share/man/man3sasl/sasl_auxprop.3sasl
+file sasl_auxprop_add_plugin.3sasl \
+    path=usr/share/man/man3sasl/sasl_auxprop_add_plugin.3sasl
+file path=usr/share/man/man3sasl/sasl_auxprop_getctx.3sasl
+file path=usr/share/man/man3sasl/sasl_auxprop_request.3sasl
+file path=usr/share/man/man3sasl/sasl_callbacks.3sasl
+file path=usr/share/man/man3sasl/sasl_canon_user_t.3sasl
+file sasl_canonuser_add_plugin.3sasl \
+    path=usr/share/man/man3sasl/sasl_canonuser_add_plugin.3sasl
+file path=usr/share/man/man3sasl/sasl_chalprompt_t.3sasl
+file path=usr/share/man/man3sasl/sasl_checkapop.3sasl
+file path=usr/share/man/man3sasl/sasl_checkpass.3sasl
+file sasl_client_add_plugin.3sasl \
+    path=usr/share/man/man3sasl/sasl_client_add_plugin.3sasl
+file path=usr/share/man/man3sasl/sasl_client_init.3sasl
+file path=usr/share/man/man3sasl/sasl_client_new.3sasl
+file sasl_client_plug_init_t.3sasl \
+    path=usr/share/man/man3sasl/sasl_client_plug_init_t.3sasl
+file path=usr/share/man/man3sasl/sasl_client_start.3sasl
+file path=usr/share/man/man3sasl/sasl_client_step.3sasl
+file path=usr/share/man/man3sasl/sasl_decode.3sasl
+file sasl_decode64.3sasl path=usr/share/man/man3sasl/sasl_decode64.3sasl
+file path=usr/share/man/man3sasl/sasl_dispose.3sasl
+file path=usr/share/man/man3sasl/sasl_done.3sasl
+file path=usr/share/man/man3sasl/sasl_encode.3sasl
+file sasl_encode64.3sasl path=usr/share/man/man3sasl/sasl_encode64.3sasl
+link path=usr/share/man/man3sasl/sasl_encodev.3sasl target=sasl_encode.3sasl
+file sasl_erasebuffer.3sasl path=usr/share/man/man3sasl/sasl_erasebuffer.3sasl
+file path=usr/share/man/man3sasl/sasl_errdetail.3sasl
+file path=usr/share/man/man3sasl/sasl_errors.3sasl
+file path=usr/share/man/man3sasl/sasl_errstring.3sasl
+file sasl_getcallback_t.3sasl \
+    path=usr/share/man/man3sasl/sasl_getcallback_t.3sasl
+file path=usr/share/man/man3sasl/sasl_getconfpath_t.3sasl
+file path=usr/share/man/man3sasl/sasl_getopt_t.3sasl
+file path=usr/share/man/man3sasl/sasl_getpath_t.3sasl
+file path=usr/share/man/man3sasl/sasl_getprop.3sasl
+file path=usr/share/man/man3sasl/sasl_getrealm_t.3sasl
+file path=usr/share/man/man3sasl/sasl_getsecret_t.3sasl
+file path=usr/share/man/man3sasl/sasl_getsimple_t.3sasl
+file path=usr/share/man/man3sasl/sasl_global_listmech.3sasl
+file path=usr/share/man/man3sasl/sasl_idle.3sasl
+file path=usr/share/man/man3sasl/sasl_listmech.3sasl
+file path=usr/share/man/man3sasl/sasl_log_t.3sasl
+file sasl_server_add_plugin.3sasl \
+    path=usr/share/man/man3sasl/sasl_server_add_plugin.3sasl
+file path=usr/share/man/man3sasl/sasl_server_init.3sasl
+file path=usr/share/man/man3sasl/sasl_server_new.3sasl
+file sasl_server_plug_init_t.3sasl \
+    path=usr/share/man/man3sasl/sasl_server_plug_init_t.3sasl
+file path=usr/share/man/man3sasl/sasl_server_start.3sasl
+file path=usr/share/man/man3sasl/sasl_server_step.3sasl
+file path=usr/share/man/man3sasl/sasl_server_userdb_checkpass_t.3sasl
+file path=usr/share/man/man3sasl/sasl_server_userdb_setpass_t.3sasl
+file sasl_set_alloc.3sasl path=usr/share/man/man3sasl/sasl_set_alloc.3sasl
+file sasl_set_mutex.3sasl path=usr/share/man/man3sasl/sasl_set_mutex.3sasl
+file sasl_seterror.3sasl path=usr/share/man/man3sasl/sasl_seterror.3sasl
+file path=usr/share/man/man3sasl/sasl_setpass.3sasl
+file path=usr/share/man/man3sasl/sasl_setprop.3sasl
+file path=usr/share/man/man3sasl/sasl_user_exists.3sasl
+file sasl_utf8verify.3sasl path=usr/share/man/man3sasl/sasl_utf8verify.3sasl
+file path=usr/share/man/man3sasl/sasl_verifyfile_t.3sasl
+file path=usr/share/man/man8/pluginviewer.8
+file path=usr/share/man/man8/saslauthd.8
+file path=usr/share/man/man8/sasldblistusers2.8
+file path=usr/share/man/man8/saslpasswd2.8
+license libsasl2.license license="BSD with attribution to CMU, MIT, others"
+depend type=optional \
+    fmri=system/library/security/libsasl@5.12.2.1.26,5.12-5.12.0.0.0.93.0

@@ -1,0 +1,182 @@
+#!/bin/bash
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+
+#
+# Copyright (c) 2012, 2021, Oracle and/or its affiliates.
+#
+
+
+set -eu -o pipefail
+export PATH=/usr/bin
+export LC_ALL=C
+
+function usage {
+	cat <<-EOT
+	gen-components --help
+	gen-components --owners owners_file --output file [ --repo IPS_repo_location ] [ --hgroot ws root ]
+	
+	Generates version/baid/license report of a whole gate.
+	EOT
+}
+
+function fail {
+	echo "$@"
+	exit 1
+}
+
+OWNERS=
+OUTPUT=
+REPO=
+WSROOT=
+
+while [ $# -gt 0 ]; do
+	case "$1" in
+		--owners|--output|--repo|--hgroot)
+			[ $# -gt 1 ] || fail "Option $1 requires an argument"
+			VAR="${1#--}"
+			printf -v "${VAR^^}" '%s' "$2"
+			shift 2
+			;;
+		--help)
+			usage
+			exit 0
+			;;
+		*)
+			fail "Unknown option '$1'\n\n$(usage)"
+			;;
+	esac
+done
+
+WSROOT="${WSROOT:-"$(hg root)"}"
+REPO="${REPO:-"$WSROOT/$(uname -p)/repo"}"
+
+[ -n "$OWNERS" ] || fail "Owners file has to be specified"
+[ -r "$OWNERS" ] || fail "Owners file '$OWNERS' is not readable"
+[ -n "$OUTPUT" ] || fail "Output file has to be specified"
+OUTPUT="$( readlink -f "$OUTPUT" )"
+> "$OUTPUT" || fail "Output file '$OUTPUT' has to be writable"
+pkgrepo info -s $REPO >/dev/null || fail "Repo '$REPO' is not accessible?"
+[ -d "$WSROOT" ] || fail "Can't access workspace root at '$WSROOT'?"
+
+typeset -p OWNERS OUTPUT REPO WSROOT
+
+
+function main {
+	write_preamble >> "$OUTPUT"
+	cd "$WSROOT/components"
+
+	HOOK="gmake -f Makefile -f $WSROOT/make-rules/component-report component-report"
+	HOOK="$HOOK COMPONENT_REPORT_RE_RM_LIST=$OWNERS"
+	HOOK="$HOOK COMPONENT_REPORT_REPO=$REPO"
+	gmake -j 50 \
+		COMPONENT_HOOK="$HOOK" \
+		component-hook
+
+	awk '{ print $3 }' "$WSROOT/$(uname -p)/components.mk" |
+	while read L; do
+		cat "$L/build/component-report" >> "$OUTPUT" 2>/dev/null || :
+	done
+	write_postambe >> "$OUTPUT"
+}
+
+function html_escape {
+	perl -pe '
+		s/\&/&amp;/g;
+		s/</&lt;/g;
+		s/>/&gt;/g;
+	'
+}
+
+function write_preamble {
+	cat <<EOT
+<html>
+<head>
+	<style type='text/css' media='screen'>
+		@import 'css/demo_table.css';
+		@import 'css/ColVis.css';
+		@import 'css/ColReorder.css';
+
+			tr.even:hover,  tr.even:hover td.sorting_1 ,
+			tr.odd:hover,  tr.odd:hover td.sorting_1 {
+				            background-color: gold;
+			}
+
+	</style>
+	<script type='text/javascript' src='js/jquery.js'></script>
+	<script type='text/javascript' src='js/jquery.dataTables.js'></script>
+	<script type='text/javascript' src='js/ColReorder.js'></script>
+	<script type='text/javascript' src='js/ColVis.js'></script>
+
+	<script>
+		\$(document).ready(function() {
+			\$('#components').dataTable({
+				"sDom": 'C<"clear">Rlfrtip',
+				bPaginate: true,
+				bFilter: true,
+				bSort: true,
+				iDisplayLength: -1,
+				aLengthMenu: [ [ 10, 50, -1], [ 10, 50, 'All'] ]
+			});
+		});
+	</script>
+</head>
+<body>
+
+<h1>Userland Components</h1>
+<h2>Repo parent:</h2>
+<pre>
+$( hg -R "$WSROOT" parent | html_escape )
+
+Report generated: $( date | html_escape )
+</pre>
+<p>
+<table align='center' id='components'>
+<thead>
+<tr>
+	<th>Component</th>
+	<th>Version</th>
+	<th>Gate Path</th>
+	<th>Package(s)</th>
+	<th>ARC Case(s)</th>
+	<th>License(s)</th>
+	<th>BAID</th>
+	<th>BugDB</th>
+	<th>RE</th>
+	<th>RM</th>
+	<th>Team</th>
+</tr>
+</thead>
+<tbody>
+EOT
+}
+
+function write_postambe {
+	cat <<EOT
+</tr>
+</tbody>
+</table>
+</body>
+</html>
+EOT
+}
+
+main

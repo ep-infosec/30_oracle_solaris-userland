@@ -1,0 +1,33 @@
+# This patch has been developed inhouse. This fixes a Solaris specific
+# issue and has not been submitted to the community.
+--- INIT.2012-08-01.old/src/cmd/ksh93/sh/io.c	2015-02-24 13:25:19.362427732 -0800
++++ INIT.2012-08-01/src/cmd/ksh93/sh/io.c	2015-03-05 12:11:01.233941923 -0800
+@@ -871,7 +877,6 @@ int sh_iomovefd(register int fdold)
+ {
+ 	Shell_t *shp = sh_getinterp();
+ 	register int fdnew;
+-	if(fdold >= shp->gd->lim.open_max)
+-		sh_iovalidfd(shp,fdold);
++	VALIDATE_FD(shp, fdold);
+ 	if(fdold<0 || fdold>2)
+ 		return(fdold);
+ 	fdnew = sh_iomovefd(dup(fdold));
+@@ -893,6 +899,8 @@ int	sh_pipe(register int pv[])
+ 		errormsg(SH_DICT,ERROR_system(1),e_pipe);
+ 	pv[0] = sh_iomovefd(pv[0]);
+ 	pv[1] = sh_iomovefd(pv[1]);
++	VALIDATE_FD(shp, pv[0]);
++	VALIDATE_FD(shp, pv[1]);
+ 	shp->fdstatus[pv[0]] = IONOSEEK|IOREAD;
+ 	shp->fdstatus[pv[1]] = IONOSEEK|IOWRITE;
+ 	sh_subsavefd(pv[0]);
+--- INIT.2012-08-01.old/src/cmd/ksh93/sh/path.c	2015-02-24 13:25:19.360898415 -0800
++++ INIT.2012-08-01/src/cmd/ksh93/sh/path.c	2015-03-05 11:17:55.650549374 -0800
+@@ -534,6 +537,7 @@ static int	path_opentype(Shell_t *shp,co
+ 	if(fd>=0 && (fd = sh_iomovefd(fd)) > 0)
+ 	{
+ 		fcntl(fd,F_SETFD,FD_CLOEXEC);
++		VALIDATE_FD(shp, fd);
+ 		shp->fdstatus[fd] |= IOCLEX;
+ 	}
+ 	return(fd);

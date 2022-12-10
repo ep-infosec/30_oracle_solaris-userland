@@ -1,0 +1,4 @@
+  1: wdiff output formats                            ok
+  2: use pager                                       ok
+  3: diff as input                                   ok
+All 3 tests were successful.

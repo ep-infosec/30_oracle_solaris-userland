@@ -1,0 +1,53 @@
+'\" te
+.\" Copyright (C) 1998-2003, Carnegie Mellon Univeristy.  All Rights Reserved.
+.\" Portions Copyright (C) 2003, Sun Microsystems, Inc. All Rights Reserved
+.TH sasl_encode64 3sasl "16 Sep 2003" SASL "SASL man pages"
+.SH NAME
+sasl_encode64 \- encode base64 string
+
+.SH SYNOPSIS
+.nf
+cc [ flag ... ] file ... -lsasl   [ library ... ]
+.B #include <sasl/saslutil.h>
+
+.BI "int sasl_encode64(const char *" in " , "
+.BI "                  unsigned " inlen ", "
+.BI "                  char *" out ", "
+.BI "                  unsigned " outmax ", "
+.BI "                  unsigned *" outlen "); "
+.fi
+
+.SH DESCRIPTION
+Use the 
+.B sasl_encode64()
+interface to convert an octet string into a base64 string. This routine is useful for SASL profiles that use base64, such as the IMAP (IMAP4) and POP (POP_AUTH) profiles. The output is null-terminated. If outlen is non-NULL, the length is placed in the outlen.
+
+.SH PARAMETERS
+.I in
+Input data.
+
+.I inlen
+The length of the input data.
+
+.I out
+The output data. The value of out can be the same as in. However, there must be enough space.
+
+.I outlen
+The length of the actual output.
+
+.I outmax
+The maximum size of the output buffer.
+
+.SH "RETURN VALUES"
+sasl_encode64() returns an integer that corresponds to a SASL error code.
+
+.SH ERRORS
+.TP 0.8i
+.B SASL_OK
+The call to sasl_encode64() was successful.
+.TP 0.8i
+.B SASL_BUFOVER
+The output buffer was too small.
+
+.SH "SEE ALSO"
+sasl_errors(3SASL)

@@ -1,0 +1,52 @@
+In-house patch
+makes the original "00-makefile.in.patch" more general
+...to be promote-able to community.
+
+--- a/Makefile.in	2016-07-20 05:54:21.199305532 -0700
++++ b/Makefile.in	2016-07-20 06:45:21.629442547 -0700
+@@ -61,29 +61,29 @@
+ install: install-db
+ 
+ install-db:
+-	install -d $(DESTDIR)$(LIBDIR)
+-	install -d $(DESTDIR)$(LIBDIR)/db/source/printer
+-	install -d $(DESTDIR)$(LIBDIR)/db/source/driver
+-	install -d $(DESTDIR)$(LIBDIR)/db/source/opt
+-	install -d $(DESTDIR)$(LIBDIR)/db/source/PPD
+-	install -d $(DESTDIR)$(LIBDIR)/xmlschema
+-	cp db/oldprinterids $(DESTDIR)$(LIBDIR)/db
+-	cp db/source/printer/*.xml $(DESTDIR)$(LIBDIR)/db/source/printer
++	@INSTALL@ -d $(DESTDIR)$(LIBDIR)
++	@INSTALL@ -d $(DESTDIR)$(LIBDIR)/db/source/printer
++	@INSTALL@ -d $(DESTDIR)$(LIBDIR)/db/source/driver
++	@INSTALL@ -d $(DESTDIR)$(LIBDIR)/db/source/opt
++	@INSTALL@ -d $(DESTDIR)$(LIBDIR)/db/source/PPD
++	@INSTALL@ -d $(DESTDIR)$(LIBDIR)/xmlschema
++	@INSTALL@ -f $(DESTDIR)$(LIBDIR)/db  -m 0644 db/oldprinterids
++	@INSTALL@ -f $(DESTDIR)$(LIBDIR)/db/source/printer  -m 0644 db/source/printer/*.xml
+ 	( cd db/source/driver/; \
+ 	  for d in $(DRIVERXMLS); do \
+-	    cp $$d $(DESTDIR)$(LIBDIR)/db/source/driver; \
++	    @INSTALL@ -f $(DESTDIR)$(LIBDIR)/db/source/driver  -m 0644 $$d; \
+ 	  done )
+-	cp db/source/opt/*.xml $(DESTDIR)$(LIBDIR)/db/source/opt
+-	( cd db/source && tar cf - --exclude=.svn PPD ) | \
+-	  ( cd $(DESTDIR)$(LIBDIR)/db/source && tar xf -)
++	@INSTALL@ -f $(DESTDIR)$(LIBDIR)/db/source/opt  -m 0644 db/source/opt/*.xml
++	( cd db/source && @TAR@ cf - --exclude=.svn PPD ) | \
++	  ( cd $(DESTDIR)$(LIBDIR)/db/source && @TAR@ xf -)
+ 	if test $(GZIP) != GZIP_NOT_FOUND -a $(GZIP_PPDS) != no ; then \
+-	  GZIP='' find $(DESTDIR)$(LIBDIR)/db/source/PPD -name "*.ppd" -exec $(GZIP) "{}" \; ; \
++	  GZIP='' find $(DESTDIR)$(LIBDIR)/db/source/PPD -name "*.ppd" -exec $(GZIP) -f "{}" \; ; \
+ 	fi
+ 	if test $(CUPS_PPDS) != CUPS_PPDS_NOT_FOUND -a $(PPDS_TO_CUPS) != no ; then \
+-	  install -d $(DESTDIR)$(CUPS_PPDS); \
+-	  ln -sf $(LIBDIR)/db/source/PPD $(DESTDIR)$(CUPS_PPDS)/foomatic-db-ppds; \
++	  @INSTALL@ -d $(DESTDIR)$(CUPS_PPDS); \
++	  @LN_S@ -f $(LIBDIR)/db/source/PPD $(DESTDIR)$(CUPS_PPDS)/foomatic-db-ppds; \
+ 	fi
+-	cp xmlschema/*.xsd $(DESTDIR)$(LIBDIR)/xmlschema
++	@INSTALL@ -f $(DESTDIR)$(LIBDIR)/xmlschema  -m 0644 xmlschema/*.xsd
+ 
+ build:
+ 	@echo "Nothing to compile/build, use \"make install\" to install the database."

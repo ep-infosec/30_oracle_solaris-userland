@@ -1,0 +1,31 @@
+There are other users of the whole Schilytools package who build it on Solaris.
+They cannot install it under /usr (the location which we force in this patch)
+because some tool names would clash with system one. Thus the default looks
+sane. cdrtools deliver just four tools which doesn't clash with anything on the
+system so we can safely deliver them into standard location. This is the reason
+why this patch was rejected upstream.
+
+https://codeberg.org/schilytools/schilytools/issues/35
+
+--- a/DEFAULTS/Defaults.sunos5	2014-01-31 05:22:11.622002827 +0100
++++ b/DEFAULTS/Defaults.sunos5	2014-01-31 05:21:20.893210286 +0100
+@@ -30,16 +30,16 @@
+ 
+ DEFINCDIRS=	$(SRCROOT)/include
+ DEFOSINCDIRS=
+-LDPATH=		-L/opt/schily/lib
++LDPATH=		
+ #RUNPATH=	-R$(INS_BASE)/lib -R/opt/schily/lib -R$(OLIBSDIR)
+-RUNPATH=	-R$(INS_BASE)/lib -R/opt/schily/lib
++RUNPATH=	
+ 
+ ###########################################################################
+ #
+ # Installation config stuff
+ #
+ ###########################################################################
+-INS_BASE=	/opt/schily
++INS_BASE=	/usr
+ INS_KBASE=	/
+ INS_RBASE=	/
+ #

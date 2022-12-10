@@ -1,0 +1,34 @@
+Developed in-house, fed back, awaiting accept.
+http://redmine.lighttpd.net/issues/2532
+Solaris-specific: in order to start Lighttpd as non-root
+user, initial user needs elevated privileges. Those
+privileges are unnecessary and should be dropped.
+
+--- lighttpd-1.4.67/src/network.c
++++ lighttpd-1.4.67/src/network.c
+@@ -20,6 +20,7 @@ #include <fcntl.h>
+ #include <unistd.h>
+ #include <string.h>
+ #include <stdlib.h>
++#include <priv.h>
+ 
+ void
+ network_accept_tcp_nagle_disable (const int fd)
+@@ -899,6 +900,17 @@ }
+ 
+     } while (0);
+ 
++
++    /* here we drop privileges we won't need any more */
++    priv_set_t *tset = priv_allocset();
++    priv_emptyset(tset);
++    priv_addset(tset, PRIV_NET_PRIVADDR);
++    if (setppriv(PRIV_OFF, PRIV_PERMITTED, tset) != 0) {
++        perror("Unable to set privileges: ");
++        return -1;
++    }
++    priv_freeset(tset);
++
+     free(p->cvlist);
+     return rc;
+ }

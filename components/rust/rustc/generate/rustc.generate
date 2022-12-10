@@ -1,0 +1,61 @@
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+
+#
+# Copyright (c) 2018, 2022, Oracle and/or its affiliates.
+#
+
+<include generate/common.transform>
+
+# libraries contain hash in their names and thus are included automatically
+<transform path=usr/lib/\$\(MACH64\)/lib.*\.so$ -> drop>
+<transform path=usr/lib/\$\(MACH64\)/rustlib/(sparcv9-sun|x86_64-pc)-solaris/lib.* -> drop>
+
+<transform path=usr/lib/\$\(MACH64\)/rustlib/sparcv9-sun-solaris -> edit path sparcv9-sun-solaris \$\(RUST_PLATFORM\)>
+<transform path=usr/lib/\$\(MACH64\)/rustlib/x86_64-pc-solaris -> edit path x86_64-pc-solaris \$\(RUST_PLATFORM\)>
+
+# no need to package these
+<transform path=usr/lib/\$\(MACH64\)/rustlib/components -> drop>
+<transform path=usr/lib/\$\(MACH64\)/rustlib/uninstall.sh -> drop>
+<transform path=usr/lib/\$\(MACH64\)/rustlib/install.log -> drop>
+<transform path=usr/lib/\$\(MACH64\)/rustlib/manifest-.* -> drop>
+<transform path=usr/lib/\$\(MACH64\)/rustlib/rust-installer-version -> drop>
+<transform path=usr/share/doc/rust/html/(\.lock|\.stamp) -> drop>
+
+# lldb is not bundled with Solaris yet
+<transform path=usr/bin/rust-lldb -> drop>
+
+# i386 files only 
+<transform file path=usr/share/doc/rust/html/src/core/up/up/portable-simd/crates/core_simd/src/vendor/x86.rs.html -> set variant.arch i386>
+<transform file path=usr/share/doc/rust/html/src/std/up/stdarch/crates/std_detect/src/detect/.*/x86.rs.html -> set variant.arch i386>
+<transform file path=usr/share/doc/rust/html/core/arch/aarch64/fn\.v(q)?tb.*\.html -> set variant.arch i386>
+<transform file path=usr/share/doc/rust/html/core/arch/arm/fn\.vtb.*\.html -> set variant.arch i386>
+<transform file path=usr/share/doc/rust/html/core/core_arch/aarch64/neon/(fn\.)?v(q|t).*\.html -> set variant.arch i386>
+<transform file path=usr/share/doc/rust/html/core/core_arch/arm/neon/(fn\.)?v(q|t).*\.html -> set variant.arch i386>
+
+# sparc files only 
+<transform file path=usr/share/doc/rust/html/std/os/linux/raw/arch/fn.stat.html -> set variant.arch sparc>
+<transform file path=usr/share/doc/rust/html/std/os/linux/raw/fn.stat.html -> set variant.arch sparc>
+
+# delete everything not belonging to this package
+<transform file link pkg.type=(?!rustc) -> drop>
+<transform file link -> delete pkg.type .*>
+

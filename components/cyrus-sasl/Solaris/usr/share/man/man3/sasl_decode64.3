@@ -1,0 +1,53 @@
+'\" te
+.\" Copyright (C) 1998-2003, Carnegie Mellon Univeristy.  All Rights Reserved.
+.\" Portions Copyright (C) 2003, Sun Microsystems, Inc. All Rights Reserved
+.TH sasl_decode64 3sasl "16 Sep 2003" SASL "SASL man pages"
+.SH NAME
+sasl_decode64 \- decode base64 string
+
+.SH SYNOPSIS
+.nf
+cc [ flag ... ] file ... -lsasl   [ library ... ]
+.B #include <sasl/saslutil.h>
+
+.BI "int sasl_decode64(const char *" in ", "
+.BI "                  unsigned " inlen ", "
+.BI "                  char *" out ", "
+.BI "                  unsigned " outmax ", "
+.BI "                  unsigned *" outlen "); "
+.fi
+
+.SH DESCRIPTION
+Use the 
+.B sasl_decode64()
+interface to decode a base64 encoded buffer.
+
+.SH PARAMETERS
+.I in
+Input data.
+
+.I inlen
+The length of the input data.
+
+.I out
+The output data. The value of out can be the same as in. However, there must be enough space.
+
+.I outlen
+The length of the actual output.
+
+.I outmax
+The maximum size of the output buffer.
+
+.SH "RETURN VALUES"
+sasl_decode64() returns an integer that corresponds to a SASL error code.
+
+.SH ERRORS
+.TP 0.8i
+.B SASL_OK
+The call to sasl_decode64() was successful.
+
+.TP 0.8i
+See sasl_errors(3SASL) for information on SASL error codes.
+
+.SH "SEE ALSO"
+sasl_errors(3SASL)

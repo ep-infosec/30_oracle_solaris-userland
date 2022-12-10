@@ -1,0 +1,17 @@
+This patch prevents a warning message from being generated when the input
+ file is not an xccdf results file.
+This patch has not been submitted upstream, but is planned to be done by
+ 2015-Jan-31.
+
+diff --git a/xsl/xccdf-guide.xsl b/xsl/xccdf-guide.xsl
+index cd4aeca..1c7ad38 100644
+--- a/xsl/xccdf-guide.xsl
++++ b/xsl/xccdf-guide.xsl
+@@ -81,4 +81,7 @@ Authors:
+     </xsl:call-template>
+ </xsl:template>
+ 
++<!-- override warn-unresolved for guide generation -->
++<xsl:variable name='warn-unresolved' select='0' />
++
+ </xsl:stylesheet>

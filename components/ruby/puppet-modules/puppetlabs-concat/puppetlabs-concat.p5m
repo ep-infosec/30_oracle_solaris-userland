@@ -1,0 +1,87 @@
+
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+
+#
+# Copyright (c) 2015, 2022, Oracle and/or its affiliates.
+#
+
+<transform file -> edit path ^ usr/puppetlabs/puppet/modules/>
+#
+set name=pkg.fmri \
+    value=pkg:/system/management/puppet/puppetlabs-concat@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION)
+set name=pkg.summary value="Concat Puppet Module"
+set name=pkg.description \
+    value="The concat module lets you construct files from multiple ordered fragments of text"
+set name=com.oracle.info.baid value=$(COMPONENT_BAID)
+set name=com.oracle.info.description value="Concat Puppet Module"
+set name=info.classification \
+    value="org.opensolaris.category.2008:System/Administration and Configuration"
+set name=info.source-url value=$(GIT_REPO)
+set name=info.upstream \
+    value="puppetlabs - https://forge.puppetlabs.com/puppetlabs"
+set name=info.upstream-url value=$(GIT_REPO)
+set name=org.opensolaris.arc-caseid value=PSARC/2015/368 value=PSARC/2016/016 \
+    value=PSARC/2016/607 value=PSARC/2017/092
+set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
+file path=concat/CHANGELOG.md
+file path=concat/CONTRIBUTING.md
+file path=concat/Gemfile
+file path=concat/LICENSE
+file path=concat/NOTICE
+file path=concat/README.md
+file path=concat/Rakefile
+file path=concat/examples/fragment.pp
+file path=concat/examples/init.pp
+file path=concat/lib/puppet/type/concat_file.rb
+file path=concat/lib/puppet/type/concat_fragment.rb
+file path=concat/manifests/fragment.pp
+file path=concat/manifests/init.pp
+file path=concat/metadata.json
+file path=concat/spec/acceptance/backup_spec.rb
+file path=concat/spec/acceptance/concat_spec.rb
+file path=concat/spec/acceptance/concurrency_spec.rb
+file path=concat/spec/acceptance/force_spec.rb
+file path=concat/spec/acceptance/format_spec.rb
+file path=concat/spec/acceptance/fragment_order_spec.rb
+file path=concat/spec/acceptance/fragment_source_spec.rb
+file path=concat/spec/acceptance/fragments_are_always_replaced_spec.rb
+file path=concat/spec/acceptance/newline_spec.rb
+file path=concat/spec/acceptance/order_spec.rb
+file path=concat/spec/acceptance/pup_1963_spec.rb
+file path=concat/spec/acceptance/quoted_paths_spec.rb
+file path=concat/spec/acceptance/specinfra_stubs.rb
+file path=concat/spec/acceptance/symbolic_name_spec.rb
+file path=concat/spec/acceptance/validation_spec.rb
+file path=concat/spec/acceptance/warn_header_spec.rb
+file path=concat/spec/acceptance/warnings_spec.rb
+file path=concat/spec/defines/concat_fragment_spec.rb
+file path=concat/spec/defines/concat_spec.rb
+file path=concat/spec/spec_helper.rb
+file path=concat/spec/spec_helper_acceptance.rb
+file path=concat/spec/spec_helper_local.rb
+file path=concat/spec/unit/type/concat_file_spec.rb
+file path=concat/spec/unit/type/concat_fragment_spec.rb
+#
+#
+license puppetlabs-concat.license license="Apache v2.0"
+# Renamed Package
+depend type=optional \
+    fmri=system/management/puppet/puppet-concat@1.2.1-5.12.0.0.0.93.0

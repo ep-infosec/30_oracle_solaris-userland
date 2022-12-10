@@ -1,0 +1,75 @@
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+# Copyright (c) 2016, 2018, Oracle and/or its affiliates. All rights reserved.
+
+This suite also runs fuzz tests, which means it pumps out a lot of
+random warnings and scary messages.  Ignore them, except to mentally note
+that the fuzz testing did occur.  The transform-results script gets rid
+of everything that varies from test to test or architecture to architecture,
+and decides PASS/FAIL based upon the results of the transform.
+
+NOTE: cleanup does not restore the previous Kerberos setup.
+
+
+To run testsuite:
+
+PREP:  gmake test_tarball in components/cyrus-sasl
+
+On a lab machine that has a static ip address, accessible by nslookup:
+
+    --  make sure you are ready and willing to destroy your kerberos setup
+    --  set publisher to install the version of libsasl2 to test, and 
+        install libsasl2.
+
+        The test setup tries to install the optional sasl plugins, which are
+	each separate packages, so each one has its own .p5m file.  To 
+	find existing ones, which will need their facets unlocked:
+
+	    pkg list -a /system/library/security/sasl/*
+
+	If the lab system has old versions  of any optional sasl plugins,
+	either uninstall them or disable solaris publishers, so that you 
+	only get the ones from your own publisher.  
+
+	Setup will not try to install libsasl-links, it's not a plugin.
+
+
+    --      cd /var/tmp
+	    gtar zxf sasltest.tgz
+	    cd sasltest
+
+As root:
+    If this is not the first test run, run ./cleanup or the test will not 
+    run.
+
+    ./run_testsuite
+    [ answer y to "Existing KDC config will be destroyed, okay to proceed?" ]
+
+    [gather results]
+    If doing another run:  ./cleanup  
+
+
+
+TODO: 
+	debug GSS-SPNEGO mechanism and/or test
+
+	See if there is a way to run the test without nslookup-able address
+	(the setup was inherited from kerberos tests and may or may not
+	be overly strict)

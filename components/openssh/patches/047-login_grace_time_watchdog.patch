@@ -1,0 +1,166 @@
+#
+# Implements watchdog process, which backs up login_grace_time alarm.
+#
+# If the main process is hung in a syscall, SIGALRM is queued but not
+# delivered and the connection stays unauthenticated for too long.
+#
+# Function start_grace_watchdog forks of a watchdog process, that sends the
+# main process a SIGTERM, if it does neither authenticate nor exit before
+# (login_grace_time + GRACE_WATCHDOG_THRESHOLD).
+# If the main process does not react to SIGTERM, SIGKILL is sent after
+# additional GRACE_WATCHDOG_THRESHOLD seconds.
+#
+# Patch source: in-house
+# Reported to openssh@openssh.com as security issue.
+#
+# Per agreement with upstream developers, filed:
+#    https://bugzilla.mindrot.org/show_bug.cgi?id=2615
+#
+--- old/sshd.c	2022-06-10 18:04:55.282081858 +0200
++++ new/sshd.c	2022-06-10 18:05:30.016559122 +0200
+@@ -260,7 +260,14 @@ struct sshbuf *loginmsg;
+ /* Unprivileged user */
+ struct passwd *privsep_pw = NULL;
+ 
++/* Pid of process backing up login_grace_time alarm. */
++pid_t grace_watchdog_pid = -1;
++
++/* Time in seconds */
++#define	GRACE_WATCHDOG_THRESHOLD 10
++
+ /* Prototypes for various functions defined later in this file. */
++static void stop_grace_watchdog(void);
+ void destroy_sensitive_data(void);
+ void demote_sensitive_data(void);
+ static void do_ssh2_kex(struct ssh *);
+@@ -372,6 +379,7 @@ grace_alarm_handler(int sig)
+ 		ssh_signal(SIGTERM, SIG_IGN);
+ 		kill(0, SIGTERM);
+ 	}
++	stop_grace_watchdog();
+ 
+ 	/* XXX pre-format ipaddr/port so we don't need to access active_state */
+ 	/* Log error and exit. */
+@@ -380,6 +388,94 @@ grace_alarm_handler(int sig)
+ 	    ssh_remote_port(the_active_state));
+ }
+ 
++static inline void
++sleep_reliably(unsigned int seconds)
++{
++	while (seconds > 0)
++		seconds = sleep(seconds);
++}
++
++/*
++ * Implements watchdog process, which backs up login_grace_time alarm.
++ *
++ * If the main process is hung in a syscall, SIGALRM is queued but not
++ * delivered and the connection stays unauthenticated for too long.
++ *
++ * This function forks off a watchdog process, which sends the main process
++ * a SIGTERM, if it does neither authenticate nor exit before
++ * (login_grace_time + GRACE_WATCHDOG_THRESHOLD).
++ * If the main process does not react to SIGTERM, SIGKILL is sent after
++ * additional GRACE_WATCHDOG_THRESHOLD seconds.
++ */
++static void
++start_grace_watchdog(int login_grace_time)
++{
++	pid_t ppid = getpid();
++
++	if (login_grace_time == 0)
++		return;
++
++	if (grace_watchdog_pid != -1) {
++		error("login_grace_time watchdog process already running");
++		return;
++	}
++
++	grace_watchdog_pid = fork();
++	if (grace_watchdog_pid == -1)
++		fatal("fork of login_grace_time watchdog process failed");
++	else if (grace_watchdog_pid > 0)
++		return;
++
++	/* child */
++
++	/* close open fds, including client socket and startup_pipe */
++	closefrom(3);
++
++	/* kill the monitor with SIGTERM after timeout + threshold */
++	sleep_reliably(login_grace_time + GRACE_WATCHDOG_THRESHOLD);
++	if (getppid() != ppid) {
++		debug("login_grace_time watchdog still active, "
++		    "but watched process %d already exited.", (int)ppid);
++		exit(0);
++	}
++	error("Timeout before authentication for %s. Killing process %d "
++	    "with SIGTERM.", ssh_remote_ipaddr(the_active_state), (int)ppid);
++	kill(ppid, SIGTERM);
++
++	/* if neccessary, kill it with SIGKILL */
++	sleep_reliably(GRACE_WATCHDOG_THRESHOLD);
++	if (getppid() != ppid)
++		exit(0);
++	error("Watched process %d did not respond to SIGTERM. "
++	    "Killing it with SIGKILL.", (int)ppid);
++	kill(ppid, SIGKILL);
++
++	/* give up */
++	sleep_reliably(GRACE_WATCHDOG_THRESHOLD);
++	if (getppid() == ppid) {
++		error("login_grace_time watchdog failed to kill %d", (int)ppid);
++		exit(255);
++	}
++	exit(0);
++}
++
++/* kill grace watchdog process */
++static void
++stop_grace_watchdog()
++{
++	if (grace_watchdog_pid == -1) {
++		debug3("login_grace_time watchdog process not running");
++		return;
++	}
++
++	kill(grace_watchdog_pid, SIGTERM);
++	while (waitpid(grace_watchdog_pid, NULL, 0) < 0) {
++		if (errno == EINTR)
++			continue;
++	}
++	grace_watchdog_pid = -1;
++}
++
+ /* Destroy the host and server keys.  They will no longer be needed. */
+ void
+ destroy_sensitive_data(void)
+@@ -534,6 +630,7 @@ privsep_preauth(struct ssh *ssh)
+ 		/* child */
+ 		close(pmonitor->m_sendfd);
+ 		close(pmonitor->m_log_recvfd);
++		grace_watchdog_pid = -1;
+ 
+ 		/* Arrange for logging to be sent to the monitor */
+ 		set_log_handler(mm_log_handler, pmonitor);
+@@ -2208,8 +2305,10 @@ main(int ac, char **av)
+ 	 * are about to discover the bug.
+ 	 */
+ 	ssh_signal(SIGALRM, grace_alarm_handler);
+-	if (!debug_flag)
++	if (!debug_flag) {
+ 		alarm(options.login_grace_time);
++		start_grace_watchdog(options.login_grace_time);
++	}
+ 
+ 	if ((r = kex_exchange_identification(ssh, -1,
+ 	    options.version_addendum)) != 0)
+@@ -2267,6 +2366,7 @@ main(int ac, char **av)
+ 	 */
+ 	alarm(0);
+ 	ssh_signal(SIGALRM, SIG_DFL);
++	stop_grace_watchdog();
+ 	authctxt->authenticated = 1;
+ 	if (startup_pipe != -1) {
+ 		close(startup_pipe);

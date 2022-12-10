@@ -1,0 +1,224 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# Open second terminal with root shell. Keep this as a possibility to assume
+# root privileges if you loose the ability to do so via sudo during testing.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# Make sure we are looking at the correct version
+sudo -V | grep version
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# Test digest feature
+
+# Make sure that the following line is commented out in /etc/sudoers:
+# ALL    ALL=(ALL) NOPASSWD: ALL
+
+openssl dgst -sha224 /usr/bin/ls # make note of the hash
+
+# Add this line to sudoers (replace UID by your user name and HASH by the ls
+# hash):
+<UID> ALL = sha224:<HASH> /usr/bin/ls
+
+# This should work (asking you a password first)
+sudo /usr/bin/ls /
+
+# Now change the hash so that it is wrong and make sure it does not work this
+# time
+sudo /usr/bin/ls /
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# add this line to sudoers
+ALL ALL=(ALL:ALL) NOPASSWD: ALL
+
+# Make sure it gives you root account
+sudo id
+
+# Make sure this changes just your group
+sudo -g sol_src id
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# Test creating a file in etc
+sudoedit /etc/test
+...
+cat /etc/test # Make sure the text is there
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# Auditing
+cd /var/audit
+sudo /usr/sbin/audit -t
+sudo rm *
+sudo /usr/sbin/audit -s
+sudo /usr/sbin/auditreduce * | /usr/sbin/praudit -s
+> file,1970-01-01 00:00:00.000 +00:00,
+> file,2014-03-27 10:34:23.000 +00:00,
+
+# Make sure that since the first run we can see new auditing record
+sudo auditreduce * | praudit -s
+> file,2014-03-27 10:34:23.000 +00:00,
+> header,158,2,AUE_sudo,,10.0.2.15,2014-03-27 10:34:23.735 +00:00
+> subject,vmarek,root,staff,vmarek,staff,2295,3108723863,5096 202240 10.0.2.2
+> path,/var/share/audit
+> path,/usr/sbin/auditreduce
+> cmd,argcnt,1,20140327103420.not_terminated.S12-43,envcnt,0,
+> return,success,0
+> file,2014-03-27 10:34:23.000 +00:00,
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# PAM credentials
+
+# Make sure that 'root' is a role
+sudo /usr/sbin/usermod -K type=role root
+
+# Note the preselection mask, it should probably be 'sstore(0x200031000,0x200031000)'
+sudo bash -c '/usr/sbin/auditconfig -getpinfo $$'
+
+# Add audit flags to root
+sudo /usr/sbin/rolemod -K audit_flags=ex:no root
+
+# Make sure that the preselection mask now shows new entries (lo,ex)
+sudo bash -c '/usr/sbin/auditconfig -getpinfo $$'
+
+# Disable PAM credentials in sudo by adding this line to sudoers:
+Defaults !pam_setcred
+
+# Make sure that the preselection mask now shows only previous entry
+sudo bash -c '/usr/sbin/auditconfig -getpinfo $$'
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# Solaris privileges
+
+# Add this to the end of /etc/sudoers keeping the 'ALL ALL=(ALL:ALL) NOPASSWD: ALL' above
+<UID> ALL = () PRIVS="basic,dtrace_kernel,dtrace_proc,dtrace_user" NOPASSWD: /usr/sbin/dtrace, /usr/bin/bash
+
+# Just your regular id
+id
+> uid=157888(vmarek) gid=10(staff)
+
+# Sudo normally turning you into root via the 'ALL ALL=(ALL:ALL) NOPASSWD: ALL' line
+sudo id
+> uid=0(root) gid=0(root)
+
+# For bash it should leave your ID and just grant dtrace privileges
+sudo bash -c 'id; ppriv $$'
+uid=157888(vmarek) gid=10(staff)
+> 2296:   bash -c id; ppriv $$
+> flags = <none>
+>         E: basic,dtrace_kernel,dtrace_proc,dtrace_user
+>         I: basic,dtrace_kernel,dtrace_proc,dtrace_user
+>         P: basic,dtrace_kernel,dtrace_proc,dtrace_user
+>         L: basic,dtrace_kernel,dtrace_proc,dtrace_user
+
+# dtrace functionality
+sudo /usr/sbin/dtrace -l -n 'syscall::b*:entry'
+>    ID   PROVIDER            MODULE                          FUNCTION NAME
+> 11282    syscall                                                 brk entry
+> 11550    syscall                                            brandsys entry
+> 11642    syscall                                                bind entry
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# Test noexec
+
+# Verify the following works
+
+sudo /usr/perl5/5.26/bin/perl -e 'print "before\n"; system("id -a"); print "after\n"'
+before
+uid=0(root) gid=0(root) groups=0(root),1(other),2(bin),3(sys),4(adm),6(mail),7(tty),8(lp),12(daemon)
+after
+
+# Add the following to sudoers
+
+ALL     ALL = NOPASSWD: NOEXEC: /usr/perl5/5.26/bin/perl
+
+# Now Perl should be prevent to run further commands, so the output is
+
+sudo /usr/perl5/5.26/bin/perl -e 'print "before\n"; system("id -a"); print "after\n"'
+before
+after
+
+# Perl itself works as expected
+
+/usr/perl5/5.26/bin/perl -e 'print "before\n"; system("id -a"); print "after\n"'
+before
+uid=101(rimmer) gid=10(staff) groups=10(staff)
+after
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# Verify that "Last login..." message does not appear
+
+sudo /bin/date
+Thu Nov 10 08:24:57 UTC 2016
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# Verify that root role is able to run commands.
+
+# make sure root is a role
+sudo /usr/sbin/usermod -K type=role root
+UX: /usr/sbin/usermod: ERROR: Roles must be modified with 'rolemod'.
+# and has no pam_policy
+sudo /usr/sbin/rolemod -K pam_policy= root
+# and there is no PAM_POLICY set in /etc/security/policy.conf
+sudo gsed -ibackup 's/^PAM_POLICY=/##PAM_POLICY=/' /etc/security/policy.conf
+# assume the root role
+su - root
+# run commands as different user
+sudo -u webservd /sbin/uname
+sudo -i -u webservd /sbin/uname
+
+# Now retest with various pam_policy values (unix, ldap, ...)
+/usr/sbin/rolemod -K pam_policy=unix root
+# goto begin
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# Test sudo_logservd
+
+# Enable io logging by making sure the below three lines are present in /etc/sudoers:
+Defaults log_output
+Defaults log_input
+Defaults iolog_dir=/var/share/sudo/sudo-io
+
+# make sure your machine has the right hostname set up
+check-hostname
+# and regenerate the host CA and cert to capture the hostname change
+svccfg -s system/identity:cert delcust
+svcadm refresh system/identity:cert
+svcadm restart -s system/identity:cert
+
+# create some logs
+$ sudo bash
+# ls
+# exit
+
+# In one terminal run the server
+/usr/sbin/sudo_logsrvd -n
+
+# in another terminal run the client with TLS
+/usr/sbin/sudo_sendlog --host `hostname` --key /etc/certs/localhost/host.key --cert /etc/certs/localhost/host.crt --ca-bundle /etc/certs/localhost/host-ca/hostca.crt -p 30344 /var/share/sudo/sudo-io/00/00/01 -n
+Connected to sudocbe:30344
+Server ID: Sudo Audit Server 1.9.9
+Remote log ID: /var/share/sudo/sudo-io/00/00/0G
+1 I/O log transmitted successfully in 0.031067965 seconds
+
+# and again with verifying the server certificate
+/usr/sbin/sudo_sendlog --host `hostname` --key /etc/certs/localhost/host.key --cert /etc/certs/localhost/host.crt --ca-bundle /etc/certs/localhost/host-ca/hostca.crt -p 30344 /var/share/sudo/sudo-io/00/00/01
+Connected to sudocbe:30344
+Server ID: Sudo Audit Server 1.9.9
+Remote log ID: /var/share/sudo/sudo-io/00/00/0H
+1 I/O log transmitted successfully in 0.031471913 seconds
+
+# and without TLS
+/usr/sbin/sudo_sendlog --host `hostname`  -p 30343 /var/share/sudo/sudo-io/00/00/01
+Connected to sudocbe:30343
+Server ID: Sudo Audit Server 1.9.9
+Remote log ID: /var/share/sudo/sudo-io/00/00/0I
+1 I/O log transmitted successfully in 0.020557914 seconds

@@ -1,0 +1,54 @@
+Use the Solaris logo and allow it to be displayed on non-default backgrounds
+Not suitable for upstream
+
+--- a/schemas/org.fedorahosted.background-logo-extension.gschema.xml
++++ b/schemas/org.fedorahosted.background-logo-extension.gschema.xml
+@@ -10,7 +10,7 @@
+   <schema path="/org/fedorahosted/background-logo-extension/"
+           id="org.fedorahosted.background-logo-extension">
+     <key type="s" name="logo-file">
+-      <default>'/usr/share/fedora-logos/fedora_lightbackground.svg'</default>
++      <default>'/usr/share/solaris-logos/Oracle_Solaris_white.svg'</default>
+       <summary>Logo file</summary>
+       <description>The full logo file path</description>
+     </key>
+@@ -24,8 +24,8 @@
+       </description>
+     </key>
+     <key type="d" name="logo-size">
+-      <range min="5.0" max="15.0"/>
+-      <default>9.0</default>
++      <range min="5.0" max="25.0"/>
++      <default>15.0</default>
+       <summary>Logo size</summary>
+       <description>The logo size in percent relative to the screen width</description>
+     </key>
+@@ -37,7 +37,7 @@
+     </key>
+     <key type="u" name="logo-opacity">
+       <range min="0" max="255"/>
+-      <default>255</default>
++      <default>80</default>
+       <summary>Logo opacity</summary>
+       <description>The opacity of the logo</description>
+     </key>
+--- a/extension.js
++++ b/extension.js
+@@ -165,7 +165,8 @@
+         let defaultUri = background._settings.get_default_value('picture-uri');
+         let file = Gio.File.new_for_commandline_arg(defaultUri.deep_unpack());
+ 
+-        let visible;
++        let visible = true;
++/*
+         if (this._settings.get_boolean('logo-always-visible'))
+             visible = true;
+         else if (background._file) // > 3.14
+@@ -174,6 +175,7 @@
+             visible = background._filename == file.get_path();
+         else // background == NONE
+             visible = false;
++*/
+ 
+         Tweener.addTween(this.actor,
+                          { opacity: visible ? 255 : 0,

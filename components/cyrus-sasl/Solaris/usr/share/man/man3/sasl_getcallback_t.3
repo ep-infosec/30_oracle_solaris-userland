@@ -1,0 +1,56 @@
+'\" te
+.\" Copyright (C) 1998-2003, Carnegie Mellon Univeristy.  All Rights Reserved.
+.\" Portions Copyright (C) 2003, Sun Microsystems, Inc. All Rights Reserved
+.TH sasl_getcallback_t 3SASL "27 Oct 2003" SASL "SASL man pages"
+.SH NAME
+sasl_getcallback_t \- callback function to lookup a sasl_callback_t for a connection
+
+.SH SYNOPSIS
+.nf
+cc [ flag ... ] file ... -lsasl   [ library ... ]
+.B #include <sasl/saslplug.h>
+
+.BI "int sasl_getcallback_t(sasl_conn_t *" conn ", "
+.BI "               unsigned long " callbacknum ", "
+.BI "                         int (**" proc ")( ), "
+.BI "                         void **" pcontext "); "
+.fi
+
+.SH DESCRIPTION
+The 
+.B sasl_getcallback_t()
+function is a callback to lookup a sasl_callback_t for a connection.
+
+.SH PARAMETERS
+.I conn
+The connection to lookup a callback for.
+
+.I callbacknum
+The number of the callback.
+
+.I proc
+Pointer to the callback function. The value of proc is set to NULL upon failure.
+
+.I pcontext
+Pointer to the callback context. The value of pcontext is set to NULL upon failure.
+
+.SH "RETURN VALUES"
+Like other SASL callback functions, 
+.B sasl_getcallback_t()
+returns an integer that corresponds to a SASL error code. See <sasl.h> for a complete list of SASL error codes.
+
+.SH ERRORS
+.TP 0.8i
+.B SASL_OK
+The call to sasl_getcallback_t() was successful.
+.TP 0.8i
+.B SASL_FAIL
+Unable to find a callback of the requested type.
+.TP 0.8i
+.B SASL_INTERACT
+The caller must use interaction to get data.
+
+See sasl_errors(3SASL) for information on SASL error codes.
+
+.SH "SEE ALSO"
+sasl_errors(3SASL)

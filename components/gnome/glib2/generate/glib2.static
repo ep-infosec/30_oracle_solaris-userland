@@ -1,0 +1,43 @@
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+#
+# Copyright (c) 2020, 2022, Oracle and/or its affiliates.
+#
+
+file usr/bin/$(MACH64)/gapplication path=usr/bin/gapplication
+file usr/bin/$(MACH64)/gdbus path=usr/bin/gdbus
+file usr/bin/$(MACH64)/gdbus-codegen path=usr/bin/gdbus-codegen \
+    pkg.depend.bypass-generate=.*
+file usr/bin/$(MACH64)/gio path=usr/bin/gio
+file usr/bin/$(MACH64)/glib-compile-resources \
+    path=usr/bin/glib-compile-resources
+file usr/bin/$(MACH64)/glib-compile-schemas path=usr/bin/glib-compile-schemas
+file usr/bin/$(MACH64)/glib-genmarshal path=usr/bin/glib-genmarshal
+file usr/bin/$(MACH64)/glib-gettextize path=usr/bin/glib-gettextize
+file usr/bin/$(MACH64)/glib-mkenums path=usr/bin/glib-mkenums
+file usr/bin/$(MACH64)/gobject-query path=usr/bin/gobject-query
+file usr/bin/$(MACH64)/gresource path=usr/bin/gresource
+file path=usr/bin/$(MACH64)/gio-querymodules
+file usr/bin/$(MACH64)/gsettings path=usr/bin/gsettings
+file usr/bin/$(MACH64)/gtester path=usr/bin/gtester
+file usr/bin/$(MACH64)/gtester-report path=usr/bin/gtester-report \
+    pkg.depend.bypass-generate=.* pkg.depend.bypass-generate=.*content.* \
+    pkg.depend.bypass-generate=.*subunit.* \
+    pkg.depend.bypass-generate=.*testtools.*

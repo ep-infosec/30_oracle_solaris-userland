@@ -1,0 +1,19 @@
+Developed in-house, not fed back.
+Solaris specific: manpage update to reflect Solaris specific
+configuration.
+
+--- a/doc/lighttpd.8
++++ b/doc/lighttpd.8
+@@ -56,10 +56,10 @@ Show a brief help message and exit.
+ .
+ .SH FILES
+ .TP 8
+-/etc/lighttpd/lighttpd.conf
++/etc/lighttpd/1.4/lighttpd.conf
+ The standard location for the configuration file.
+ .TP 8
+-/run/lighttpd.pid
++/var/lighttpd/1.4/logs/run.pid
+ The standard location for the PID of the running \fBlighttpd\fP process.
+ .
+ .SH SEE ALSO

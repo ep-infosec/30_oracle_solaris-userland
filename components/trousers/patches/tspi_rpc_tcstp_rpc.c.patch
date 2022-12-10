@@ -1,0 +1,44 @@
+# Add ability to connect to UNIX socket and make it the default.
+# Patch suitable for upstream use.
+# This change was implemented in-house.
+#
+--- src/tspi/rpc/tcstp/rpc.c	2014-04-24 11:05:44.000000000 -0700
++++ src/tspi/rpc/tcstp/rpc.c	2016-04-22 15:08:53.058153900 -0700
+@@ -477,6 +477,37 @@
+ 		goto exit;
+ 	}
+ 
++	if ((port_str == NULL) || (strlen(port_str) == 0) ||
++	    (strcmp(port_str, "0") == 0)) { /* use UNIX socket (default) */
++		struct sockaddr_un sock_addr;
++
++		*sd = socket(PF_UNIX, SOCK_STREAM, 0);
++		if (*sd == -1) {
++			LogError("socket(PF_UNIX): %s", strerror(errno));
++			result = TSPERR(TSS_E_COMM_FAILURE);
++			return (result);
++		}
++
++		memset(&sock_addr, 0, sizeof(sock_addr));
++		sock_addr.sun_family = AF_UNIX;
++		strncpy(sock_addr.sun_path, TCSD_DEFAULT_SOCKET,
++		    sizeof(sock_addr.sun_path));
++
++		LogDebug("Connecting to UNIX Domain socket %s",
++		    TCSD_DEFAULT_SOCKET);
++
++		if (connect(*sd, (struct sockaddr *) &sock_addr,
++		    sizeof (sock_addr))) {
++			LogError("connect: %s", strerror(errno));
++			result = TSPERR(TSS_E_COMM_FAILURE);
++			return (result);
++		}
++
++		return (TSS_SUCCESS);
++	} 
++
++	/* Use TCP/IP socket */
++
+ 	LogDebug("Retrieving address information from host: %s", (char *)hte->hostname);
+ 	rv = getaddrinfo((char *)hte->hostname, port_str,
+ 			&hints, &res);

@@ -1,0 +1,2 @@
+solaris.smf.manage.ntp:RO::Manage NTP service states::
+solaris.smf.value.ntp:RO::Change NTP value properties::

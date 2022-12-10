@@ -1,0 +1,35 @@
+Need to determine why gcc 9 doesn't support sanitize-address on Solaris
+despite now shipping libasan, before determining if we should submit this
+patch upstream to disable it.
+
+From 97a6f3f998decf5d6d91127ff008248e4f0614b1 Mon Sep 17 00:00:00 2001
+From: Alan Coopersmith <alan.coopersmith@oracle.com>
+Date: Sat, 7 Sep 2019 21:19:00 -0700
+Subject: [PATCH] Don't try to use -fsanitize=address on Solaris, our gcc
+ doesn't like it
+
+Signed-off-by: Alan Coopersmith <alan.coopersmith@oracle.com>
+---
+ run_unittests.py | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+--- meson-0.63.3/unittests/linuxliketests.py
++++ meson-0.63.3/unittests/linuxliketests.py
+@@ -357,6 +357,8 @@ if is_cygwin():
+             raise SkipTest('asan not available on Cygwin')
+         if is_openbsd():
+             raise SkipTest('-fsanitize=address is not supported on OpenBSD')
++        if is_sunos():
++            raise SkipTest('-fsanitize=address is not supported on Solaris')
+ 
+         testdir = os.path.join(self.framework_test_dir, '7 gnome')
+         self.init(testdir, extra_args=['-Db_sanitize=address', '-Db_lundef=false'])
+@@ -1012,6 +1014,8 @@ if is_cygwin():
+             raise SkipTest('asan not available on Cygwin')
+         if is_openbsd():
+             raise SkipTest('-fsanitize=address is not supported on OpenBSD')
++        if is_sunos():
++            raise SkipTest('-fsanitize=address is not supported on Solaris')
+ 
+         testdir = os.path.join(self.common_test_dir, '13 pch')
+         self.init(testdir, extra_args=['-Db_sanitize=address', '-Db_lundef=false'])

@@ -1,0 +1,33 @@
+Solaris specific patch around SMF services.
+
+
+
+--- rsyslog-8.1905.0/tools/rsyslogd.8
++++ rsyslog-8.1905.0/tools/rsyslogd.8
+@@ -318,3 +318,26 @@ Grossrinderfeld, Germany
+ .TP
+ rgerhards@adiscon.com
+ .PD
++.SH SVCADM RELATED NOTES
++Compared to
++.BR syslogd (8),
++.B rsyslogd
++cannot be forced to reread its configuration file with the SIGHUP signal and because of that
++.B svcadm refresh
++command doesn't do that either.
++
++To do that, you must restart
++.B rsyslogd
++with
++.BR "svcadm restart" .
++.SH NOTES
++When the service is enabled the first time, an attempt is made
++to see if any /etc/syslog.conf (see syslog.conf(5)),
++entries might need migrating and if
++so rsyslog is brought up in a degraded SMF state.
++
++Please visit /etc/rsyslog.conf (see rsyslog.conf(5)), and customize as needed.
++
++Then clear the service:
++
++# svcadm clear svc:/system/system-log:rsyslog

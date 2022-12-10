@@ -1,0 +1,67 @@
+Solaris-specific patches to reflect how we ship & configure X11
+Not suitable for upstream.
+
+--- xorg-docs-1.7.2/man/X.man
++++ xorg-docs-1.7.2/man/X.man
+@@ -119,6 +119,8 @@ \fIxkbprint\fP, \fIxkbbell\fP, \fIxkbevd
+ a utility to terminate clients, \fIxkill\fP;
+ and a utility to cause part or all of the screen to be redrawn, \fIxrefresh\fP.
+ .PP
++Many, but not all, of these programs are included in __distroname__.
++.PP
+ Many other utilities, window managers, games, toolkits, etc. are included
+ as packages in many operating system distributions, or are
+ available on the Internet.
+@@ -131,11 +133,10 @@ operating system you are running and whe
+ systems in addition to X.
+ .TP 8
+ .B "Display Manager"
+-If you want to always have X running on your display, your site administrator
+-can set your machine up to use a Display Manager such as \fIxdm\fP, \fIgdm\fP,
+-or \fIkdm\fP.  This program
+-is typically started by the system at boot time and takes care of keeping the
+-server running and getting users logged in.  If you are running one of these
++The default configuration of __distroname__ starts X at boot time via
++the \fIgdm\fP(__adminmansuffix__) display manager.   The \fIxdm\fP(1) display manager is also
++provided as an option the system administrator can configure.
++If you are running one of these
+ display managers, you will normally see a window on the screen welcoming you
+ to the system and asking for your login information.  Simply type them in as
+ you would at a normal terminal.  If you make a mistake, the display manager
+@@ -439,13 +440,12 @@ to explicitly draw the window's region o
+ example).
+ .PP
+ Since window managers are regular (albeit complex) client programs,
+-a variety of different user interfaces can be built.  The X.Org Foundation
+-provides a window manager named \fItwm\fP which supports overlapping windows,
+-popup menus, point-and-click or click-to-type input models, title bars, nice
+-icons (and an icon manager for those who don't like separate icon windows).
+-.PP
+-See your distro package manager for other
+-popular window managers.
++a variety of different user interfaces can be built.
++__distroname__ includes several window managers, including the
++GNOME window manager
++.IR gnome-shell (1),
++and the X.Org classic window manager
++.IR twm (1).
+ .SH "FONT NAMES"
+ Collections of characters for displaying text and symbols in X are known as
+ \fIfonts\fP.  A font typically contains images that share a common appearance
+@@ -1344,10 +1344,14 @@ .BR Xorg (__appmansuffix__),
+ .BR Xdmx (__appmansuffix__),
+ .BR Xephyr (__appmansuffix__),
+ .BR Xnest (__appmansuffix__),
+-.BR Xquartz (__appmansuffix__),
+ .BR Xvfb (__appmansuffix__),
+ .BR Xvnc (__appmansuffix__),
+-.BR XWin (__appmansuffix__).
++.\" related software
++.BR gdm (__adminmansuffix__),
++.BR gnome-session (1),
++.BR gnome-shell (1),
++.BR locale (__miscmansuffix__).
++
+ .PP
+ .\" specifications
+ .I "Xlib \- C Language X Interface\fR,\fP"

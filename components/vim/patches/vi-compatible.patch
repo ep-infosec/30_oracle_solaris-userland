@@ -1,0 +1,18 @@
+When started as "vi", run in vi-compatibility mode, and don't source
+defaults.vim.  This can be submitted upstream.
+
+--- vim-8.2.3582/runtime/defaults.vim
++++ vim-8.2.3582/runtime/defaults.vim
+@@ -13,6 +13,12 @@ if v:progname =~? "evim"
+   finish
+ endif
+ 
++" When started as "vi", operate in compatible mode (unless you have a
++" .vimrc).
++if v:progname ==? "vi"
++  finish
++endif
++
+ " Bail out if something that ran earlier, e.g. a system wide vimrc, does not
+ " want Vim to use these default values.
+ if exists('skip_defaults_vim')

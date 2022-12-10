@@ -1,0 +1,104 @@
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+# Copyright (c) 2011, 2021, Oracle and/or its affiliates.
+#
+
+<transform file path=usr/share/man/.+$ -> set mangler.man.stability 'uncommitted (obsolete)' >
+set name=pkg.fmri \
+    value=pkg:/developer/build/libtool@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION)
+set name=pkg.summary value="GNU libtool"
+set name=com.oracle.info.baid value=$(COMPONENT_BAID)
+set name=com.oracle.info.description value="GNU libtool"
+set name=info.classification value=org.opensolaris.category.2008:Development/GNU
+set name=info.source-url value=$(COMPONENT_ARCHIVE_URL)
+set name=info.upstream-url value=$(COMPONENT_PROJECT_URL)
+set name=org.opensolaris.arc-caseid value=PSARC/2007/557
+set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
+
+
+file path=usr/bin/$(MACH64)/libtool
+file path=usr/bin/$(MACH64)/libtoolize
+file path=usr/bin/libtool
+file path=usr/bin/libtoolize
+file path=usr/include/libltdl/lt_dlloader.h
+file path=usr/include/libltdl/lt_error.h
+file path=usr/include/libltdl/lt_system.h
+file path=usr/include/ltdl.h
+file path=usr/share/aclocal/libtool.m4
+file path=usr/share/aclocal/ltargz.m4
+file path=usr/share/aclocal/ltdl.m4
+file path=usr/share/aclocal/ltoptions.m4
+file path=usr/share/aclocal/ltsugar.m4
+file path=usr/share/aclocal/ltversion.m4
+file path=usr/share/aclocal/lt~obsolete.m4
+file path=usr/share/info/libtool.info
+file path=usr/share/info/libtool.info-1
+file path=usr/share/info/libtool.info-2
+file path=usr/share/libtool/COPYING.LIB
+file path=usr/share/libtool/Makefile.am
+file path=usr/share/libtool/Makefile.in
+file path=usr/share/libtool/README
+file path=usr/share/libtool/aclocal.m4
+file path=usr/share/libtool/build-aux/compile
+file path=usr/share/libtool/build-aux/config.guess
+file path=usr/share/libtool/build-aux/config.sub
+file path=usr/share/libtool/build-aux/depcomp
+file path=usr/share/libtool/build-aux/install-sh
+file path=usr/share/libtool/build-aux/ltmain.sh
+file path=usr/share/libtool/build-aux/missing
+file path=usr/share/libtool/config-h.in
+file path=usr/share/libtool/configure
+file path=usr/share/libtool/configure.ac
+file path=usr/share/libtool/libltdl/lt__alloc.h
+file path=usr/share/libtool/libltdl/lt__argz_.h
+file path=usr/share/libtool/libltdl/lt__dirent.h
+file path=usr/share/libtool/libltdl/lt__glibc.h
+file path=usr/share/libtool/libltdl/lt__private.h
+file path=usr/share/libtool/libltdl/lt__strl.h
+file path=usr/share/libtool/libltdl/lt_dlloader.h
+file path=usr/share/libtool/libltdl/lt_error.h
+file path=usr/share/libtool/libltdl/lt_system.h
+file path=usr/share/libtool/libltdl/slist.h
+file path=usr/share/libtool/loaders/dld_link.c
+file path=usr/share/libtool/loaders/dlopen.c
+file path=usr/share/libtool/loaders/dyld.c
+file path=usr/share/libtool/loaders/load_add_on.c
+file path=usr/share/libtool/loaders/loadlibrary.c
+file path=usr/share/libtool/loaders/preopen.c
+file path=usr/share/libtool/loaders/shl_load.c
+file path=usr/share/libtool/lt__alloc.c
+file path=usr/share/libtool/lt__argz.c
+file path=usr/share/libtool/lt__dirent.c
+file path=usr/share/libtool/lt__strl.c
+file path=usr/share/libtool/lt_dlloader.c
+file path=usr/share/libtool/lt_error.c
+file path=usr/share/libtool/ltdl.c
+file path=usr/share/libtool/ltdl.h
+file path=usr/share/libtool/ltdl.mk
+file path=usr/share/libtool/slist.c
+file path=usr/share/man/man1/libtool.1
+file path=usr/share/man/man1/libtoolize.1
+license libtool.license license="FDLv1.3, GPLv2, LGPLv2.1"
+depend type=require fmri=__TBD pkg.debug.depend.file=usr/bin/ggrep
+depend type=require fmri=__TBD pkg.debug.depend.file=usr/bin/gsed
+depend type=require fmri=__TBD pkg.debug.depend.file=usr/bin/ld
+depend type=require fmri=__TBD pkg.debug.depend.file=usr/gnu/bin/echo
+depend type=require fmri=__TBD pkg.debug.depend.file=usr/gnu/bin/nm

@@ -1,0 +1,27 @@
+Use the 'testgam' binary from workspace which is not shipped
+in gamin package.
+
+on terminal 1:
+==============
+mkdir /tmp/aha
+GAM_DEBUG= /usr/lib/gam_server --notimeout test
+
+on terminal 2:
+==============
+testgam -
+> connect test
+...
+> mondir /tmp/aha
+
+on terminal 3:
+==============
+mkdir /tmp/aha/x
+touch /tmp/aha/y
+rmdir /tmp/aha/x
+rm /tmp/aha/y
+
+On terminal 2 observe notifications about created and deleted entities.
+
+
+Verify that both 32 bit and 64 bit testgam binary works with
+64 bit gam_server.

@@ -1,0 +1,27 @@
+DBD-mysql started to use Devel::Checklib module to make sure that the mysql
+libraries are available. We don't have the module. We know our libraries are
+where we said they will be so easiest thing is to disable this check.
+
+Not suitable for upstream.
+
+--- DBD-mysql-4.048/Makefile.PL	2018-10-16 02:34:51.018444761 +0000
++++ DBD-mysql-4.048/Makefile.PL	2018-10-16 02:33:09.918671755 +0000
+@@ -9,7 +9,6 @@ use Config;
+ use Getopt::Long;
+ use ExtUtils::MakeMaker;
+ use Data::Dumper;
+-use Devel::CheckLib;
+ use File::Path;
+ use File::Copy;
+ use File::Basename;
+@@ -207,10 +206,6 @@ MSG
+ 
+ print "Checking if libs are available for compiling...\n";
+ 
+-assert_lib(
+-  LIBS => ($opt->{'embedded'} ? $opt->{'embedded'} : $opt->{libs}),
+-);
+-
+ print "Looks good.\n\n";
+ 
+ sleep 1;

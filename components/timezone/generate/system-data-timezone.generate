@@ -1,0 +1,53 @@
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+
+#
+# Copyright (c) 2001, 2021, Oracle and/or its affiliates.
+#
+
+# Initially we include all files from the tarball into
+# usr/share/lib/zoneinfo/src. Now we need to remove all files we don't want.
+
+<transform path=usr/share/lib/zoneinfo/src/.*\.awk$ -> drop>
+<transform path=usr/share/lib/zoneinfo/src/(backzone|calendars|leap-seconds.list|leapseconds)$ -> drop>
+<transform path=usr/share/lib/zoneinfo/src/(theory.html|version|yearistype.sh|zoneinfo2tdf.pl)$ -> drop>
+<transform path=usr/share/lib/zoneinfo/src/(zone1970.tab|zone.tab|iso3166.tab)$ -> drop>
+<transform path=usr/share/lib/zoneinfo/src/(CONTRIBUTING|LICENSE|Makefile|NEWS)$ -> drop>
+
+# Drop all files beginning with '.' (those are created by userland
+# incorporation)
+<transform path=usr/share/lib/zoneinfo/src/\..*$ -> drop>
+
+# This file is special, it would be difficult to create the file correctly by
+# transformation rules, so we drop it here and add it in
+# generate/system-data-timezone.static. That file uses no processing, so we can
+# specify it there easily
+<transform path=.*/README$ -> drop>
+
+# All the remaining files have to be found in $(COMPONENT_SRC) dir
+<transform file path=.*/(africa|antarctica|asia|australasia|backward|etcetera)$ -> set action.hash %<1>>
+<transform file path=.*/(europe|factory|northamerica)$ -> set action.hash %<1>>
+<transform file path=.*/(southamerica|systemv|SECURITY)$ -> set action.hash %<1>>
+
+# The following workaround is used to bring up SPARC Desktop before Release From Trunk 
+# and thereby fixes bug 29259680 but the original bugs will be seen on SPARC again 
+# and this is tracked by a new bug 30894518.
+<transform link path=usr/share/zoneinfo target=../../usr/share/lib/zoneinfo -> set variant.arch i386>

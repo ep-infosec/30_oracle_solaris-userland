@@ -1,0 +1,129 @@
+#
+# This patch allows for better interop with MS Windows clients accessing Solaris
+# SMB services.  It fixes a few memory leaks and double frees found during SMB
+# stress testing.  The CRs in order:
+#
+# 15580724 SUNBT6868908 Solaris acceptors should have returned KRB5KRB_AP_...
+# 20416772 spnego_gss_accept_sec_context issue with incorrect KRB OID
+# 16005842 Should retry SMB authentication upgrade to account for network...
+# 15579598 SUNBT6867208 Windows client cannot recover from KRB5KRB_AP_ERR_SKEW..
+#
+# Note: MIT tickets will subsequently be filed, but the solution may differ from
+# what we currently offer in Solaris, because they may want the changes as the
+# default behavior therefore removing the dependency on the MS_INTEROP
+# environment variable.
+# Patch source: in-house
+#
+--- a/src/lib/gssapi/krb5/accept_sec_context.c
++++ b/src/lib/gssapi/krb5/accept_sec_context.c
+@@ -673,8 +673,6 @@ kg_accept_krb5(minor_status, context_handle,
+     const gss_OID_desc *mech_used = NULL;
+     OM_uint32 major_status;
+     OM_uint32 tmp_minor_status;
+-    krb5_error krb_error_data;
+-    krb5_data scratch;
+     gss_cred_id_t defcred = GSS_C_NO_CREDENTIAL;
+     krb5_gss_cred_id_t deleg_cred = NULL;
+     krb5int_access kaccess;
+@@ -1219,6 +1217,8 @@ fail:
+          major_status == GSS_S_CONTINUE_NEEDED)) {
+         unsigned int tmsglen;
+         int toktype;
++        krb5_error krb_error_data;
++        krb5_data scratch;
+ 
+         /*
+          * The client is expecting a response, so we can send an
+@@ -1226,6 +1226,31 @@ fail:
+          */
+         memset(&krb_error_data, 0, sizeof(krb_error_data));
+ 
++        /*
++         * We need to remap error conditions for buggy Windows clients if the
++	 * MS_INTEROP env var has been set.
++         */
++        if ((code == KRB5KRB_AP_ERR_BAD_INTEGRITY ||
++             code == KRB5KRB_AP_ERR_NOKEY || code == KRB5KRB_AP_ERR_BADKEYVER)
++            && getenv("MS_INTEROP")) {
++            code = KRB5KRB_AP_ERR_MODIFIED;
++            major_status = GSS_S_CONTINUE_NEEDED;
++        }
++
++        /*
++         * Set e-data to Windows constant (verified by MSFT).
++         *
++         * This facilitates the Windows CIFS client clock skew
++         * recovery feature.
++         */
++        if (code == KRB5KRB_AP_ERR_SKEW && getenv("MS_INTEROP")) {
++            /* Note that free() must not be called on
++             * krb_error_data.e_data.data */
++            krb_error_data.e_data.data = "\x30\x05\xa1\x03\x02\x01\x02";
++            krb_error_data.e_data.length = 7;
++            major_status = GSS_S_CONTINUE_NEEDED;
++        }
++
+         code -= ERROR_TABLE_BASE_krb5;
+         if (code < 0 || code > KRB_ERR_MAX)
+             code = 60 /* KRB_ERR_GENERIC */;
+--- a/src/lib/gssapi/spnego/spnego_mech.c
++++ b/src/lib/gssapi/spnego/spnego_mech.c
+@@ -175,6 +175,13 @@ get_negTokenResp(OM_uint32 *, unsigned char *, unsigned int,
+ static int
+ is_kerb_mech(gss_OID oid);
+ 
++/* encoded OID octet string for NTLMSSP security mechanism */
++#define GSS_MECH_NTLMSSP_OID_LENGTH 10
++#define GSS_MECH_NTLMSSP_OID "\053\006\001\004\001\202\067\002\002\012"
++static gss_OID_desc ntlmssp_oid = {
++	GSS_MECH_NTLMSSP_OID_LENGTH, GSS_MECH_NTLMSSP_OID
++};
++
+ /* SPNEGO oid structure */
+ static const gss_OID_desc spnego_oids[] = {
+ 	{SPNEGO_OID_LENGTH, SPNEGO_OID},
+@@ -1357,6 +1364,7 @@ acc_ctx_new(OM_uint32 *minor_status,
+ 	gss_buffer_desc der_mechTypes;
+ 	gss_OID mech_wanted;
+ 	spnego_gss_ctx_id_t sc = NULL;
++        unsigned int i;
+ 
+ 	ret = GSS_S_DEFECTIVE_TOKEN;
+ 	der_mechTypes.length = 0;
+@@ -3160,6 +3168,7 @@ get_available_mechs(OM_uint32 *minor_status,
+ 	gss_OID_set mechs, goodmechs;
+ 	gss_OID_set_desc except_attrs;
+ 	gss_OID_desc attr_oids[3];
++        char *msinterop = getenv("MS_INTEROP");
+ 
+ 	*rmechs = GSS_C_NO_OID_SET;
+ 
+@@ -3196,6 +3205,28 @@ get_available_mechs(OM_uint32 *minor_status,
+ 		}
+ 	}
+ 
++	/*
++	 * If the required keytab entries for Kerberized SMB service are
++	 * missing due to an SMB authentication upgrade failure, SMB daemon
++	 * will set MS_INTEROP environmment variable to 1 to ensure only
++	 * NTLMSSP security mech is used for negotiation.
++	 *
++	 * note: since 1.18 we are modifying result of gss_acquire_cred_from().
++	 * this is a consequence of upstream changes related to introduction
++	 * of NegoEx. Earlier versions of MIT kerberos used pass creds == NULL,
++	 * when cred usage was GSS_C_ACCEPT.
++	 */
++	if ((msinterop != NULL) && (!strcmp(msinterop, "1"))) {
++		(void) gss_release_oid_set(&tmpmin, &mechs);
++		major_status = gss_add_oid_set_member(minor_status,
++		    &ntlmssp_oid, &mechs);
++	} else {
++		if ((major_status == GSS_S_COMPLETE) &&
++		    (msinterop != NULL) && (!strcmp(msinterop, "2")))
++			major_status = gss_add_oid_set_member(minor_status,
++			    &ntlmssp_oid, &mechs);
++	}
++
+ 	if (mechs->count > 0 && major_status == GSS_S_COMPLETE) {
+ 		*rmechs = mechs;
+ 	} else {

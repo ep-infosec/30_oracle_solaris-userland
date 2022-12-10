@@ -1,0 +1,2101 @@
+# Existing set of patches from the desktop gate
+# Can be potentially sent upstream 
+
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ab.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ab.po
+@@ -1587,9 +1587,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ace.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ace.po
+@@ -1707,9 +1707,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ #, fuzzy
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ach.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ach.po
+@@ -1544,9 +1544,6 @@
+ msgid "Tuvalu"
+ msgstr "Tubalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/af.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/af.po
+@@ -1559,9 +1559,6 @@
+ msgid "Tuvalu"
+ msgstr "Toewaloe"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taiwan, Provinsie van Sjina"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ak.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ak.po
+@@ -1580,9 +1580,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/am.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/am.po
+@@ -1698,9 +1698,6 @@
+ msgid "Tuvalu"
+ msgstr "ቱቫሉ"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ #, fuzzy
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/an.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/an.po
+@@ -1704,9 +1704,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ #, fuzzy
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ar.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ar.po
+@@ -1547,9 +1547,6 @@
+ msgid "Tuvalu"
+ msgstr "توفالو"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "تايوان، محافظة صينيّة"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/as.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/as.po
+@@ -1563,9 +1563,6 @@
+ msgid "Tuvalu"
+ msgstr "টুভালু"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "তাইৱান, চীনৰ প্ৰদেশ"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ast.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ast.po
+@@ -1559,9 +1559,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taiwan, Provincia de China"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ay.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ay.po
+@@ -1605,9 +1605,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/az.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/az.po
+@@ -1717,9 +1717,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ba.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ba.po
+@@ -1726,9 +1726,6 @@
+ msgid "Tuvalu"
+ msgstr "Тувалу"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ #, fuzzy
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/bar.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/bar.po
+@@ -1546,9 +1546,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/be.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/be.po
+@@ -1549,9 +1549,6 @@
+ msgid "Tuvalu"
+ msgstr "Тувалу"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Тайвань, правінцыя Кітая"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/bg.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/bg.po
+@@ -1557,9 +1557,6 @@
+ msgid "Tuvalu"
+ msgstr "Тувалу"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Тайван, Китайска провинция"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/bi.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/bi.po
+@@ -1617,9 +1617,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/bn.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/bn.po
+@@ -1544,9 +1544,6 @@
+ msgid "Tuvalu"
+ msgstr "টুভালু"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "তাইওয়ান, চীনের প্রদেশ"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/bn_IN.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/bn_IN.po
+@@ -1544,9 +1544,6 @@
+ msgid "Tuvalu"
+ msgstr "টুভালু"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "তাইওয়ান, চীনের প্রদেশ"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/br.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/br.po
+@@ -1563,9 +1563,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/bs.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/bs.po
+@@ -1568,9 +1568,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Kineska Provincija Tajvan"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/byn.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/byn.po
+@@ -1555,9 +1555,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ca.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ca.po
+@@ -1564,9 +1564,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taiwan, Província de Xina"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ce.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ce.po
+@@ -1548,9 +1548,6 @@
+ msgid "Tuvalu"
+ msgstr "Тувалу"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ch.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ch.po
+@@ -1542,9 +1542,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/chr.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/chr.po
+@@ -1546,9 +1546,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ckb.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ckb.po
+@@ -1547,9 +1547,6 @@
+ msgid "Tuvalu"
+ msgstr "تووڤالوو"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/crh.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/crh.po
+@@ -1570,9 +1570,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Tayvan, Çin Eyaleti"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/cs.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/cs.po
+@@ -1545,9 +1545,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Tchaj-wan, provincie Číny"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/csb.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/csb.po
+@@ -1547,9 +1547,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/cv.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/cv.po
+@@ -1549,9 +1549,6 @@
+ msgid "Tuvalu"
+ msgstr "Тувалу"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/cy.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/cy.po
+@@ -1546,9 +1546,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taiwan, Talaith o Tseina"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/da.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/da.po
+@@ -1563,9 +1563,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taiwan, Den Kinesiske Provins"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/de.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/de.po
+@@ -1548,9 +1548,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taiwan, Chinesische Provinz"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/dv.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/dv.po
+@@ -1548,9 +1548,6 @@
+ msgid "Tuvalu"
+ msgstr "ތުވާލޫ"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/dz.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/dz.po
+@@ -1564,9 +1564,6 @@
+ msgid "Tuvalu"
+ msgstr "ཊུ་བ་ལུ།"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "ཏ་ཡེ་ཝཱན་ ཅ་ཡེ་ནའི་མངའ་རིས།"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ee.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ee.po
+@@ -1678,9 +1678,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ #, fuzzy
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/el.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/el.po
+@@ -1562,9 +1562,6 @@
+ msgid "Tuvalu"
+ msgstr "Τουβαλού"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Ταϊβάν, Επαρχία της Κίνας"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/eo.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/eo.po
+@@ -1554,9 +1554,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalo"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Tajvano, Provinco de Ĉinio"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/es.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/es.po
+@@ -1547,9 +1547,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taiwán, Provincia de China"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/et.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/et.po
+@@ -1550,9 +1550,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taiwan"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/eu.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/eu.po
+@@ -1546,9 +1546,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taiwan, Txinako Probintzia"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/fa.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/fa.po
+@@ -1549,9 +1549,6 @@
+ msgid "Tuvalu"
+ msgstr "تووالو"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "تایوان ، استانی از چین"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ff.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ff.po
+@@ -1546,9 +1546,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/fi.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/fi.po
+@@ -1566,9 +1566,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taiwan, Kiinan provinssi"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/fil.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/fil.po
+@@ -1544,9 +1544,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taiwan, Probinsiya ng Tsina"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/fo.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/fo.po
+@@ -1553,9 +1553,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/fr.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/fr.po
+@@ -1550,9 +1550,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taïwan, province de Chine"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/frp.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/frp.po
+@@ -1548,9 +1548,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/fur.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/fur.po
+@@ -1543,9 +1543,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvaluan"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taiwan, Republiche di Cine"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/fy.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/fy.po
+@@ -1548,9 +1548,6 @@
+ msgid "Tuvalu"
+ msgstr "Tûvalû"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ga.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ga.po
+@@ -1565,9 +1565,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalú"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "An Téaváin, Cúige na Síne"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/gez.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/gez.po
+@@ -1555,9 +1555,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/gl.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/gl.po
+@@ -1559,9 +1559,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taiwán, Provincia de China"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/gn.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/gn.po
+@@ -1546,9 +1546,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/gu.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/gu.po
+@@ -1559,9 +1559,6 @@
+ msgid "Tuvalu"
+ msgstr "ટુવાલુ"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "તાઇવાન, પ્રોવિનન્સ ઓફ ચાઇના"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/gv.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/gv.po
+@@ -1548,9 +1548,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ha.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ha.po
+@@ -1546,9 +1546,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/haw.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/haw.po
+@@ -1623,9 +1623,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ #, fuzzy
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/he.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/he.po
+@@ -1549,9 +1549,6 @@
+ msgid "Tuvalu"
+ msgstr "טובלו"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "טאייואן, מחוז של סין"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/hi.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/hi.po
+@@ -1568,9 +1568,6 @@
+ msgid "Tuvalu"
+ msgstr "तुवालु"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "ताइवान, प्रोविन्स ऑफ चाइना"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/hr.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/hr.po
+@@ -1557,9 +1557,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Tajvan (provincija, NR Kina)"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ht.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ht.po
+@@ -1544,9 +1544,6 @@
+ msgid "Tuvalu"
+ msgstr "Touvalou"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/hu.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/hu.po
+@@ -1551,9 +1551,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Tajvan, kínai tartomány"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/hy.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/hy.po
+@@ -1559,9 +1559,6 @@
+ msgid "Tuvalu"
+ msgstr "Տուվալու"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Թայան, Չինաստանի Նահանգ"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ia.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ia.po
+@@ -1544,9 +1544,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taiwan, Provincia de China"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/id.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/id.po
+@@ -1547,9 +1547,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taiwan, Provinsi China"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/io.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/io.po
+@@ -1548,9 +1548,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/is.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/is.po
+@@ -1546,9 +1546,6 @@
+ msgid "Tuvalu"
+ msgstr "Túvalú"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Tævan, hérað í Kína"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/it.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/it.po
+@@ -1571,9 +1571,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taiwan, Repubblica di Cina"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/iu.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/iu.po
+@@ -1546,9 +1546,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ja.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ja.po
+@@ -1679,9 +1679,6 @@
+ msgid "Tuvalu"
+ msgstr "ツバル"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "中国領・台湾"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/jam.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/jam.po
+@@ -1546,9 +1546,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ka.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ka.po
+@@ -1565,9 +1565,6 @@
+ msgid "Tuvalu"
+ msgstr "ტუვალუ"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "ტაივანი, ჩინეთის პროვინცია"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/kab.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/kab.po
+@@ -1547,9 +1547,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ki.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ki.po
+@@ -1546,9 +1546,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/kk.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/kk.po
+@@ -1556,9 +1556,6 @@
+ msgid "Tuvalu"
+ msgstr "Тувалу"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Тайвань Қытай Провинциясы"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/kl.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/kl.po
+@@ -1632,9 +1632,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/km.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/km.po
+@@ -1556,9 +1556,6 @@
+ msgid "Tuvalu"
+ msgstr "ទុយវ៉ាលុយ"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "តៃវ៉ាន់​ ខេត្ត​នៃ​ប្រទេស​ចិន"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/kn.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/kn.po
+@@ -1567,9 +1567,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "ಟೈವಾನ್ , ಚೈನಾದ ಪ್ರಾಂತ"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ko.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ko.po
+@@ -1552,9 +1552,6 @@
+ msgid "Tuvalu"
+ msgstr "투발루"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "타이완, 중국령"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ku.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ku.po
+@@ -1565,9 +1565,6 @@
+ msgid "Tuvalu"
+ msgstr "Tûvalû"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Tayvan, Eyaleta Çîn"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/kv.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/kv.po
+@@ -1546,9 +1546,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/kw.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/kw.po
+@@ -1549,9 +1549,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ky.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ky.po
+@@ -1551,9 +1551,6 @@
+ msgid "Tuvalu"
+ msgstr "Тувалу"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Тайвань Кытай Провинциясы"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/lo.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/lo.po
+@@ -1546,9 +1546,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/lt.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/lt.po
+@@ -1561,9 +1561,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taivanas, Kinijos provincija"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/lv.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/lv.po
+@@ -1559,9 +1559,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taivāna, Ķīnas Republika"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/mai.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/mai.po
+@@ -1546,9 +1546,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/mhr.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/mhr.po
+@@ -1546,9 +1546,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/mi.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/mi.po
+@@ -1625,9 +1625,6 @@
+ msgid "Tuvalu"
+ msgstr "Tūwaru"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/mk.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/mk.po
+@@ -1560,9 +1560,6 @@
+ msgid "Tuvalu"
+ msgstr "Тувалу"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Тајван, Кинеска провинција"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ml.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ml.po
+@@ -1564,9 +1564,6 @@
+ msgid "Tuvalu"
+ msgstr "ടുവാലു"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "തായ്‌വാന്‍ , പ്രൊവിന്‍സ് ഓഫ് ചൈന"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/mn.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/mn.po
+@@ -1629,9 +1629,6 @@
+ msgid "Tuvalu"
+ msgstr "Тували"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/mo.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/mo.po
+@@ -1542,9 +1542,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/mr.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/mr.po
+@@ -1547,9 +1547,6 @@
+ msgid "Tuvalu"
+ msgstr "तुव्हालु"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "तैवान, प्रोव्हिअन्स ऑफ चायना"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ms.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ms.po
+@@ -1572,9 +1572,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/mt.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/mt.po
+@@ -1634,9 +1634,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/my.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/my.po
+@@ -1546,9 +1546,6 @@
+ msgid "Tuvalu"
+ msgstr "တူဗားလူနိုင်ငံ"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/na.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/na.po
+@@ -1546,9 +1546,6 @@
+ msgid "Tuvalu"
+ msgstr "Tubaru"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/nah.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/nah.po
+@@ -1546,9 +1546,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/nb.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/nb.po
+@@ -1556,9 +1556,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taiwan, Den kinesiske provins"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ne.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ne.po
+@@ -1563,9 +1563,6 @@
+ msgid "Tuvalu"
+ msgstr "टुवालु"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "ताइवान, चीनको प्रान्तन"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/nl.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/nl.po
+@@ -1550,9 +1550,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taiwan"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/nn.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/nn.po
+@@ -1558,9 +1558,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taiwan"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/nso.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/nso.po
+@@ -1649,9 +1649,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/nv.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/nv.po
+@@ -1546,9 +1546,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/oc.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/oc.po
+@@ -1566,9 +1566,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/or.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/or.po
+@@ -1544,9 +1544,6 @@
+ msgid "Tuvalu"
+ msgstr "ତୁଭାଲୂ"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "ତାଇୱାନ, ଚୀନ ଅଧିକୃତ"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/pa.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/pa.po
+@@ -1545,9 +1545,6 @@
+ msgid "Tuvalu"
+ msgstr "ਟੂਵਾਲੂ"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "ਤਾਈਵਾਨ, ਚੀਨੀ ਖੇਤਰ"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/pap.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/pap.po
+@@ -1709,9 +1709,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ #, fuzzy
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/pi.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/pi.po
+@@ -1542,9 +1542,6 @@
+ msgid "Tuvalu"
+ msgstr "टुवालु"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/pl.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/pl.po
+@@ -1551,9 +1551,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Tajwan, Prowincja Chińska"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ps.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ps.po
+@@ -1549,9 +1549,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/pt.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/pt.po
+@@ -1550,9 +1550,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taiwan, Província da China"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/pt_BR.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/pt_BR.po
+@@ -1550,9 +1550,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taiwan, Província da China"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ro.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ro.po
+@@ -1557,9 +1557,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taiwan"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ru.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ru.po
+@@ -1549,9 +1549,6 @@
+ msgid "Tuvalu"
+ msgstr "Тувалу"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Китайская провинция Тайвань"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/rw.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/rw.po
+@@ -1570,9 +1570,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Tayiwani, Porovensi y'Ubushinwa"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/sc.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/sc.po
+@@ -1543,9 +1543,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taiwan, Provìntzia de sa Tzina"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/sd.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/sd.po
+@@ -1546,9 +1546,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/si.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/si.po
+@@ -1558,9 +1558,6 @@
+ msgid "Tuvalu"
+ msgstr "ටුවාලු"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "චීනයේ තායිවාන ප්‍රදේශය"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/sk.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/sk.po
+@@ -1561,9 +1561,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taiwan, provincia Číny"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/sl.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/sl.po
+@@ -1565,9 +1565,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Tajvan, provinca Kitajske"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/so.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/so.po
+@@ -1589,9 +1589,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ #, fuzzy
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/son.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/son.po
+@@ -1544,9 +1544,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuwaalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/sq.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/sq.po
+@@ -1545,9 +1545,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Tajvan, Provincë e Kinës"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/sr.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/sr.po
+@@ -1548,9 +1548,6 @@
+ msgid "Tuvalu"
+ msgstr "Тувалу"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Тајван, Кинеска Провинција"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/sr@latin.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/sr@latin.po
+@@ -1548,9 +1548,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Tajvan, Kineska Provincija"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/sv.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/sv.po
+@@ -1555,10 +1555,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-# Osäker.
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taiwan, provins i Kina"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/sw.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/sw.po
+@@ -1623,10 +1623,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-#, fuzzy
+-msgid "Taiwan, Province of China"
+-msgstr "China"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ta.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ta.po
+@@ -1565,9 +1565,6 @@
+ msgid "Tuvalu"
+ msgstr "துவாலு"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "தாய்வான் சீன மாநிலம்"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/te.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/te.po
+@@ -1561,9 +1561,6 @@
+ msgid "Tuvalu"
+ msgstr "तुव्हालु"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "తైవాన్, ప్రోవియన్స్ ఆఫ్ చైనా"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/tg.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/tg.po
+@@ -1542,9 +1542,6 @@
+ msgid "Tuvalu"
+ msgstr "Тувалу"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Тайван, Музофоти Чин"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/th.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/th.po
+@@ -1554,9 +1554,6 @@
+ msgid "Tuvalu"
+ msgstr "ตูวาลู"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "ไต้หวัน, จังหวัดของจีน"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ti.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ti.po
+@@ -1557,9 +1557,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/tig.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/tig.po
+@@ -1555,9 +1555,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/tk.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/tk.po
+@@ -1572,9 +1572,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuwalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/tl.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/tl.po
+@@ -1567,9 +1567,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taiwan, Prubinsiya ng China"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/tr.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/tr.po
+@@ -1552,9 +1552,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Tayvan, Çin Eyaleti"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/tt.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/tt.po
+@@ -1569,9 +1569,6 @@
+ msgid "Tuvalu"
+ msgstr "Тувалуча"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Таиван, Чин Төбәgе"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/tt@iqtelif.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/tt@iqtelif.po
+@@ -1569,9 +1569,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvaluça"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taiwan, Çin Töbäge"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/tzm.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/tzm.po
+@@ -1540,9 +1540,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ug.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ug.po
+@@ -1544,9 +1544,6 @@
+ msgid "Tuvalu"
+ msgstr "تۇۋالۇ"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "تەيۋەن"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/uk.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/uk.po
+@@ -1545,9 +1545,6 @@
+ msgid "Tuvalu"
+ msgstr "тувалу"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Тайвань, провінція Китаю"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ur.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ur.po
+@@ -1548,9 +1548,6 @@
+ msgid "Tuvalu"
+ msgstr "تووالو"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/uz.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/uz.po
+@@ -1548,9 +1548,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/ve.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/ve.po
+@@ -1653,9 +1653,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/vi.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/vi.po
+@@ -1556,9 +1556,6 @@
+ msgid "Tuvalu"
+ msgstr "Tu-va-lu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Đài Loan, Tỉnh Trung Quốc"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/wa.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/wa.po
+@@ -1557,9 +1557,6 @@
+ msgid "Tuvalu"
+ msgstr "Touvalou"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taiwan, Province di Chine"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/wal.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/wal.po
+@@ -1555,9 +1555,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/wo.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/wo.po
+@@ -1566,9 +1566,6 @@
+ msgid "Tuvalu"
+ msgstr "Tuvalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "Taaywaa, porowees bu Ciin"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/xh.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/xh.po
+@@ -1663,9 +1663,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/yo.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/yo.po
+@@ -1548,9 +1548,6 @@
+ msgid "Tuvalu"
+ msgstr "Tufalu"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/zh_CN.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/zh_CN.po
+@@ -1549,9 +1549,6 @@
+ msgid "Tuvalu"
+ msgstr "图瓦卢"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "中国台湾省"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/zh_HK.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/zh_HK.po
+@@ -1556,9 +1556,6 @@
+ msgid "Tuvalu"
+ msgstr "圖瓦盧"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "中華民國"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/zh_TW.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/zh_TW.po
+@@ -1549,9 +1549,6 @@
+ msgid "Tuvalu"
+ msgstr "吐瓦魯"
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr "中華民國"
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-1/zu.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-1/zu.po
+@@ -1647,9 +1647,6 @@
+ msgid "Tuvalu"
+ msgstr ""
+ 
+-#. Name for TWN, Official name for TWN
+-msgid "Taiwan, Province of China"
+-msgstr ""
+ 
+ #. Common name for TWN
+ msgid "Taiwan"
+--- iso-codes-iso-codes-4.6.0/iso_3166-2/az.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-2/az.po
+@@ -16121,11 +16121,6 @@
+ msgid "Astrakhanskaya oblast'"
+ msgstr ""
+ 
+-#. Name for RU-BA
+-#, fuzzy
+-msgid "Bashkortostan, Respublika"
+-msgstr "Tayvan, Çin Respublikası"
+-
+ #. Name for RU-BEL
+ msgid "Belgorodskaya oblast'"
+ msgstr ""
+@@ -16157,11 +16152,6 @@
+ msgid "Chuvashskaya Respublika"
+ msgstr "Çex Respublikası"
+ 
+-#. Name for RU-DA
+-#, fuzzy
+-msgid "Dagestan, Respublika"
+-msgstr "Tayvan, Çin Respublikası"
+-
+ #. Name for RU-IN
+ msgid "Respublika Ingushetiya"
+ msgstr ""
+@@ -16384,11 +16374,6 @@
+ msgid "Sverdlovskaya oblast'"
+ msgstr ""
+ 
+-#. Name for RU-TA
+-#, fuzzy
+-msgid "Tatarstan, Respublika"
+-msgstr "Tayvan, Çin Respublikası"
+-
+ #. Name for RU-TAM
+ msgid "Tambovskaya oblast'"
+ msgstr ""
+@@ -20523,11 +20508,6 @@
+ msgid "Qashqadaryo"
+ msgstr ""
+ 
+-#. Name for UZ-QR
+-#, fuzzy
+-msgid "Qoraqalpog'iston Respublikasi"
+-msgstr "Tayvan, Çin Respublikası"
+-
+ #. Name for UZ-SA
+ msgid "Samarqand"
+ msgstr ""
+--- iso-codes-iso-codes-4.6.0/iso_3166-2/cs.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-2/cs.po
+@@ -16076,11 +16076,6 @@
+ msgid "Astrakhanskaya oblast'"
+ msgstr ""
+ 
+-#. Name for RU-BA
+-#, fuzzy
+-msgid "Bashkortostan, Respublika"
+-msgstr "Taiwan, Republic of China"
+-
+ #. Name for RU-BEL
+ msgid "Belgorodskaya oblast'"
+ msgstr ""
+@@ -16111,11 +16106,6 @@
+ msgid "Chuvashskaya Respublika"
+ msgstr "Czech Republic"
+ 
+-#. Name for RU-DA
+-#, fuzzy
+-msgid "Dagestan, Respublika"
+-msgstr "Taiwan, Republic of China"
+-
+ #. Name for RU-IN
+ msgid "Respublika Ingushetiya"
+ msgstr ""
+@@ -16337,11 +16327,6 @@
+ msgid "Sverdlovskaya oblast'"
+ msgstr ""
+ 
+-#. Name for RU-TA
+-#, fuzzy
+-msgid "Tatarstan, Respublika"
+-msgstr "Taiwan, Republic of China"
+-
+ #. Name for RU-TAM
+ msgid "Tambovskaya oblast'"
+ msgstr ""
+@@ -20467,11 +20452,6 @@
+ msgid "Qashqadaryo"
+ msgstr ""
+ 
+-#. Name for UZ-QR
+-#, fuzzy
+-msgid "Qoraqalpog'iston Respublikasi"
+-msgstr "Taiwan, Republic of China"
+-
+ #. Name for UZ-SA
+ msgid "Samarqand"
+ msgstr ""
+--- iso-codes-iso-codes-4.6.0/iso_3166-2/es.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-2/es.po
+@@ -16025,11 +16025,6 @@
+ msgid "Astrakhanskaya oblast'"
+ msgstr ""
+ 
+-#. Name for RU-BA
+-#, fuzzy
+-msgid "Bashkortostan, Respublika"
+-msgstr "Taiwan, República de China"
+-
+ #. Name for RU-BEL
+ msgid "Belgorodskaya oblast'"
+ msgstr ""
+@@ -16061,11 +16056,6 @@
+ msgid "Chuvashskaya Respublika"
+ msgstr "República Checa"
+ 
+-#. Name for RU-DA
+-#, fuzzy
+-msgid "Dagestan, Respublika"
+-msgstr "Taiwan, República de China"
+-
+ #. Name for RU-IN
+ msgid "Respublika Ingushetiya"
+ msgstr ""
+@@ -16288,11 +16278,6 @@
+ msgid "Sverdlovskaya oblast'"
+ msgstr ""
+ 
+-#. Name for RU-TA
+-#, fuzzy
+-msgid "Tatarstan, Respublika"
+-msgstr "Taiwan, República de China"
+-
+ #. Name for RU-TAM
+ msgid "Tambovskaya oblast'"
+ msgstr ""
+@@ -20399,11 +20384,6 @@
+ msgid "Qashqadaryo"
+ msgstr ""
+ 
+-#. Name for UZ-QR
+-#, fuzzy
+-msgid "Qoraqalpog'iston Respublikasi"
+-msgstr "Taiwan, República de China"
+-
+ #. Name for UZ-SA
+ msgid "Samarqand"
+ msgstr ""
+--- iso-codes-iso-codes-4.6.0/iso_3166-2/eu.po
++++ iso-codes-iso-codes-4.6.0/iso_3166-2/eu.po
+@@ -15627,11 +15627,6 @@
+ msgid "Astrakhanskaya oblast'"
+ msgstr ""
+ 
+-#. Name for RU-BA
+-#, fuzzy
+-msgid "Bashkortostan, Respublika"
+-msgstr "Taiwan, Txinako Errepublika"
+-
+ #. Name for RU-BEL
+ msgid "Belgorodskaya oblast'"
+ msgstr ""
+@@ -15663,11 +15658,6 @@
+ msgid "Chuvashskaya Respublika"
+ msgstr "Txekiar Errepublika"
+ 
+-#. Name for RU-DA
+-#, fuzzy
+-msgid "Dagestan, Respublika"
+-msgstr "Taiwan, Txinako Errepublika"
+-
+ #. Name for RU-IN
+ msgid "Respublika Ingushetiya"
+ msgstr ""
+@@ -15890,11 +15880,6 @@
+ msgid "Sverdlovskaya oblast'"
+ msgstr ""
+ 
+-#. Name for RU-TA
+-#, fuzzy
+-msgid "Tatarstan, Respublika"
+-msgstr "Taiwan, Txinako Errepublika"
+-
+ #. Name for RU-TAM
+ msgid "Tambovskaya oblast'"
+ msgstr ""
+@@ -20001,11 +19986,6 @@
+ msgid "Qashqadaryo"
+ msgstr ""
+ 
+-#. Name for UZ-QR
+-#, fuzzy
+-msgid "Qoraqalpog'iston Respublikasi"
+-msgstr "Taiwan, Txinako Errepublika"
+-
+ #. Name for UZ-SA
+ msgid "Samarqand"
+ msgstr ""

@@ -1,0 +1,108 @@
+Developed in-house, not fed back.
+Solaris-specific: configuration file customization.
+
+Note that server.set-v6only is disabled to enable
+IPv4 connections by default, and recover the same
+behaviour as in lighttpd 1.4.45 and older.
+
+See the following webpage to get more information.
+https://redmine.lighttpd.net/boards/2/topics/7720
+
+--- lighttpd-1.4.67/doc/config/conf.d/fastcgi.conf
++++ lighttpd-1.4.67/doc/config/conf.d/fastcgi.conf
+@@ -22,8 +22,8 @@ ##
+ #fastcgi.server = ( ".php" =>
+ #                   ( "php-local" =>
+ #                     (
+-#                       "socket" => socket_dir + "/php-fastcgi-1.socket",
+-#                       "bin-path" => server_root + "/cgi-bin/php5",
++#                       "socket" => socket_dir + "/php-fastcgi.socket",
++#                       "bin-path" => "/usr/php/bin/php-cgi",
+ #                       "max-procs" => 1,
+ #                       "broken-scriptfilename" => "enable",
+ #                     ),
+--- lighttpd-1.4.67/doc/config/lighttpd.conf
++++ lighttpd-1.4.67/doc/config/lighttpd.conf
+@@ -13,11 +13,11 @@ ##
+ ## if you add a variable here. Add the corresponding variable in the
+ ## chroot example as well.
+ ##
+-var.log_root    = "/var/log/lighttpd"
+-var.server_root = "/srv/www"
+-var.state_dir   = "/run"
+-var.home_dir    = "/var/lib/lighttpd"
+-var.conf_dir    = "/etc/lighttpd"
++var.log_root    = "/var/lighttpd/1.4/logs"
++var.server_root = "/var/lighttpd/1.4"
++var.state_dir   = log_root
++var.home_dir    = server_root
++var.conf_dir    = "/etc/lighttpd/1.4"
+ 
+ ## 
+ ## run the server chrooted.
+@@ -58,7 +58,7 @@ ##
+ ## used in:
+ ## conf.d/deflate.conf
+ ##
+-var.cache_dir   = "/var/cache/lighttpd"
++var.cache_dir   = server_root + "/cache"
+ 
+ ##
+ ## Base directory for sockets.
+@@ -92,6 +92,9 @@ ## Use IPv6?
+ ##
+ server.use-ipv6 = "enable"
+ 
++# Enable IPv4 connections.
++server.set-v6only = "disable"
++
+ ##
+ ## bind to a specific IP
+ ##
+@@ -101,8 +104,8 @@ ##
+ ## Run as a different username/groupname.
+ ## This requires root permissions during startup. 
+ ##
+-server.username  = "lighttpd"
+-server.groupname = "lighttpd"
++server.username  = "webservd"
++server.groupname = "webservd"
+ 
+ ##
+ ## Enable lighttpd to serve requests on sockets received from systemd
+@@ -118,7 +121,7 @@ #server.core-files = "disable"
+ ##
+ ## Document root
+ ##
+-server.document-root = server_root + "/htdocs"
++server.document-root = server_root + "/docroot"
+ 
+ ##
+ ## The value for the "Server:" response field.
+@@ -130,7 +133,7 @@ #server.tag = "lighttpd"
+ ##
+ ## store a pid file
+ ##
+-server.pid-file = state_dir + "/lighttpd.pid"
++server.pid-file = log_root + "/run.pid"
+ 
+ ##
+ #######################################################################
+@@ -332,7 +335,7 @@ ## index-file.names            = ( "inde
+ ##                                 "index.htm", "default.htm" )
+ ##
+ index-file.names += (
+-  "index.xhtml", "index.html", "index.htm", "default.htm", "index.php"
++  "index.php", "index.html", "index.htm", "default.htm", "index.xhtml"
+ )
+ 
+ ##
+@@ -388,7 +391,7 @@ ##
+ ## Format: <errorfile-prefix><status-code>.html
+ ## -> ..../status-404.html for 'File not found'
+ ##
+-#server.errorfile-prefix    = server_root + "/htdocs/errors/status-"
++#server.errorfile-prefix    = server_root + "/var/lighttpd/1.4/errors/status-"
+ 
+ ##
+ ## mimetype mapping

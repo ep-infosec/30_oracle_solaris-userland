@@ -1,0 +1,87 @@
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+
+#
+# Copyright (c) 2020, 2022, Oracle and/or its affiliates.
+#
+
+#
+# Specify which packages are to be moved to 'legacy' namespace. Please see
+# doc/packaging.txt section "Component EOF (End Of Feature)". This file is
+# needed only for special cases, usually you just want to add 'set
+# name=pkg.legacy value=true' to your packages.
+#
+
+#
+# Name the affected packages and depend actions here. The lines here just
+# 'mark' the lines by setting 'mark_legacy' attribute. All such marked lines
+# will be processed below.
+# An example can be:
+# <transform set name=pkg.fmri value=(pkg:/+)?.*(my/package) -> set mark_legacy true>
+# matching multiple packages is possible
+# <transform set name=pkg.fmri value=(pkg:/+)?.*(library/perl-5/.*-522.*) -> set mark_legacy true>
+#
+
+# Python 2.7 and all related packages
+<transform set name=pkg.fmri value=(pkg:/+)?.*(-27).* -> set mark_legacy true>
+
+# Python 3.7 and all related packages
+<transform set name=pkg.fmri value=(pkg:/+)?.*(-37).* -> set mark_legacy true>
+
+# Beware that it's not easy to put python (or perl/ruby) module to legacy if
+# you are at the same time putting to legacy one python (perl/ruby) version.
+# For example if you put 'set name=pkg.legacy value=true' into
+# components/python/enum/enum-PYVER.p5m and you are having python 27 runtime in
+# legacy, then library/python/enum-27 will obtain the line twice. Once from
+# *.p5m and once from this transform for every python 2.7 module. And the full
+# build fails as pkglint throws an error on that duplicate line. So it's
+# probably easier for such modules to list them here instead of putting the
+# legacy to *.p5m.
+
+# Mark packages which are unnecessary in newer runtimes.
+<transform set name=pkg.fmri value=(pkg:/+)?.*(library/python/backports.functools_lru_cache).* -> set mark_legacy true>
+<transform set name=pkg.fmri value=(pkg:/+)?.*(library/python/enum).* -> set mark_legacy true>
+<transform set name=pkg.fmri value=(pkg:/+)?.*(library/python/funcsigs).* -> set mark_legacy true>
+<transform set name=pkg.fmri value=(pkg:/+)?.*(library/python/ipaddress).* -> set mark_legacy true>
+<transform set name=pkg.fmri value=(pkg:/+)?.*(library/python/scandir).* -> set mark_legacy true>
+
+# The following packages should not be marked
+<transform set name=pkg.fmri value=(pkg:/+)?.*(developer/build/scons-27) -> delete mark_legacy true>
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# Automatic processing starts here, no change is needed beyond this line
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+#
+# Make sure that we don't modify packages created from the history files
+# (tools/generate-history adds do_not_move_to_legacy=true)
+#
+# First we remove (unmark) the package by removing the mark_legacy attribute
+<transform set name=pkg.fmri do_not_move_to_legacy=true mark_legacy=.* -> delete mark_legacy .*>
+# Now we can get rid of do_not_move_to_legacy attribute as we don't need it anymore
+<transform set name=pkg.fmri do_not_move_to_legacy=.* -> delete do_not_move_to_legacy .*>
+
+# Add legacy metadata
+<transform set name=pkg.fmri mark_legacy=true -> \
+    emit set name=pkg.legacy value=true>
+
+# remove mark_legacy attribute as we don't need it anymore
+<transform set name=pkg.fmri mark_legacy=.* -> delete mark_legacy .*>

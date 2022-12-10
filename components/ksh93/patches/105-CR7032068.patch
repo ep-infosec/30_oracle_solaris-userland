@@ -1,0 +1,39 @@
+This patch has been developed inhouse. This fixes a Solaris
+specific issue and has not been submitted to the community.
+--- INIT.2012-08-01.old/src/cmd/ksh93/sh/macro.c	2015-02-24 13:25:19.363200741 -0800
++++ INIT.2012-08-01/src/cmd/ksh93/sh/macro.c	2015-03-05 11:11:46.044880541 -0800
+@@ -1086,7 +1086,7 @@ static int varsub(Mac_t *mp)
+ {
+ 	register int	c;
+ 	register int	type=0; /* M_xxx */
+-	register char	*v,*argp=0;
++	register char	*v, *new_v = NULL, *argp=0;
+ 	register Namval_t	*np = NIL(Namval_t*);
+ 	register int 	dolg=0, mode=0;
+ 	Lex_t		*lp = (Lex_t*)mp->shp->lex_context;
+@@ -1439,6 +1439,7 @@ retry1:
+ 				if((mp->let || (mp->arith&&nv_isattr(np,(NV_LJUST|NV_RJUST|NV_ZFILL)))) && !nv_isattr(np,NV_INTEGER) && (offset==0 || isspace(c) || strchr(",.+-*/=%&|^?!<>",c)))
+ 					mp->zeros = 1;
+ 			}
++			new_v = v = strdup(v);
+ 			if(savptr==stakptr(0))
+ 				stkseek(stkp,offset);
+ 			else
+@@ -1989,6 +1990,8 @@ retry2:
+ 	}
+ 	if(np)
+ 		nv_close(np);
++	if (new_v)
++		free(new_v);
+ 	if(pattern)
+ 		free(pattern);
+ 	if(repstr)
+@@ -1997,6 +2000,8 @@ retry2:
+ 		free(idx);
+ 	return(1);
+ nosub:
++	if (new_v)
++		free(new_v);
+ 	if(type==M_BRACE && sh_lexstates[ST_NORM][c]==S_BREAK)
+ 	{
+ 		fcseek(-1);

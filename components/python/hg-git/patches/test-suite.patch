@@ -1,0 +1,17 @@
+The default path for GNU programs in Solaris is /usr/gnu/bin which is different
+from what hg-git assumes. Change via test environment is not enough because the
+test runner is doing some additional transformations with PATH.
+
+This is a Solaris specific change not intended for upstream.
+
+--- hg-git-0.10.1/tests/run-tests.py
++++ hg-git-0.10.1/tests/run-tests.py
+@@ -3100,7 +3100,7 @@ class TestRunner(object):
+             sepb = _sys2bytes(os.pathsep)
+         else:
+             sepb = os.pathsep
+-        path = [self._bindir, runtestdir] + osenvironb[b"PATH"].split(sepb)
++        path = [b'/usr/gnu/bin', self._bindir, runtestdir] + osenvironb[b"PATH"].split(sepb)
+         if os.path.islink(__file__):
+             # test helper will likely be at the end of the symlink
+             realfile = os.path.realpath(fileb)

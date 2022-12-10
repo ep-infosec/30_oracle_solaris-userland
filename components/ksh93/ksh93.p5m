@@ -1,0 +1,110 @@
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+# Copyright (c) 2012, 2022, Oracle and/or its affiliates.
+#
+
+# This manifest contains several files with a preserve attribute that are not
+# writable. While the corresponding pkglint check is bypassed now, those files
+# should be investigated and fixed in the future.
+<transform file path=etc/ksh.kshrc$ -> set pkg.linted.userland.action001.4 true>
+# The man pages are all at the top of a "files" directory; setting the hash to
+# point to the files therein.
+<transform file path=usr/share/man/man.+/(.+)$ -> set action.hash %<1> >
+<transform file path=usr/share/man/man1/ksh.1$ -> set action.hash src/cmd/ksh93/sh.1>
+# Bypassing the mangler for these files because they are pre-Solarified.
+<transform file path=usr/share/man/.+$ -> add mangler.bypass true >
+set name=pkg.fmri \
+    value=pkg:/shell/ksh93@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION)
+set name=pkg.summary value="Ksh93 - The AT&T Korn Shell"
+set name=pkg.description \
+    value="Korn Shell 93: A command and programming language that executes commands read from a terminal or a file"
+set name=pkg.human-version value=$(DQ)$(HUMAN_VERSION)$(DQ)
+set name=pkg.linted.userland.action001.PIE value=true
+set name=com.oracle.info.baid value=$(COMPONENT_BAID)
+set name=com.oracle.info.description value="the AT&T ksh93 Korn Shell"
+set name=info.classification value=org.opensolaris.category.2008:System/Shells
+set name=info.source-url value=$(COMPONENT_ARCHIVE_URL)
+set name=info.upstream \
+    value="AT&T Software Technology (AST) OpenSource Software Collection"
+set name=info.upstream-url value=$(COMPONENT_PROJECT_URL)
+set name=org.opensolaris.arc-caseid value=PSARC/2012/002
+set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
+file path=etc/ksh.kshrc group=sys original_name=SUNWcs:etc/ksh.kshrc \
+    preserve=renameold
+file alias path=usr/bin/alias mode=0555
+hardlink path=usr/bin/bg target=alias
+hardlink path=usr/bin/cd target=alias
+hardlink path=usr/bin/command target=alias
+hardlink path=usr/bin/fc target=alias
+hardlink path=usr/bin/fg target=alias
+hardlink path=usr/bin/getopts target=alias
+hardlink path=usr/bin/hash target=alias
+hardlink path=usr/bin/jobs target=alias
+link path=usr/bin/jsh target=ksh93
+hardlink path=usr/bin/kill target=alias
+file $(MACH64)/bin/ksh path=usr/bin/ksh mode=0555
+hardlink path=usr/bin/ksh93 target=ksh
+hardlink path=usr/bin/pfksh target=pfexec
+hardlink path=usr/bin/pfksh93 target=pfexec
+hardlink path=usr/bin/pfrksh target=pfexec
+hardlink path=usr/bin/pfrksh93 target=pfexec
+hardlink path=usr/bin/print target=alias
+hardlink path=usr/bin/read target=alias
+hardlink path=usr/bin/rksh target=ksh
+hardlink path=usr/bin/rksh93 target=ksh
+hardlink path=usr/bin/sh target=ksh
+file $(MACH64)/bin/shcomp path=usr/bin/shcomp mode=0555
+hardlink path=usr/bin/test target=alias
+hardlink path=usr/bin/type target=alias
+hardlink path=usr/bin/ulimit target=alias
+hardlink path=usr/bin/umask target=alias
+hardlink path=usr/bin/unalias target=alias
+hardlink path=usr/bin/wait target=alias
+link path=usr/lib/rsh target=../bin/ksh93
+link path=usr/sbin/jsh target=../bin/ksh93
+link path=usr/sbin/sh target=../bin/ksh93
+file src/cmd/ksh93/COMPATIBILITY path=usr/share/doc/ksh/COMPATIBILITY
+file src/cmd/ksh93/OBSOLETE path=usr/share/doc/ksh/OBSOLETE
+file src/cmd/ksh93/TYPES path=usr/share/doc/ksh/TYPES
+file alias.1.ja_JP.UTF-8 path=usr/share/man/ja_JP.UTF-8/man1/alias.1
+file jsh.1.ja_JP.UTF-8 path=usr/share/man/ja_JP.UTF-8/man1/jsh.1
+file ksh.1.ja_JP.UTF-8 path=usr/share/man/ja_JP.UTF-8/man1/ksh.1
+file ksh93.1.ja_JP.UTF-8 path=usr/share/man/ja_JP.UTF-8/man1/ksh93.1
+file rksh.1.ja_JP.UTF-8 path=usr/share/man/ja_JP.UTF-8/man1/rksh.1
+file sh.1.ja_JP.UTF-8 path=usr/share/man/ja_JP.UTF-8/man1/sh.1
+file shcomp.1.ja_JP.UTF-8 path=usr/share/man/ja_JP.UTF-8/man1/shcomp.1
+file unalias.1.ja_JP.UTF-8 path=usr/share/man/ja_JP.UTF-8/man1/unalias.1
+file path=usr/share/man/man1/alias.1
+file path=usr/share/man/man1/jsh.1
+file src/cmd/ksh93/sh.1 path=usr/share/man/man1/ksh.1
+file path=usr/share/man/man1/ksh93.1
+file path=usr/share/man/man1/rksh.1
+file path=usr/share/man/man1/sh.1
+file path=usr/share/man/man1/shcomp.1
+file path=usr/share/man/man1/unalias.1
+file ksh.1.zh_CN.UTF-8 path=usr/share/man/zh_CN.UTF-8/man1/ksh.1
+file ksh93.1.zh_CN.UTF-8 path=usr/share/man/zh_CN.UTF-8/man1/ksh93.1
+file rksh.1.zh_CN.UTF-8 path=usr/share/man/zh_CN.UTF-8/man1/rksh.1
+file shcomp.1.zh_CN.UTF-8 path=usr/share/man/zh_CN.UTF-8/man1/shcomp.1
+license ksh93.license license=EPL1.0
+# Ensure that we upgrade the old package to the version where it's
+# renamed.
+depend type=optional fmri=pkg:/shell/ksh@20110208-0.175.1.0.0.21.0

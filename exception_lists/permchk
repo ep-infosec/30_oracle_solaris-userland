@@ -1,0 +1,14 @@
+#
+# Copyright (c) 2017, 2020, Oracle and/or its affiliates. All rights reserved.
+#
+
+# Use shell style pattern globbing for this file
+syntax: glob
+
+components/closed/instantclient/common/rpathchk.py
+components/desktop/firefox/wrapper-node/node
+components/desktop/thunderbird/wrapper-node/node
+components/libpki/files/setup_test.sh
+components/openssl/openssl-fips/gcc/gcc
+components/openstack/horizon/files/merge_manifest.py
+tools/*

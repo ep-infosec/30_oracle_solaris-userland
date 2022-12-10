@@ -1,0 +1,47 @@
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+# Copyright (c) 2015, 2016, Oracle and/or its affiliates. All rights reserved.
+
+Configuration files for applications using libsasl and other sasl features
+should go in /etc/sasl2 or else in configuration directories expected by
+the specific application.
+
+IMPORTANT:  sasl will try to use everything it finds in /usr/lib/sasl2 unless
+precluded by configuration files.  Since much more is provided than any
+one application configuration should use, it is important to actively
+choose the contents of the auxprop_plugin and mech_list, and possibly the 
+canon_user_plugin, so that only the desired subset is configured for a
+specific application.
+
+These lines show all the default possibilities:
+#auxprop_plugin: sasldb
+#canon_user_plugin: INTERNAL
+#mech_list:  LOGIN PLAIN EXTERNAL OTP  GSSAPI SCRAM-SHA-1
+
+These lines show some recommended configurations:
+
+auxprop_plugin:
+mech_list:  PLAIN LOGIN
+
+Or
+auxprop_plugin:
+mech_list:  GSSAPI
+
+

@@ -1,0 +1,2 @@
+solaris.smf.manage.ptp:RO::Manage PTP service states::
+solaris.smf.value.ptp:RO::Change PTP value properties::

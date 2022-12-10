@@ -1,0 +1,31 @@
+# Remove user/group tss, which is not used on Solaris.
+# This change is Solaris-specific and is not suitable for upstream use.
+# This change was implemented in-house.
+#
+diff -r 0b187afc2ca4 dist/Makefile.am
+--- dist/Makefile.am	Mon Oct 04 16:58:41 2021 +0200
++++ dist/Makefile.am	Mon Oct 04 17:01:04 2021 +0200
+@@ -4,23 +4,15 @@
+ install: install-exec-hook
+ 	if test ! -e ${DESTDIR}/@sysconfdir@/tcsd.conf; then mkdir -p ${DESTDIR}/@sysconfdir@ && cp tcsd.conf ${DESTDIR}/@sysconfdir@; fi
+ if !NOUSERCHECK
+-	/bin/chown root:tss ${DESTDIR}/@sysconfdir@/tcsd.conf || true
+ 	/bin/chmod 0640 ${DESTDIR}/@sysconfdir@/tcsd.conf
+ endif
+ 
+ install-exec-hook:
+ 	/bin/sh -c 'if [ ! -e ${DESTDIR}/@localstatedir@/lib/tpm ];then mkdir -p ${DESTDIR}/@localstatedir@/lib/tpm; fi'
+ if !NOUSERCHECK
+-	/usr/sbin/groupadd tss || true
+-	/usr/sbin/useradd -r tss -g tss || true
+-	/bin/chown tss:tss ${DESTDIR}/@localstatedir@/lib/tpm || true
+ 	/bin/chmod 0700 ${DESTDIR}/@localstatedir@/lib/tpm
+ endif
+ 
+ uninstall-hook:
+ 	rm ${DESTDIR}/@sysconfdir@/tcsd.conf
+ 	rmdir ${DESTDIR}/@localstatedir@/lib/tpm
+-if !NOUSERCHECK
+-	/usr/sbin/userdel tss || true
+-	/usr/sbin/groupdel tss || true
+-endif

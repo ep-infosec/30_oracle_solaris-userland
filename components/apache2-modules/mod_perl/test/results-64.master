@@ -1,0 +1,6 @@
+cd "src/modules/perl" && gmake
+Result: PASS
+cd ModPerl-Registry && gmake test
+Result: PASS
+cd Apache-Reload && gmake test
+Result: PASS

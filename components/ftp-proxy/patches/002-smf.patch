@@ -1,0 +1,686 @@
+# This patch comes from Oracle. It turns the component into
+# a well-behaving SMF service. It adds code manipulating service
+# properties, service instances, and also provides security in
+# cooperation with the service manifest (especially, extra
+# privileges are dropped when not needed).
+#
+# This patch is not going to upstream, the changes are Solaris-specific.
+
+diff -Naur ftp-proxy-OPENBSD_5_5-OPENBSD_5_5.pre-smf/Makefile ftp-proxy-OPENBSD_5_5-OPENBSD_5_5/Makefile
+--- ftp-proxy-OPENBSD_5_5-OPENBSD_5_5.pre-smf/Makefile	2016-02-10 04:21:21.337202150 -0800
++++ ftp-proxy-OPENBSD_5_5-OPENBSD_5_5/Makefile	2016-02-10 04:59:25.999134460 -0800
+@@ -3,7 +3,7 @@
+ CFLAGS+= -m64 -errwarn
+ 
+ PROG=	ftp-proxy
+-SRCS=	ftp-proxy.c filter.c
++SRCS=	ftp-proxy.c filter.c smf-config.c
+ OBJS=$(SRCS:.c=.o)
+ MAN=	ftp-proxy.8
+ 
+diff -Naur ftp-proxy-OPENBSD_5_5-OPENBSD_5_5.pre-smf/filter.c ftp-proxy-OPENBSD_5_5-OPENBSD_5_5/filter.c
+--- ftp-proxy-OPENBSD_5_5-OPENBSD_5_5.pre-smf/filter.c	2016-02-10 04:24:03.599069704 -0800
++++ ftp-proxy-OPENBSD_5_5-OPENBSD_5_5/filter.c	2016-02-02 03:05:13.156044052 -0800
+@@ -53,6 +53,10 @@
+ static int dev, rule_log;
+ static char *qname, *tagname;
+ 
++#ifdef _SOLARIS_
++char *FTP_PROXY_ANCHOR;
++#endif /* _SOLARIS_ */
++
+ int
+ add_addr(struct sockaddr *addr, struct pf_pool *pfp)
+ {
+diff -Naur ftp-proxy-OPENBSD_5_5-OPENBSD_5_5.pre-smf/filter.h ftp-proxy-OPENBSD_5_5-OPENBSD_5_5/filter.h
+--- ftp-proxy-OPENBSD_5_5-OPENBSD_5_5.pre-smf/filter.h	2016-02-10 04:25:34.896131457 -0800
++++ ftp-proxy-OPENBSD_5_5-OPENBSD_5_5/filter.h	2016-02-08 23:45:38.805421033 -0800
+@@ -16,7 +16,11 @@
+  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
+ 
++#ifdef _SOLARIS_
++extern char* FTP_PROXY_ANCHOR;
++#else /* !_SOLARIS_ */
+ #define	FTP_PROXY_ANCHOR "ftp-proxy"
++#endif /* _SOLARIS_ */
+ 
+ int add_nat(u_int32_t, struct sockaddr *, int, struct sockaddr *, u_int16_t,
+     struct sockaddr *, u_int16_t, u_int16_t);
+diff -Naur ftp-proxy-OPENBSD_5_5-OPENBSD_5_5.pre-smf/ftp-proxy.8 ftp-proxy-OPENBSD_5_5-OPENBSD_5_5/ftp-proxy.8
+--- ftp-proxy-OPENBSD_5_5-OPENBSD_5_5.pre-smf/ftp-proxy.8	2016-02-24 06:31:17.792565815 -0800
++++ ftp-proxy-OPENBSD_5_5-OPENBSD_5_5/ftp-proxy.8	2016-03-14 08:05:39.671773194 -0700
+@@ -23,7 +23,7 @@
+ .Sh SYNOPSIS
+ .Nm
+ .Bk -words
+-.Op Fl 6Adrv
++.Op Fl A Cm on | off
+ .Op Fl a Ar address
+ .Op Fl b Ar address
+ .Op Fl D Ar level
+@@ -31,8 +31,10 @@
+ .Op Fl P Ar port
+ .Op Fl p Ar port
+ .Op Fl R Ar address
++.Op Fl r Cm on | off
+ .Op Fl T Ar tag
+ .Op Fl t Ar timeout
++.Op Fl v Cm all | on | off
+ .Ek
+ .Sh DESCRIPTION
+ .Nm
+@@ -83,6 +85,9 @@
+ .It Fl A
+ Only permit anonymous FTP connections.
+ Either user "ftp" or user "anonymous" is allowed.
++Solaris Note: you need to specify
++.Cm on | off
++to enable/disable anonymous-only mode.
+ .It Fl a Ar address
+ The proxy will use this as the source address for the control
+ connection to a server.
+@@ -93,9 +98,6 @@
+ Debug level, ranging from 0 to 7.
+ Higher is more verbose.
+ The default is 5.
+-.It Fl d
+-Do not daemonize.
+-The process will stay in the foreground, logging to standard error.
+ .It Fl m Ar maxsessions
+ Maximum number of concurrent FTP sessions.
+ When the proxy reaches this limit, new connections are denied.
+@@ -118,6 +120,9 @@
+ .It Fl r
+ Rewrite sourceport to 20 in active mode to suit ancient clients that insist
+ on this RFC property.
++Solaris Note: you need to specify
++.Cm on | off
++to enable/disable RFC compliant mode.
+ .It Fl T Ar tag
+ The filter rules will add tag
+ .Ar tag
+@@ -147,7 +152,21 @@
+ .Sq log all
+ flag.
+ The pf rules do not log by default.
++Solaris Note: the option is tri-state.
++You need to specify one of the values below:
++.Bl -tag -width "all" -offset 3n -compact
++.It off
++nothing is logged
++.It on
++log only packets, which create state for data session (equivalent to
++.Fl v
++on OpenBSD)
++.It all
++log all packets, which belong to data session (equivalent to
++.Fl vv
++on OpenBSD)
+ .El
++.El
+ .Sh CONFIGURATION
+ To make use of the proxy,
+ .Xr pf.conf 5
+@@ -156,11 +175,28 @@
+ last rule explicitly allowing FTP sessions from the proxy may not be
+ necessary.
+ .Bd -literal -offset 2n
+-anchor "ftp-proxy/*"
++anchor "network:firewall:ftp-proxy:YOUR_INSTANCE_NAME/*"
+ pass in quick inet proto tcp to port ftp rdr-to 127.0.0.1 port 8021
+ pass out inet proto tcp from (self) to any port ftp
+ .Ed
+ .Pp
++Substitute 
++.Cm YOUR_INSTANCE_NAME
++with instance name
++.Cm SMF
++uses. For default instance it should read as follows:
++.Bd -literal -offset 2n
++anchor "network:firewall:ftp-proxy:default/*"
++.Ed 
++.Sh SOLARIS
++.Nm
++must be started as an
++.Xr smf 7
++service:
++.Bd -literal -offset indent
++svc:/network/firewall/ftp-proxy
++.Ed
++.Pp
+ To run
+ .Nm
+ in a non-global zone, the
+@@ -168,8 +204,157 @@
+ svc:/network/socket-filter:pf_divert
+ .Ed
+ instance must be online in the global zone.
++.Pp
++The options described in DESCRIPTION section are set using smf properties.
++Properties processed by
++.Nm
++enable
++.Xr smf_method 7
++in order to configure the
++.Nm
++daemon are listed below.
++.Bl -tag -width "ftp-proxy/always-use-ftp-data-port" -offset 3n -compact
++.It ftp-proxy/anonymous-only
++If set to
++.Cm on
++the proxy is started with the
++.Fl A
++option, which allows anonymous FTP logins only.
++The value
++.Cm off
++is used as default.
++.It ftp-proxy/proxy-NAT-address
++This property sets the
++.Fl a
++option, the source IP address the proxy uses
++to connect to a server.
++.It ftp-proxy/proxy-listen-address
++This property sets the
++.Fl b
++option, which is the address, where the proxy accepts a connection from
++a client.
++.It ftp-proxy/proxy-listen-port
++This property sets the
++.Fl p
++option which is the port number, where the proxy accepts
++a connection from a client.
++.It ftp-proxy/debug-level
++This property sets the
++.Fl D
++option, which is a debug level (0-7).
++If not set, the default value 5 is used.
++.It ftp-proxy/max-sessions
++This property sets the
++.Fl m
++option, which is the maximum of concurrent FTP sessions served by
++the proxy.
++The valid range is from 1 to 500.
++If not specified the value 100 is used by default.
++.It ftp-proxy/reverse-mode-address
++This property sets the
++.Fl R
++option.
++It is the fixed server address, which is typically used to access
++a FTP server behind NAT.
++.It ftp-proxy/reverse-mode-port
++This property sets the
++.Fl P
++option, which is the port number used by a FTP server behind NAT.
++The default value is 21.
++.It ftp-proxy/always-use-ftp-data-port
++This property sets the
++.Fl r
++option, the value 
++.Cm off
++is used as default.
++If set to
++.Cm on
++the proxy will always use port 20 for active data connections.
++.It ftp-proxy/tag
++This property sets the
++.Fl T
++option, which tags data connection packets with the desired tag.
++.It ftp-proxy/timeout
++This property sets the
++.Fl t
++option, which specifies the number of seconds a FTP command session
++may remain idle.
++The maximum value is 86400 seconds (1 day).
++.It ftp-proxy/log
++This property sets the
++.Fl v
++option.
++There are three possible values.
++For
++.Cm off ,
++no log action will be added to FTP data connection rules created
++by the proxy.
++The value
++.Cm on
++adds the log action.
++Specifying the value
++.Cm all
++adds the
++.Sq log all
++action.
++.El
++.Pp
++.Nm
++on Solaris comes with two extra options, which make service configuration easier.
++.Bl -tag -offset 3n -compact
++.It Fl c Ar smf-instance
++Shows/changes settings kept in
++.Xr smf 7
++repository for the specified
++.Ar smf-instance
++of the
++.Nm
++service.
++.It Fl C Ar smf-instance
++Creates a new instance of the
++.Nm
++service and uses
++.Ar smf-instance
++for its name.
++.El
++.Pp
++To tell proxy service to bind the listen socket to 192.168.1.2 address,
++one has to use the command below:
++.Bd -literal -offset indent
++ftp-proxy -c default -b 192.168.1.2
++.Ed
++.Pp 
++To create anonymous-only proxy listening to port 8821, bound to
++192.168.1.2, one uses the command as follows:
++.Bd -literal -offset indent
++ftp-proxy -C anonymous -b 192.168.1.2 -p 8821 -A on
++.Ed
++.Pp
++To switch the anonymous instance created above to the regular mode (disable
++anonymous-only), one uses the command like this:
++.Bd -literal -offset indent
++ftp-proxy -c anonymous -A off
++.Ed
++.Pp
++To display the anonymous instance configuration use the command as follows:
++.Bd -literal -offset indent
++ftp-proxy -c anonymous
++.Ed
++To manage the service, you need the
++.Sy solaris.smf.manage.network.firewall
++authorization.
++To configure service instances, you need the
++.Sy solaris.smf.value.network.firewall
++authorization.
++Both these authorizations are granted through the Network Firewall Management
++profile.
++To create new service instances, you need the
++.Sy solaris.smf.modify
++authorization.
+ .Sh SEE ALSO
+-.Xr pf.conf 5
++.Xr pf.conf 5 ,
++.Xr smf 7 ,
++.Xr svccfg (1M)
+ .Sh CAVEATS
+ .Pp
+ Negotiated data connection ports below 1024 are not allowed.
+@@ -177,3 +362,8 @@
+ The negotiated IP address for active modes is ignored for security
+ reasons.
+ This makes third party file transfers impossible.
++.Pp
++.Nm
++runs as the
++.Dq daemon
++user.
+diff -Naur ftp-proxy-OPENBSD_5_5-OPENBSD_5_5.pre-smf/ftp-proxy.c ftp-proxy-OPENBSD_5_5-OPENBSD_5_5/ftp-proxy.c
+--- ftp-proxy-OPENBSD_5_5-OPENBSD_5_5.pre-smf/ftp-proxy.c	2016-02-10 04:12:16.600723376 -0800
++++ ftp-proxy-OPENBSD_5_5-OPENBSD_5_5/ftp-proxy.c	2016-02-24 06:58:52.001603474 -0800
+@@ -46,6 +46,7 @@
+ #include <sys/random.h>
+ #include <inttypes.h>
+ #include <priv.h>
++#include "smf-config.h"
+ #endif	/* _SOLARIS_ */
+ #include <syslog.h>
+ #include <unistd.h>
+@@ -62,8 +63,10 @@
+ #define NTOP_BUFS	3
+ #define TCP_BACKLOG	10
+ 
++#ifndef _SOLARIS_
+ #define CHROOT_DIR	"/var/empty"
+ #define NOPRIV_USER	"proxy"
++#endif	/* !_SOLARIS_ */
+ 
+ /* pfctl standard NAT range. */
+ #define PF_NAT_PROXY_PORT_LOW	50001
+@@ -97,6 +100,28 @@
+ #define	DIVERT_MODULE_NAME "pf_divertf"
+ #endif	/* _SOLARIS_ */
+ 
++#ifdef	_SOLARIS_
++#define	FTP_PROXY_GETOPTSTR	"A:a:b:D:dm:P:p:R:r:T:t:v:c:C:X:"
++#define	SET_CFGFLAG(_set_, _f_)	(_set_)	|= (_f_)
++#define	SKIP_CHK(_x_)	((_x_) == NULL)
++
++#define DROP_PRIV(priv)						\
++	do {							\
++		if (priv_set(PRIV_OFF, PRIV_PERMITTED, (priv),	\
++		    NULL) != 0) {				\
++			fprintf(stderr,				\
++			    "Unable to drop privileges.\n");	\
++			exit (-1);				\
++		}						\
++	} while (0)
++#else /* !_SOLARIS_ */
++#define	FTP_PROXY_GETOPTSTR	"6Aa:b:D:dm:P:p:q:R:rT:t:v"
++#define	SET_CFGFLAG(_set_, _f_)
++#define	SKIP_CHK(_x_)	(1)
++
++#define DROP_PRIV(priv)
++#endif	/* _SOLARIS_ */
++
+ enum { CMD_NONE = 0, CMD_PORT, CMD_EPRT, CMD_PASV, CMD_EPSV };
+ 
+ struct session {
+@@ -127,7 +152,9 @@
+ int	client_parse_anon(struct session *s);
+ int	client_parse_cmd(struct session *s);
+ void	client_read(struct bufferevent *, void *);
++#ifndef _SOLARIS_
+ int	drop_privs(void);
++#endif /* !_SOLARIS_ */
+ void	end_session(struct session *);
+ void	exit_daemon(void);
+ int	get_line(char *, size_t *);
+@@ -348,6 +375,7 @@
+ 	} while (read == buf_avail);
+ }
+ 
++#ifndef _SOLARIS_
+ int
+ drop_privs(void)
+ {
+@@ -363,9 +391,9 @@
+ 	    setresgid(pw->pw_gid, pw->pw_gid, pw->pw_gid) != 0 ||
+ 	    setresuid(pw->pw_uid, pw->pw_uid, pw->pw_uid) != 0)
+ 		return (0);
+-
+ 	return (1);
+ }
++#endif /* !_SOLARIS_ */
+ 
+ void
+ end_session(struct session *s)
+@@ -561,9 +589,6 @@
+ 	logmsg(LOG_DEBUG, "#%d accepted connection from %s", s->id,
+ 	    sock_ntop(client_sa));
+ 
+-	/*
+-	 * Find out the real server and port that the client wanted.
+-	 */
+ 	len = sizeof(struct sockaddr_storage);
+ 	if (getsockname(s->client_fd, server_sa, &len) < 0) {
+ 		logmsg(LOG_CRIT, "#%d getsockname failed: %s", s->id,
+@@ -770,6 +795,13 @@
+ 	struct event ev_sighup, ev_sigint, ev_sigterm;
+ 	int ch, error, listenfd, on;
+ 	const char *errstr;
++#ifdef	_SOLARIS_
++	const char	*smf_instance = NULL;
++	int	smf_create = 0;
++	int	cfg_flags = 0;
++#endif	/* _SOLARIS_ */
++
++	DROP_PRIV(PRIV_PROC_EXEC);
+ 
+ 	/* Defaults. */
+ 	anonymous_only	= 0;
+@@ -792,7 +824,8 @@
+ 	id_count	= 1;
+ 	session_count	= 0;
+ 
+-	while ((ch = getopt(argc, argv, "6Aa:b:D:dm:P:p:q:R:rT:t:v")) != -1) {
++	while ((ch = getopt(argc, argv,
++	    FTP_PROXY_GETOPTSTR)) != -1) {
+ 		switch (ch) {
+ #ifndef	_SOLARIS_
+ 		case '6':
+@@ -800,33 +833,49 @@
+ 			break;
+ #endif	/* !_SOLARIS_ */
+ 		case 'A':
++#ifdef	_SOLARIS_
++			if (strcasecmp(optarg, "off") == 0) {
++				anonymous_only = 0;
++			} else {
++				anonymous_only = 1;
++			}
++#else /* !_SOLARIS_ */
+ 			anonymous_only = 1;
++#endif	/* _SOLARIS_ */
++			SET_CFGFLAG(cfg_flags, SMF_CFG_ANON_SET);
+ 			break;
+ 		case 'a':
+ 			fixed_proxy = optarg;
++			SET_CFGFLAG(cfg_flags, SMF_CFG_FIXED_PROXY_SET);
+ 			break;
+ 		case 'b':
+ 			listen_ip = optarg;
++			SET_CFGFLAG(cfg_flags, SMF_CFG_LISTEN_ADDR_SET);
+ 			break;
+ 		case 'D':
+ 			loglevel = strtonum(optarg, LOG_EMERG, LOG_DEBUG,
+ 			    &errstr);
+ 			if (errstr)
+ 				errx(1, "loglevel %s", errstr);
++			SET_CFGFLAG(cfg_flags, SMF_CFG_DEBUG_LEVEL_SET);
+ 			break;
+ 		case 'd':
+ 			daemonize = 0;
++			DROP_PRIV(PRIV_PROC_FORK);
+ 			break;
+ 		case 'm':
+ 			max_sessions = strtonum(optarg, 1, 500, &errstr);
+ 			if (errstr)
+ 				errx(1, "max sessions %s", errstr);
++			SET_CFGFLAG(cfg_flags, SMF_CFG_MAX_SESSION_SET);
+ 			break;
+ 		case 'P':
+ 			fixed_server_port = optarg;
++			SET_CFGFLAG(cfg_flags, SMF_CFG_FIXED_SERVER_PORT_SET);
+ 			break;
+ 		case 'p':
+ 			listen_port = optarg;
++			SET_CFGFLAG(cfg_flags, SMF_CFG_LISTEN_PORT_SET);
+ 			break;
+ #ifndef	_SOLARIS_
+ 		case 'q':
+@@ -837,40 +886,83 @@
+ #endif	/* !_SOLARIS_ */
+ 		case 'R':
+ 			fixed_server = optarg;
++			SET_CFGFLAG(cfg_flags, SMF_CFG_FIXED_SERVER_SET);
+ 			break;
+ 		case 'r':
++#ifdef	_SOLARIS_
++			if (strcasecmp(optarg, "off") == 0) {
++				rfc_mode = 0;
++			} else {
++				rfc_mode = 1;
++			}
++			SET_CFGFLAG(cfg_flags, SMF_CFG_RFC_MODE_SET);
++#else /* !_SOLARIS_ */
+ 			rfc_mode = 1;
++#endif	/* _SOLARIS_ */
+ 			break;
+ 		case 'T':
+ 			if (strlen(optarg) >= PF_TAG_NAME_SIZE)
+ 				errx(1, "tagname too long");
+ 			tagname = optarg;
++			SET_CFGFLAG(cfg_flags, SMF_CFG_TAG_SET);
+ 			break;
+ 		case 't':
+ 			timeout = strtonum(optarg, 0, 86400, &errstr);
+ 			if (errstr)
+ 				errx(1, "timeout %s", errstr);
++			SET_CFGFLAG(cfg_flags, SMF_CFG_TIMEOUT_SET);
+ 			break;
+ 		case 'v':
++#ifdef	_SOLARIS_
++			if (strcasecmp(optarg, "all") == 0) {
++				verbose = 2;
++			} else if (strcasecmp(optarg, "on") == 0) {
++				verbose = 1;
++			} else {
++				verbose = 0;
++			}
++			SET_CFGFLAG(cfg_flags, SMF_CFG_LOG_SET);
++#else /* !_SOLARIS_ */
+ 			verbose++;
+ 			if (verbose > 2)
+ 				usage();
++#endif /* _SOLARIS_ */
++			break;
++#ifdef	_SOLARIS_
++		case 'C':
++			smf_create = 1;
++			/* FALLTHRU */
++		case 'c':
++			smf_instance = optarg;
++			break;
++		case 'X':
++			FTP_PROXY_ANCHOR = optarg;
+ 			break;
++#endif	/* _SOLARIS_ */
+ 		default:
+ 			usage();
+ 		}
+ 	}
+ 
++#ifdef _SOLARIS_
++	if ((FTP_PROXY_ANCHOR == NULL) && (smf_instance == NULL)) {
++		fprintf(stderr, "The ftp-proxy can be started only via SMF.\n");
++		exit (-1);
++	}
++#endif /* _SOLARIS_ */
++
+ 	if (listen_ip == NULL)
+ 		listen_ip = ipv6_mode ? "::1" : "127.0.0.1";
+ 
++#ifndef	_SOLARIS_
+ 	/* Check for root to save the user from cryptic failure messages. */
+ 	if (getuid() != 0)
+ 		errx(1, "needs to start as root");
++#endif	/* !_SOLARIS_ */
+ 
+ 	/* Raise max. open files limit to satisfy max. sessions. */
+ 	rlp.rlim_cur = rlp.rlim_max = (2 * max_sessions) + 10;
+-	if (setrlimit(RLIMIT_NOFILE, &rlp) == -1)
++	if (SKIP_CHK(smf_instance) && (setrlimit(RLIMIT_NOFILE, &rlp) == -1))
+ 		err(1, "setrlimit");
+ 
+ 	if (fixed_proxy) {
+@@ -895,7 +987,12 @@
+ 		freeaddrinfo(res);
+ 	}
+ 
++#ifdef _SOLARIS_
++	/* Steps not needed when we are just working with SMF. */
++	if (fixed_server && (smf_instance == NULL)) {
++#else /* !_SOLARIS_ */
+ 	if (fixed_server) {
++#endif /* _SOLARIS_ */
+ 		memset(&hints, 0, sizeof hints);
+ 		hints.ai_family = ipv6_mode ? AF_INET6 : AF_INET;
+ 		hints.ai_socktype = SOCK_STREAM;
+@@ -917,6 +1014,61 @@
+ 		freeaddrinfo(res);
+ 	}
+ 
++#ifdef	_SOLARIS_
++	if (smf_instance != NULL) {
++		/*
++		 * If we are creating new instance, we will use default
++		 * values for properties.
++		 */
++		if (smf_create == 1) {
++			cfg_flags = -1;
++		}
++
++		if (cfg_flags == 0) {
++			if (smf_print_ftpcfg(smf_instance) != 0) {
++				exit (-1);
++			}
++			exit(0);
++		} else {
++			smf_ftp_cfg.cfg_set = cfg_flags;
++			smf_ftp_cfg.cfg_anonymous_only = anonymous_only;
++			smf_ftp_cfg.cfg_listen_addr = SMF_COPY_STR(listen_ip);
++			smf_ftp_cfg.cfg_listen_port = strtonum(listen_port, 1,
++			    65535, NULL);
++			if (smf_ftp_cfg.cfg_listen_port == 0) {
++				fprintf(stderr,
++				    "Invalid listen port specified.\n");
++				exit (-1);
++			}
++			smf_ftp_cfg.cfg_debug_level = loglevel;
++			smf_ftp_cfg.cfg_max_sessions = max_sessions;
++			smf_ftp_cfg.cfg_fixed_server =
++			    SMF_COPY_STR(fixed_server);
++			smf_ftp_cfg.cfg_fixed_server_port = strtonum(
++			    fixed_server_port, 1, 65535, NULL);
++			if (smf_ftp_cfg.cfg_fixed_server_port == 0) {
++				fprintf(stderr,
++				    "Invalid fixed server port specified.\n");
++				exit (-1);
++			}
++			smf_ftp_cfg.cfg_rfc_mode = rfc_mode;
++			smf_ftp_cfg.cfg_tag = SMF_COPY_STR(tagname);
++			smf_ftp_cfg.cfg_timeout = timeout;
++			smf_ftp_cfg.cfg_log = verbose;
++			smf_ftp_cfg.cfg_fixed_proxy = SMF_COPY_STR(fixed_proxy);
++			if (smf_write_ftpcfg(smf_instance, smf_create) == -1) {
++				err(1, "...Giving up");
++			} else {
++				printf("configuration for\n\t%s (%s:%s)\nhas been saved\n",
++				    smf_instance,
++				    BASE_FMRI,
++				    smf_instance);
++			}
++			exit(0);
++		}
++	}
++#endif	/* _SOLARIS_ */
++
+ 	/* Setup listener. */
+ 	memset(&hints, 0, sizeof hints);
+ 	hints.ai_flags = AI_NUMERICHOST | AI_PASSIVE;
+@@ -946,19 +1098,21 @@
+ 
+ 	/* Initialize pf. */
+ 	init_filter(qname, tagname, verbose);
+-
+ 	if (daemonize) {
+ 		if (daemon(0, 0) == -1)
+ 			err(1, "cannot daemonize");
++		DROP_PRIV(PRIV_PROC_FORK);
+ 		openlog(__progname, LOG_PID | LOG_NDELAY, LOG_DAEMON);
+ 	}
+ 
+ 	/* Use logmsg for output from here on. */
+ 
++#ifndef _SOLARIS_
+ 	if (!drop_privs()) {
+ 		logmsg(LOG_ERR, "cannot drop privileges: %s", strerror(errno));
+ 		exit(1);
+ 	}
++#endif /* !_SOLARIS_ */
+ 	
+ 	event_init();
+ 
+@@ -1327,9 +1481,16 @@
+ void
+ usage(void)
+ {
++#ifdef _SOLARIS_
++	fprintf(stderr, "usage: %s [-A on | off] [-a address] [-b address]"
++	    " [{-c | -C} instance] [-D level] [-m maxsessions]\n                 [-P port]"
++	    " [-p port] [-R address] [-r on | off] [-T tag]\n"
++            "                 [-t timeout] [-v all | on | off]\n", __progname);
++#else /* !_SOLARIS_ */
+ 	fprintf(stderr, "usage: %s [-6Adrv] [-a address] [-b address]"
+ 	    " [-D level] [-m maxsessions]\n                 [-P port]"
+ 	    " [-p port] [-q queue] [-R address] [-T tag]\n"
+ 	    "                 [-t timeout]\n", __progname);
++#endif /* _SOLARIS_ */
+ 	exit(1);
+ }

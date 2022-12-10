@@ -1,0 +1,414 @@
+# Copyright (c) 2012, 2018, Oracle and/or its affiliates. All rights reserved.
+# This patch includes the fix for:
+# Bug 16807596 - [XKB] Sun Type 7 Keyboard Scroll lock and
+#    Compose indicators (LEDs) don't work
+--- a/rules/base.xml	2022-10-20 06:21:32.542560526 -0700
++++ b/rules.base.xml	2022-10-20 08:43:00.085341797 -0700
+@@ -1532,6 +1532,12 @@
+             <description>English (Workman, intl., with dead keys)</description>
+            </configItem>
+          </variant>
++        <variant>
++          <configItem>
++            <name>sun_type6</name>
++            <description>English (US, Sun Type 6/7)</description>
++          </configItem>
++        </variant>
+       </variantList>
+     </layout>
+     <layout>
+@@ -1678,6 +1684,12 @@
+         </variant>
+         <variant>
+           <configItem>
++            <name>sun_type6</name>
++            <description>Arabic (Sun Type 6/7)</description>
++          </configItem>
++        </variant>
++        <variant>
++          <configItem>
+             <name>mac</name>
+             <description>Arabic (Macintosh)</description>
+           </configItem>
+@@ -1917,6 +1929,12 @@
+             <description>Belgian (Wang 724 AZERTY)</description>
+           </configItem>
+         </variant>
++        <variant>
++          <configItem>
++            <name>sun_type6</name>
++            <description>Belgian (Sun Type 6/7)</description>
++          </configItem>
++        </variant>
+       </variantList>
+     </layout>
+     <layout>
+@@ -2539,6 +2557,12 @@
+             <description>Portuguese (Brazil, IBM/Lenovo ThinkPad)</description>
+           </configItem>
+         </variant>
++        <variant>
++          <configItem>
++            <name>sun_type6</name>
++            <description>Portuguese (Brazil, Sun Type 6/7)</description>
++          </configItem>
++        </variant>
+       </variantList>
+     </layout>
+     <layout>
+@@ -2986,6 +3010,12 @@
+             </languageList>
+           </configItem>
+         </variant>
++        <variant>
++          <configItem>
++            <name>sun_type6</name>
++            <description>Multilingual (Canada, Sun Type 6/7)</description>
++          </configItem>
++        </variant>
+       </variantList>
+     </layout>
+     <layout>
+@@ -3213,6 +3243,12 @@
+         </variant>
+         <variant>
+           <configItem>
++            <name>sun_type6</name>
++            <description>Czech (Sun Type 6/7)</description>
++          </configItem>
++        </variant>
++        <variant>
++          <configItem>
+             <name>rus</name>
+             <!-- Keyboard indicator for Russian layouts -->
+             <shortDescription>ru</shortDescription>
+@@ -3268,6 +3304,12 @@
+             <description>Danish (Dvorak)</description>
+           </configItem>
+         </variant>
++        <variant>
++          <configItem>
++            <name>sun_type6</name>
++            <description>Danish (Sun Type 6/7)</description>
++          </configItem>
++        </variant>
+       </variantList>
+     </layout>
+     <layout>
+@@ -3302,6 +3344,12 @@
+             <description>Dutch (standard)</description>
+           </configItem>
+         </variant>
++        <variant>
++          <configItem>
++            <name>sun_type6</name>
++            <description>Dutch (Sun Type 6/7)</description>
++          </configItem>
++        </variant>
+       </variantList>
+     </layout>
+     <layout>
+@@ -3350,6 +3398,12 @@
+             <description>Estonian (US)</description>
+           </configItem>
+         </variant>
++        <variant>
++          <configItem>
++            <name>sun_type6</name>
++            <description>Estonian (Sun Type 6/7)</description>
++          </configItem>
++        </variant>
+       </variantList>
+     </layout>
+     <layout>
+@@ -3558,6 +3612,12 @@
+             <description>Finnish (Macintosh)</description>
+           </configItem>
+         </variant>
++        <variant>
++          <configItem>
++            <name>sun_type6</name>
++            <description>Finnish (Sun Type 6/7)</description>
++          </configItem>
++        </variant>
+       </variantList>
+     </layout>
+     <layout>
+@@ -3681,6 +3741,12 @@
+         </variant>
+         <variant>
+           <configItem>
++            <name>sun_type6</name>
++            <description>French (Sun Type 6/7)</description>
++          </configItem>
++        </variant>
++        <variant>
++          <configItem>
+             <name>us</name>
+             <description>French (US)</description>
+           </configItem>
+@@ -3987,6 +4053,12 @@
+         </variant>
+         <variant>
+           <configItem>
++            <name>sun_type6</name>
++            <description>German (Sun Type 6/7)</description>
++          </configItem>
++        </variant>
++        <variant>
++          <configItem>
+             <name>deadtilde</name>
+             <description>German (dead tilde)</description>
+           </configItem>
+@@ -4031,6 +4103,12 @@
+             <description>Greek (polytonic)</description>
+           </configItem>
+         </variant>
++        <variant>
++          <configItem>
++            <name>sun_type6</name>
++            <description>Greek (Sun Type 6/7)</description>
++          </configItem>
++        </variant>
+       </variantList>
+     </layout>
+     <layout>
+@@ -4312,6 +4390,12 @@
+         </variant>
+         <variant>
+           <configItem>
++            <name>sun_type6</name>
++            <description>Italian (Sun Type 6/7)</description>
++          </configItem>
++        </variant>
++        <variant>
++          <configItem>
+             <name>fur</name>
+             <description>Friulian (Italy)</description>
+             <languageList>
+@@ -4365,6 +4449,24 @@
+             <description>Japanese (Dvorak)</description>
+           </configItem>
+         </variant>
++        <variant>
++          <configItem>
++            <name>sun_type6</name>
++            <description>Japanese (Sun Type 6)</description>
++          </configItem>
++        </variant>
++        <variant>
++          <configItem>
++            <name>sun_type7</name>
++            <description>Japanese (Sun Type 7 - pc compatible)</description>
++          </configItem>
++        </variant>
++        <variant>
++          <configItem>
++            <name>sun_type7_suncompat</name>
++            <description>Japanese (Sun Type 7 - sun compatible)</description>
++          </configItem>
++        </variant>
+       </variantList>
+     </layout>
+     <layout>
+@@ -4591,6 +4693,12 @@
+         </variant>
+         <variant>
+           <configItem>
++            <name>sun_type6</name>
++            <description>Lithuanian (Sun Type 6/7)</description>
++          </configItem>
++        </variant>
++        <variant>
++          <configItem>
+             <name>sgs</name>
+             <description>Samogitian</description>
+             <languageList>
+@@ -4656,6 +4764,12 @@
+             <description>Latvian (adapted)</description>
+           </configItem>
+         </variant>
++        <variant>
++          <configItem>
++            <name>sun_type6</name>
++            <description>Latvian (Sun Type 6/7)</description>
++          </configItem>
++        </variant>
+       </variantList>
+     </layout>
+     <layout>
+@@ -4868,6 +4982,12 @@
+         </variant>
+         <variant>
+           <configItem>
++            <name>sun_type6</name>
++            <description>Norwegian (Sun Type 6/7)</description>
++          </configItem>
++        </variant>
++        <variant>
++          <configItem>
+             <name>colemak</name>
+             <description>Norwegian (Colemak)</description>
+           </configItem>
+@@ -4953,6 +5073,12 @@
+             <description>Polish (programmer Dvorak)</description>
+           </configItem>
+         </variant>
++        <variant>
++          <configItem>
++            <name>sun_type6</name>
++            <description>Polish (Sun Type 6/7)</description>
++          </configItem>
++        </variant>
+       </variantList>
+     </layout>
+     <layout>
+@@ -5008,6 +5134,12 @@
+             </languageList>
+           </configItem>
+         </variant>
++        <variant>
++          <configItem>
++            <name>sun_type6</name>
++            <description>Portuguese (Sun Type 6/7)</description>
++          </configItem>
++        </variant>
+       </variantList>
+     </layout>
+     <layout>
+@@ -5036,6 +5168,12 @@
+             <description>Romanian (Windows)</description>
+           </configItem>
+         </variant>
++        <variant>
++          <configItem>
++            <name>sun_type6</name>
++            <description>Romanian (Sun Type 6/7)</description>
++          </configItem>
++        </variant>
+       </variantList>
+     </layout>
+     <layout>
+@@ -5224,6 +5362,12 @@
+         </variant>
+         <variant>
+           <configItem>
++            <name>sun_type6</name>
++            <description>Russian (Sun Type 6/7)</description>
++          </configItem>
++        </variant>
++        <variant>
++          <configItem>
+             <name>phonetic_azerty</name>
+             <description>Russian (phonetic, AZERTY)</description>
+           </configItem>
+@@ -5378,6 +5522,12 @@
+             <description>Slovak (QWERTY, extended backslash)</description>
+           </configItem>
+         </variant>
++        <variant>
++          <configItem>
++            <name>sun_type6</name>
++            <description>Slovak (Sun Type 6/7)</description>
++          </configItem>
++        </variant>
+       </variantList>
+     </layout>
+     <layout>
+@@ -5444,6 +5594,12 @@
+             <description>Spanish (Macintosh)</description>
+           </configItem>
+         </variant>
++        <variant>
++          <configItem>
++            <name>sun_type6</name>
++            <description>Spanish (Sun Type 6/7)</description>
++          </configItem>
++        </variant>
+       </variantList>
+     </layout>
+     <layout>
+@@ -5536,6 +5692,12 @@
+             </languageList>
+           </configItem>
+         </variant>
++        <variant>
++          <configItem>
++            <name>sun_type6</name>
++            <description>Swedish (Sun Type 6/7)</description>
++          </configItem>
++        </variant>
+       </variantList>
+     </layout>
+     <layout>
+@@ -5608,6 +5770,18 @@
+             <description>German (Switzerland, Macintosh)</description>
+           </configItem>
+         </variant>
++        <variant>
++          <configItem>
++            <name>sun_type6_de</name>
++            <description>German (Switzerland, Sun Type 6/7)</description>
++          </configItem>
++        </variant>
++        <variant>
++          <configItem>
++            <name>sun_type6_fr</name>
++            <description>French (Switzerland, Sun Type 6/7)</description>
++          </configItem>
++        </variant>
+       </variantList>
+     </layout>
+     <layout>
+@@ -5984,6 +6158,12 @@
+         </variant>
+         <variant>
+           <configItem>
++            <name>sun_type6</name>
++            <description>Ukrainian (Sun Type 6/7)</description>
++          </configItem>
++        </variant>
++        <variant>
++          <configItem>
+             <name>crh</name>
+             <!-- Keyboard indicator for Crimean Tatar layouts -->
+             <shortDescription>crh</shortDescription>
+@@ -6015,6 +6195,12 @@
+             </languageList>
+           </configItem>
+         </variant>
++        <variant>
++          <configItem>
++            <name>sun_type6</name>
++            <description>Turkish (Sun Type 6/7)</description>
++          </configItem>
++        </variant>
+       </variantList>
+     </layout>
+     <layout>
+@@ -6075,6 +6261,12 @@
+         </variant>
+         <variant>
+           <configItem>
++            <name>sun_type6</name>
++            <description>English (UK, Sun Type 6/7)</description>
++          </configItem>
++        </variant>
++        <variant>
++          <configItem>
+             <name>colemak_dh</name>
+             <description>English (UK, Colemak-DH)</description>
+           </configItem>
+@@ -6183,6 +6375,12 @@
+             <description>Korean (101/104-key compatible)</description>
+           </configItem>
+         </variant>
++        <variant>
++          <configItem>
++            <name>sun_type6</name>
++            <description>Korean (Sun Type 6/7)</description>
++          </configItem>
++        </variant>
+       </variantList>
+     </layout>
+     <layout>

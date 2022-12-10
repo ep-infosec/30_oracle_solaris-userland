@@ -1,0 +1,1504 @@
+Patch to use Lua 5.4 instead of Lua 5.1.
+
+Upstream is not particularly interested in the support of newer versions of Lua:
+https://gitlab.gnome.org/GNOME/libpeas/-/issues/25
+
+--- libpeas-1.24.0/libpeas/peas-engine.c
++++ libpeas-1.24.0/libpeas/peas-engine.c
+@@ -946,7 +946,7 @@ get_plugin_loader (PeasEngine *engine,
+  *
+  * Enable a loader, enables a loader for plugins.
+  * The C plugin loader is always enabled. The other plugin
+- * loaders are: lua5.1, python and python3.
++ * loaders are: lua5.4, python and python3.
+  *
+  * For instance, the following code will enable Python 2 plugins
+  * to be loaded:
+--- libpeas-1.24.0/libpeas/peas-utils.c
++++ libpeas-1.24.0/libpeas/peas-utils.c
+@@ -31,16 +31,16 @@
+ #include "peas-utils.h"
+ 
+ static const gchar *all_plugin_loaders[] = {
+-  "c", "lua5.1", "python", "python3"
++  "c", "lua5.4", "python", "python3"
+ };
+ 
+ static const gchar *all_plugin_loader_modules[] = {
+-  "cloader", "lua51loader", "pythonloader", "python3loader"
++  "cloader", "lua54loader", "pythonloader", "python3loader"
+ };
+ 
+ static const gint conflicting_plugin_loaders[PEAS_UTILS_N_LOADERS][2] = {
+   { -1, -1 }, /* c       => {}          */
+-  { -1, -1 }, /* lua5.1  => {}          */
++  { -1, -1 }, /* lua5.4  => {}          */
+   {  3, -1 }, /* python  => { python3 } */
+   {  2, -1 }  /* python3 => { python  } */
+ };
+--- libpeas-1.24.0/tests/libpeas/extension-lua.c
++++ libpeas-1.24.0/tests/libpeas/extension-lua.c
+@@ -154,9 +154,9 @@ test_extension_lua_nonexistent (PeasEngi
+   PeasPluginInfo *info;
+ 
+   testing_util_push_log_hook ("Error loading plugin "
+-                              "'extension-lua51-nonexistent'*");
++                              "'extension-lua54-nonexistent'*");
+ 
+-  info = peas_engine_get_plugin_info (engine, "extension-lua51-nonexistent");
++  info = peas_engine_get_plugin_info (engine, "extension-lua54-nonexistent");
+ 
+   g_assert (!peas_engine_load_plugin (engine, info));
+ }
+@@ -168,12 +168,12 @@ main (int   argc,
+   testing_init (&argc, &argv);
+ 
+   /* Only test the basics */
+-  testing_extension_basic ("lua5.1");
++  testing_extension_basic ("lua5.4");
+ 
+   /* We still need to add the callable tests
+    * because of peas_extension_call()
+    */
+-  testing_extension_callable ("lua5.1");
++  testing_extension_callable ("lua5.4");
+ 
+ #undef EXTENSION_TEST
+ #undef EXTENSION_TEST_FUNC
+@@ -186,10 +186,10 @@ main (int   argc,
+   g_test_add_func (EXTENSION_TEST_NAME (loader, path), \
+                    (gpointer) test_extension_lua_##func)
+ 
+-  EXTENSION_TEST (lua5.1, "instance-refcount", instance_refcount);
+-  EXTENSION_TEST (lua5.1, "activatable-subject-refcount",
++  EXTENSION_TEST (lua5.4, "instance-refcount", instance_refcount);
++  EXTENSION_TEST (lua5.4, "activatable-subject-refcount",
+                   activatable_subject_refcount);
+-  EXTENSION_TEST (lua5.1, "nonexistent", nonexistent);
++  EXTENSION_TEST (lua5.4, "nonexistent", nonexistent);
+ 
+   return testing_extension_run_tests ();
+ }
+--- libpeas-1.24.0/loaders/lua5.4/peas-lua-internal.c
++++ libpeas-1.24.0/loaders/lua5.4/peas-lua-internal.c
+@@ -0,0 +1,160 @@
++/*
++ * peas-lua-internal.c
++ * This file is part of libpeas
++ *
++ * Copyright (C) 2015 - Garrett Regier
++ *
++ * libpeas is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version.
++ *
++ * libpeas is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with this library; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
++ */
++
++#ifdef HAVE_CONFIG_H
++#include <config.h>
++#endif
++
++#include "peas-lua-internal.h"
++
++#include <lauxlib.h>
++
++#include "peas-lua-utils.h"
++
++
++static gpointer hooks_key = NULL;
++static gpointer failed_err_key = NULL;
++
++
++static int
++failed_fn (lua_State *L)
++{
++  gchar *msg;
++
++  /* The first parameter is the Hooks table instance */
++  luaL_checktype (L, 1, LUA_TTABLE);
++
++  /* The tracebacks have a trailing newline */
++  msg = g_strchomp (g_strdup (luaL_checkstring (L, 2)));
++
++  g_warning ("%s", msg);
++
++  /* peas_lua_internal_call() knows to check for this value */
++  lua_pushlightuserdata (L, &failed_err_key);
++
++  g_free (msg);
++  return lua_error (L);
++}
++
++gboolean
++peas_lua_internal_setup (lua_State *L)
++{
++  if (!peas_lua_utils_load_resource (L, "internal.lua", 0, 1))
++    {
++      /* Already warned */
++      return FALSE;
++    }
++
++  if (!lua_istable (L, -1))
++    {
++      g_warning ("Invalid result from 'internal.lua' resource: %s",
++                 lua_tostring (L, -1));
++
++      /* Pop result */
++      lua_pop (L, 1);
++      return FALSE;
++    }
++
++  /* Set Hooks.failed to failed_fn */
++  lua_pushcfunction (L, failed_fn);
++  lua_setfield (L, -2, "failed");
++
++  /* Set registry[&hooks_key] = hooks */
++  lua_pushlightuserdata (L, &hooks_key);
++  lua_pushvalue (L, -2);
++  lua_rawset (L, LUA_REGISTRYINDEX);
++
++  /* Pop hooks */
++  lua_pop (L, -1);
++  return TRUE;
++}
++
++void
++peas_lua_internal_shutdown (lua_State *L)
++{
++  lua_pushlightuserdata (L, &hooks_key);
++  lua_pushnil (L);
++  lua_rawset (L, LUA_REGISTRYINDEX);
++}
++
++gboolean
++peas_lua_internal_call (lua_State   *L,
++                        const gchar *name,
++                        guint        n_args,
++                        gint         return_type)
++{
++  /* Get the Hooks table */
++  lua_pushlightuserdata (L, &hooks_key);
++  lua_rawget (L, LUA_REGISTRYINDEX);
++
++  /* Get the method */
++  lua_getfield (L, -1, name);
++
++  /* Swap the method and the table */
++  lua_insert (L, -2);
++
++  if (n_args > 0)
++    {
++      /* Before: [args..., method, table]
++       * After:  [method, table, args...]
++       */
++      lua_insert (L, -n_args - 2);
++      lua_insert (L, -n_args - 2);
++    }
++
++  if (!peas_lua_utils_call (L, 1 + n_args, 1))
++    {
++      /* Raised by failed_fn() to prevent printing the error */
++      if (!lua_isuserdata (L, -1) ||
++          lua_touserdata (L, -1) != &failed_err_key)
++        {
++          g_warning ("Failed to run internal Lua hook '%s':\n%s",
++                     name, lua_tostring (L, -1));
++        }
++
++      /* Pop the error */
++      lua_pop (L, 1);
++      return FALSE;
++    }
++
++  if (lua_type (L, -1) != return_type)
++    {
++      /* Don't warn for a nil result */
++      if (lua_type (L, -1) != LUA_TNIL)
++        {
++          g_warning ("Invalid return value for internal Lua hook '%s': "
++                     "expected %s, got: %s (%s)", name,
++                     lua_typename (L, return_type),
++                     lua_typename (L, lua_type (L, -1)),
++                     lua_tostring (L, -1));
++        }
++
++      /* Pop result */
++      lua_pop (L, 1);
++      return FALSE;
++    }
++
++  /* Pop the result if nil */
++  if (return_type == LUA_TNIL)
++    lua_pop (L, 1);
++
++  return TRUE;
++}
+--- libpeas-1.24.0/loaders/lua5.4/peas-lua-internal.h
++++ libpeas-1.24.0/loaders/lua5.4/peas-lua-internal.h
+@@ -0,0 +1,40 @@
++/*
++ * peas-lua-internal.h
++ * This file is part of libpeas
++ *
++ * Copyright (C) 2015 - Garrett Regier
++ *
++ * libpeas is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version.
++ *
++ * libpeas is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with this library; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
++ */
++
++#ifndef __PEAS_LUA_INTERNAL_H__
++#define __PEAS_LUA_INTERNAL_H__
++
++#include <glib.h>
++#include <lua.h>
++
++G_BEGIN_DECLS
++
++gboolean  peas_lua_internal_setup    (lua_State   *L);
++void      peas_lua_internal_shutdown (lua_State   *L);
++
++gboolean  peas_lua_internal_call     (lua_State   *L,
++                                      const gchar *name,
++                                      guint        n_args,
++                                      gint         return_type);
++
++G_END_DECLS
++
++#endif /* __PEAS_LUA_INTERNAL_H__ */
+--- libpeas-1.24.0/loaders/lua5.4/peas-lua-utils.c
++++ libpeas-1.24.0/loaders/lua5.4/peas-lua-utils.c
+@@ -0,0 +1,243 @@
++/*
++ * peas-lua-utils.c
++ * This file is part of libpeas
++ *
++ * Copyright (C) 2014-2015 - Garrett Regier
++ *
++ * libpeas is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version.
++ *
++ * libpeas is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with this library; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
++ */
++
++#ifdef HAVE_CONFIG_H
++#include <config.h>
++#endif
++
++#include "peas-lua-utils.h"
++
++#include <gio/gio.h>
++
++#include <lauxlib.h>
++
++
++gboolean
++peas_lua_utils_require (lua_State   *L,
++                        const gchar *name)
++{
++  luaL_checkstack (L, 2, "");
++
++  lua_getglobal (L, "require");
++  lua_pushstring (L, name);
++
++  if (lua_pcall (L, 1, 1, 0) != 0)
++    {
++      g_warning ("Error failed to load Lua module '%s': %s",
++                 name, lua_tostring (L, -1));
++
++      /* Pop error */
++      lua_pop (L, 1);
++      return FALSE;
++    }
++
++  if (!lua_istable (L, -1))
++    {
++      g_warning ("Error invalid Lua module for '%s': "
++                 "expected table, got: %s",
++                 name, lua_tostring (L, -1));
++
++      /* Pop the module's table */
++      lua_pop (L, 1);
++      return FALSE;
++    }
++
++  return TRUE;
++}
++
++gboolean
++peas_lua_utils_check_version (lua_State *L,
++                              guint      req_major,
++                              guint      req_minor,
++                              guint      req_micro)
++{
++  const gchar *version_str;
++  gchar **version_str_parts;
++  gint n_version_parts;
++  gint *version_parts;
++  gint i;
++  gboolean success = FALSE;
++
++  lua_getfield (L, -1, "_VERSION");
++  version_str = lua_tostring (L, -1);
++
++  version_str_parts = g_strsplit (version_str, ".", 0);
++
++  n_version_parts = g_strv_length (version_str_parts);
++  version_parts = g_newa (gint, n_version_parts);
++
++  for (i = 0; i < n_version_parts; ++i)
++    {
++      gchar *end;
++
++      version_parts[i] = g_ascii_strtoll (version_str_parts[i], &end, 10);
++
++      if (*end != '\0' ||
++          version_parts[i] < 0 ||
++          version_parts[i] == G_MAXINT64)
++        {
++          g_warning ("Invalid version string: %s", version_str);
++          goto error;
++        }
++    }
++
++  if (n_version_parts < 3 ||
++      version_parts[0] != req_major ||
++      version_parts[1] < req_minor ||
++      (version_parts[1] == req_minor && version_parts[2] < req_micro))
++    {
++      g_warning ("Version mismatch %d.%d.%d is required, found %s",
++                 req_major, req_minor, req_micro, version_str);
++      goto error;
++    }
++
++  success = TRUE;
++
++error:
++
++  /* Pop _VERSION */
++  lua_pop (L, 1);
++
++  g_strfreev (version_str_parts);
++  return success;
++}
++
++static gint
++traceback (lua_State *L)
++{
++  /* Always ignore an error that isn't a string */
++  if (!lua_isstring (L, 1))
++    return 1;
++
++  lua_getglobal (L, "debug");
++  if (!lua_istable (L, -1))
++    {
++      lua_pop (L, 1);
++      return 1;
++    }
++
++  lua_getfield (L, -1, "traceback");
++  if (!lua_isfunction (L, -1))
++    {
++      lua_pop (L, 2);
++      return 1;
++    }
++
++  /* Replace debug with traceback */
++  lua_replace (L, -2);
++
++  /* Push the error */
++  lua_pushvalue (L, 1);
++
++  /* Skip this function when generating the traceback */
++  lua_pushinteger (L, 2);
++
++  /* If we fail we have a new error object... */
++  lua_pcall (L, 2, 1, 0);
++  return 1;
++}
++
++gboolean
++peas_lua_utils_call (lua_State *L,
++                     guint      n_args,
++                     guint      n_results)
++{
++  gboolean success;
++
++  /* Push the error function */
++  lua_pushcfunction (L, traceback);
++
++  /* Move traceback to before the arguments */
++  lua_insert (L, -2 - n_args);
++
++  success = lua_pcall (L, n_args, n_results, -2 - n_args) == 0;
++
++  /* Remove traceback */
++  lua_remove (L, -1 - (success ? n_results : 1));
++  return success;
++}
++
++gboolean
++peas_lua_utils_load_resource (lua_State   *L,
++                              const gchar *name,
++                              guint        n_args,
++                              guint        n_results)
++{
++  gchar *resource_path;
++  GBytes *lua_resource;
++  const gchar *code;
++  gsize code_len;
++  gchar *lua_filename;
++
++  /* We don't use the byte-compiled Lua source
++   * because glib-compile-resources cannot output
++   * depends for generated files.
++   *
++   * There are also concerns that the bytecode is
++   * not stable enough between different Lua versions.
++   *
++   * https://bugzilla.gnome.org/show_bug.cgi?id=673101
++   */
++  resource_path = g_strconcat ("/org/gnome/libpeas/loaders/lua5.4/",
++                               name, NULL);
++  lua_resource = g_resources_lookup_data (resource_path,
++                                          G_RESOURCE_LOOKUP_FLAGS_NONE,
++                                          NULL);
++  g_free (resource_path);
++
++  if (lua_resource == NULL)
++    {
++      g_warning ("Failed to find '%s' resource", name);
++      return FALSE;
++    }
++
++  code = g_bytes_get_data (lua_resource, &code_len);
++
++  /* Filenames are prefixed with '@' */
++  lua_filename = g_strconcat ("@peas-lua-", name, NULL);
++
++  if (luaL_loadbuffer (L, code, code_len, lua_filename) != 0)
++    {
++      g_warning ("Failed to load '%s' resource: %s",
++                 name, lua_tostring (L, -1));
++
++      /* Pop error */
++      lua_pop (L, 1);
++      g_free (lua_filename);
++      g_bytes_unref (lua_resource);
++      return FALSE;
++    }
++
++  g_free (lua_filename);
++  g_bytes_unref (lua_resource);
++
++  if (!peas_lua_utils_call (L, n_args, n_results))
++    {
++      g_warning ("Failed to run '%s' resource: %s",
++                 name, lua_tostring (L, -1));
++
++      /* Pop error */
++      lua_pop (L, 1);
++      return FALSE;
++    }
++
++  return TRUE;
++}
+--- libpeas-1.24.0/loaders/lua5.4/peas-lua-utils.h
++++ libpeas-1.24.0/loaders/lua5.4/peas-lua-utils.h
+@@ -0,0 +1,50 @@
++/*
++ * peas-lua-utils.h
++ * This file is part of libpeas
++ *
++ * Copyright (C) 2014-2015 - Garrett Regier
++ *
++ * libpeas is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version.
++ *
++ * libpeas is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with this library; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
++ */
++
++#ifndef __PEAS_LUA_UTILS_H__
++#define __PEAS_LUA_UTILS_H__
++
++#include <glib.h>
++#include <lua.h>
++
++G_BEGIN_DECLS
++
++
++gboolean peas_lua_utils_require       (lua_State   *L,
++                                       const gchar *name);
++
++gboolean peas_lua_utils_check_version (lua_State   *L,
++                                       guint        req_major,
++                                       guint        req_minor,
++                                       guint        req_micro);
++
++gboolean peas_lua_utils_call          (lua_State   *L,
++                                       guint        n_args,
++                                       guint        n_results);
++
++gboolean peas_lua_utils_load_resource (lua_State   *L,
++                                       const gchar *name,
++                                       guint        n_args,
++                                       guint        n_results);
++
++G_END_DECLS
++
++#endif /* __PEAS_LUA_UTILS_H__ */
+--- libpeas-1.24.0/loaders/lua5.4/peas-plugin-loader-lua.c
++++ libpeas-1.24.0/loaders/lua5.4/peas-plugin-loader-lua.c
+@@ -0,0 +1,385 @@
++/*
++ * peas-plugin-loader-lua.c
++ * This file is part of libpeas
++ *
++ * Copyright (C) 2014-2015 - Garrett Regier
++ *
++ * libpeas is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version.
++ *
++ * libpeas is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with this library; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
++ */
++
++#ifdef HAVE_CONFIG_H
++#include <config.h>
++#endif
++
++#include "peas-plugin-loader-lua.h"
++#include "libpeas/peas-plugin-info-priv.h"
++
++#include <string.h>
++
++#include <lua.h>
++#include <lauxlib.h>
++#include <lualib.h>
++
++#include "peas-lua-internal.h"
++#include "peas-lua-utils.h"
++
++
++typedef void (* LgiLockFunc) (gpointer lgi_lock);
++
++
++typedef struct {
++  lua_State *L;
++
++  gpointer lgi_lock;
++  LgiLockFunc lgi_enter_func;
++  LgiLockFunc lgi_leave_func;
++} PeasPluginLoaderLuaPrivate;
++
++G_DEFINE_TYPE_WITH_PRIVATE (PeasPluginLoaderLua,
++                            peas_plugin_loader_lua,
++                            PEAS_TYPE_PLUGIN_LOADER)
++
++#define GET_PRIV(o) \
++  (peas_plugin_loader_lua_get_instance_private (o))
++
++static
++G_DEFINE_QUARK (peas-extension-type, extension_type)
++
++G_MODULE_EXPORT void
++peas_register_types (PeasObjectModule *module)
++{
++  peas_object_module_register_extension_type (module,
++                                              PEAS_TYPE_PLUGIN_LOADER,
++                                              PEAS_TYPE_PLUGIN_LOADER_LUA);
++}
++
++static lua_State *
++thread_enter (PeasPluginLoaderLua *lua_loader,
++              PeasPluginInfo      *info)
++{
++  PeasPluginLoaderLuaPrivate *priv = GET_PRIV (lua_loader);
++  lua_State *L = priv->L;
++  lua_State *NL = info->loader_data;
++
++  priv->lgi_enter_func (priv->lgi_lock);
++
++  if (NL != NULL)
++    {
++      /* We should never have multiple values on the stack */
++      g_assert_cmpint (lua_gettop (NL), ==, 0);
++    }
++  else
++    {
++      luaL_checkstack (L, 2, "");
++
++      lua_pushlightuserdata (L, info);
++      NL = lua_newthread (L);
++      lua_rawset (L, LUA_REGISTRYINDEX);
++
++      info->loader_data = NL;
++    }
++
++  return NL;
++}
++
++static void
++thread_leave (PeasPluginLoaderLua  *lua_loader,
++              PeasPluginInfo       *info,
++              lua_State           **L_ptr)
++{
++  PeasPluginLoaderLuaPrivate *priv = GET_PRIV (lua_loader);
++  lua_State *L = info->loader_data;
++
++  g_assert (*L_ptr == L);
++  *L_ptr = NULL;
++
++  /* The stack should always be empty */
++  g_assert_cmpint (lua_gettop (L), ==, 0);
++
++  priv->lgi_leave_func (priv->lgi_lock);
++}
++
++static GType
++find_lua_extension_type (lua_State      *L,
++                         PeasPluginInfo *info,
++                         GType           exten_type)
++{
++  luaL_checkstack (L, 2, "");
++  lua_pushstring (L, info->filename);
++  lua_pushlightuserdata (L, GSIZE_TO_POINTER (exten_type));
++
++  if (peas_lua_internal_call (L, "find_extension_type",
++                              2, LUA_TLIGHTUSERDATA))
++    {
++      GType extension_type;
++
++      extension_type = (GType) lua_touserdata (L, -1);
++      lua_pop (L, 1);
++
++      if (g_type_is_a (extension_type, exten_type))
++        return extension_type;
++
++      g_warning ("Found invalid extension type '%s' for '%s'",
++                 g_type_name (extension_type), g_type_name (exten_type));
++    }
++
++  return G_TYPE_INVALID;
++}
++
++static gboolean
++peas_plugin_loader_lua_provides_extension (PeasPluginLoader *loader,
++                                           PeasPluginInfo   *info,
++                                           GType             exten_type)
++{
++  PeasPluginLoaderLua *lua_loader = PEAS_PLUGIN_LOADER_LUA (loader);
++  lua_State *L;
++  GType the_type;
++
++  L = thread_enter (lua_loader, info);
++
++  the_type = find_lua_extension_type (L, info, exten_type);
++
++  thread_leave (lua_loader, info, &L);
++  return the_type != G_TYPE_INVALID;
++}
++
++static PeasExtension *
++peas_plugin_loader_lua_create_extension (PeasPluginLoader *loader,
++                                         PeasPluginInfo   *info,
++                                         GType             exten_type,
++                                         guint             n_parameters,
++                                         GParameter       *parameters)
++{
++  PeasPluginLoaderLua *lua_loader = PEAS_PLUGIN_LOADER_LUA (loader);
++  lua_State *L;
++  GType the_type;
++  GObject *object = NULL;
++
++  L = thread_enter (lua_loader, info);
++
++  the_type = find_lua_extension_type (L, info, exten_type);
++  if (the_type == G_TYPE_INVALID)
++    goto out;
++
++  object = g_object_newv (the_type, n_parameters, parameters);
++  if (object == NULL)
++    goto out;
++
++  /* We have to remember which interface we are instantiating
++   * for the deprecated peas_extension_get_extension_type().
++   */
++  g_object_set_qdata (object, extension_type_quark (),
++                      GSIZE_TO_POINTER (exten_type));
++
++  luaL_checkstack (L, 2, "");
++  lua_pushlightuserdata (L, object);
++  lua_pushlightuserdata (L, info);
++
++  if (!peas_lua_internal_call (L, "setup_extension", 2, LUA_TNIL))
++    g_clear_object (&object);
++
++out:
++
++  thread_leave (lua_loader, info, &L);
++  return object;
++}
++
++static gboolean
++peas_plugin_loader_lua_load (PeasPluginLoader *loader,
++                             PeasPluginInfo   *info)
++{
++  PeasPluginLoaderLua *lua_loader = PEAS_PLUGIN_LOADER_LUA (loader);
++  lua_State *L;
++  gboolean success = FALSE;
++
++  L = thread_enter (lua_loader, info);
++
++  luaL_checkstack (L, 3, "");
++  lua_pushstring (L, info->filename);
++  lua_pushstring (L, peas_plugin_info_get_module_dir (info));
++  lua_pushstring (L, peas_plugin_info_get_module_name (info));
++
++  if (peas_lua_internal_call (L, "load", 3, LUA_TBOOLEAN))
++    {
++      success = lua_toboolean (L, -1);
++      lua_pop (L, 1);
++    }
++
++  thread_leave (lua_loader, info, &L);
++  return success;
++}
++
++static void
++peas_plugin_loader_lua_unload (PeasPluginLoader *loader,
++                               PeasPluginInfo   *info)
++{
++  PeasPluginLoaderLua *lua_loader = PEAS_PLUGIN_LOADER_LUA (loader);
++  PeasPluginLoaderLuaPrivate *priv = GET_PRIV (lua_loader);
++  lua_State *L = priv->L;
++
++  priv->lgi_enter_func (priv->lgi_lock);
++
++  /* The stack should always be empty */
++  g_assert_cmpint (lua_gettop (info->loader_data), ==, 0);
++
++  /* Delete the thread's reference */
++  lua_pushlightuserdata (L, info);
++  lua_pushnil (L);
++  lua_rawset (L, LUA_REGISTRYINDEX);
++
++  info->loader_data = NULL;
++
++  priv->lgi_leave_func (priv->lgi_lock);
++}
++
++static void
++peas_plugin_loader_lua_garbage_collect (PeasPluginLoader *loader)
++{
++  PeasPluginLoaderLua *lua_loader = PEAS_PLUGIN_LOADER_LUA (loader);
++  PeasPluginLoaderLuaPrivate *priv = GET_PRIV (lua_loader);
++  lua_State *L = priv->L;
++
++  priv->lgi_enter_func (priv->lgi_lock);
++
++  peas_lua_internal_call (L, "garbage_collect", 0, LUA_TNIL);
++
++  priv->lgi_leave_func (priv->lgi_lock);
++}
++
++static int
++atpanic_handler (lua_State *L)
++{
++  G_BREAKPOINT ();
++  return 0;
++}
++
++static gboolean
++peas_plugin_loader_lua_initialize (PeasPluginLoader *loader)
++{
++  PeasPluginLoaderLua *lua_loader = PEAS_PLUGIN_LOADER_LUA (loader);
++  PeasPluginLoaderLuaPrivate *priv = GET_PRIV (lua_loader);
++  lua_State *L;
++
++  priv->L = L = luaL_newstate ();
++  if (L == NULL)
++    {
++      g_critical ("Failed to allocate lua_State");
++      return FALSE;
++    }
++
++  /* Set before any other code is run */
++  if (g_getenv ("PEAS_LUA_DEBUG") != NULL)
++    lua_atpanic (L, atpanic_handler);
++
++  luaL_openlibs (L);
++
++  if (!peas_lua_utils_load_resource (L, "strict.lua", 0, 0) ||
++      !peas_lua_utils_require (L, "lgi") ||
++      !peas_lua_utils_check_version (L,
++                                     LGI_MAJOR_VERSION,
++                                     LGI_MINOR_VERSION,
++                                     LGI_MICRO_VERSION))
++    {
++      /* Already warned */
++      return FALSE;
++    }
++
++  lua_pushliteral (L, "lock");
++  lua_rawget (L, -2);
++  priv->lgi_lock = lua_touserdata (L, -1);
++  lua_pop (L, 1);
++
++  lua_pushliteral (L, "enter");
++  lua_rawget (L, -2);
++  priv->lgi_enter_func = lua_touserdata (L, -1);
++  lua_pop (L, 1);
++
++  lua_pushliteral (L, "leave");
++  lua_rawget (L, -2);
++  priv->lgi_leave_func = lua_touserdata (L, -1);
++  lua_pop (L, 1);
++
++  if (priv->lgi_lock == NULL ||
++      priv->lgi_enter_func == NULL ||
++      priv->lgi_leave_func == NULL)
++    {
++      g_warning ("Failed to find 'lgi.lock', 'lgi.enter' and 'lgi.leave'");
++      return FALSE;
++    }
++
++  /* Pop lgi's module table */
++  lua_pop (L, 1);
++
++  if (!peas_lua_internal_setup (L))
++    {
++      /* Already warned */
++      return FALSE;
++    }
++
++  /* Assert that no values were leaked to the stack */
++  g_assert_cmpint (lua_gettop (L), ==, 0);
++
++  /* Initially the lock is taken by LGI,
++   * release as we are not running Lua code
++   */
++  priv->lgi_leave_func (priv->lgi_lock);
++  return TRUE;
++}
++
++static gboolean
++peas_plugin_loader_lua_is_global (PeasPluginLoader *loader)
++{
++  return FALSE;
++}
++
++static void
++peas_plugin_loader_lua_init (PeasPluginLoaderLua *lua_loader)
++{
++}
++
++static void
++peas_plugin_loader_lua_finalize (GObject *object)
++{
++  PeasPluginLoaderLua *lua_loader = PEAS_PLUGIN_LOADER_LUA (object);
++  PeasPluginLoaderLuaPrivate *priv = GET_PRIV (lua_loader);
++
++  /* Must take the lock as Lua code will run on lua_close
++   * and another thread might be running Lua code already
++   */
++  if (priv->lgi_enter_func != NULL)
++    priv->lgi_enter_func (priv->lgi_lock);
++
++  peas_lua_internal_shutdown (priv->L);
++  g_clear_pointer (&priv->L, (GDestroyNotify) lua_close);
++
++  G_OBJECT_CLASS (peas_plugin_loader_lua_parent_class)->finalize (object);
++}
++
++static void
++peas_plugin_loader_lua_class_init (PeasPluginLoaderLuaClass *klass)
++{
++  GObjectClass *object_class = G_OBJECT_CLASS (klass);
++  PeasPluginLoaderClass *loader_class = PEAS_PLUGIN_LOADER_CLASS (klass);
++
++  object_class->finalize = peas_plugin_loader_lua_finalize;
++
++  loader_class->initialize = peas_plugin_loader_lua_initialize;
++  loader_class->is_global = peas_plugin_loader_lua_is_global;
++  loader_class->load = peas_plugin_loader_lua_load;
++  loader_class->unload = peas_plugin_loader_lua_unload;
++  loader_class->create_extension = peas_plugin_loader_lua_create_extension;
++  loader_class->provides_extension = peas_plugin_loader_lua_provides_extension;
++  loader_class->garbage_collect = peas_plugin_loader_lua_garbage_collect;
++}
+--- libpeas-1.24.0/loaders/lua5.4/peas-plugin-loader-lua.h
++++ libpeas-1.24.0/loaders/lua5.4/peas-plugin-loader-lua.h
+@@ -0,0 +1,57 @@
++/*
++ * peas-plugin-loader-lua.h
++ * This file is part of libpeas
++ *
++ * Copyright (C) 2014 - Garrett Regier
++ *
++ * libpeas is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version.
++ *
++ * libpeas is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with this library; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
++ */
++
++#ifndef __PEAS_PLUGIN_LOADER_LUA_H__
++#define __PEAS_PLUGIN_LOADER_LUA_H__
++
++#include <libpeas/peas-plugin-loader.h>
++#include <libpeas/peas-object-module.h>
++
++G_BEGIN_DECLS
++
++#define PEAS_TYPE_PLUGIN_LOADER_LUA             (peas_plugin_loader_lua_get_type ())
++#define PEAS_PLUGIN_LOADER_LUA(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEAS_TYPE_PLUGIN_LOADER_LUA, PeasPluginLoaderLua))
++#define PEAS_PLUGIN_LOADER_LUA_CONST(obj)       (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEAS_TYPE_PLUGIN_LOADER_LUA, PeasPluginLoaderLua const))
++#define PEAS_PLUGIN_LOADER_LUA_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), PEAS_TYPE_PLUGIN_LOADER_LUA, PeasPluginLoaderLuaClass))
++#define PEAS_IS_PLUGIN_LOADER_LUA(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PEAS_TYPE_PLUGIN_LOADER_LUA))
++#define PEAS_IS_PLUGIN_LOADER_LUA_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), PEAS_TYPE_PLUGIN_LOADER_LUA))
++#define PEAS_PLUGIN_LOADER_LUA_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), PEAS_TYPE_PLUGIN_LOADER_LUA, PeasPluginLoaderLuaClass))
++
++typedef struct _PeasPluginLoaderLua         PeasPluginLoaderLua;
++typedef struct _PeasPluginLoaderLuaClass    PeasPluginLoaderLuaClass;
++
++struct _PeasPluginLoaderLua {
++  PeasPluginLoader parent;
++};
++
++struct _PeasPluginLoaderLuaClass {
++  PeasPluginLoaderClass parent_class;
++};
++
++GType                    peas_plugin_loader_lua_get_type  (void) G_GNUC_CONST;
++
++/* All the loaders must implement this function */
++G_MODULE_EXPORT void     peas_register_types              (PeasObjectModule *module);
++
++G_END_DECLS
++
++#endif /* __PEAS_PLUGIN_LOADER_LUA_H__ */
++
+--- libpeas-1.24.0/loaders/lua5.4/resources/peas-lua-compile.lua
++++ libpeas-1.24.0/loaders/lua5.4/resources/peas-lua-compile.lua
+@@ -0,0 +1,59 @@
++--
++--  Copyright (C) 2015 - Garrett Regier
++--
++-- libpeas is free software; you can redistribute it and/or
++-- modify it under the terms of the GNU Lesser General Public
++-- License as published by the Free Software Foundation; either
++-- version 2.1 of the License, or (at your option) any later version.
++--
++-- libpeas is distributed in the hope that it will be useful,
++-- but WITHOUT ANY WARRANTY; without even the implied warranty of
++-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++-- Lesser General Public License for more details.
++--
++-- You should have received a copy of the GNU Lesser General Public
++-- License along with this library; if not, write to the Free Software
++-- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
++
++local io = require 'io'
++local os = require 'os'
++
++
++local function check(err, format, ...)
++    if err == nil then
++        return
++    end
++
++    io.stderr:write(('Error: %s:\n%s\n'):format(format:format(...), err))
++    os.exit(1)
++end
++
++
++local function main(arg)
++    for i = 1, #arg, 2 do
++        local filename = arg[i]
++        local output = arg[i + 1]
++
++        local input_file, err = io.open(filename, 'rb')
++        check(err, 'Failed to open file "%s"', filename)
++
++         -- Error includes the filename
++        local compiled, err = load(input_file:read('*a'),
++                                   '@' .. filename)
++        check(err, 'Invalid Lua file')
++
++        local f, err = io.open(output, 'wb')
++        check(err, 'Failed to open file "%s"', output)
++
++        local success, err = f:write(string.dump(compiled))
++        check(err, 'Failed to write to "%s"', output)
++
++        local success, err = f:close()
++        check(err, 'Failed to save "%s"', output)
++    end
++end
++
++
++os.exit(main(arg) or 0)
++
++-- ex:ts=4:et:
+--- libpeas-1.24.0/loaders/lua5.4/resources/peas-lua-internal.lua
++++ libpeas-1.24.0/loaders/lua5.4/resources/peas-lua-internal.lua
+@@ -0,0 +1,161 @@
++--
++--  Copyright (C) 2015 - Garrett Regier
++--
++-- libpeas is free software; you can redistribute it and/or
++-- modify it under the terms of the GNU Lesser General Public
++-- License as published by the Free Software Foundation; either
++-- version 2.1 of the License, or (at your option) any later version.
++--
++-- libpeas is distributed in the hope that it will be useful,
++-- but WITHOUT ANY WARRANTY; without even the implied warranty of
++-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++-- Lesser General Public License for more details.
++--
++-- You should have received a copy of the GNU Lesser General Public
++-- License along with this library; if not, write to the Free Software
++-- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
++
++local debug = require 'debug'
++local package = require 'package'
++
++local lgi = require 'lgi'
++local GObject = lgi.GObject
++local Peas = lgi.Peas
++
++
++local Hooks = {}
++Hooks.__index = Hooks
++
++function Hooks.new()
++    local self = { priv = {} }
++    setmetatable(self, Hooks)
++
++    self.priv.module_cache = {}
++    self.priv.extension_cache = {}
++    return self
++end
++
++function Hooks:failed(msg)
++    -- This is implemented by the plugin loader
++    error('Hooks:failed() was not implemented!')
++end
++
++local function add_package_path(package_path)
++    local paths = (';%s/?.lua;%s/?/init.lua'):format(package_path,
++                                                     package_path)
++
++    if not package.path:find(paths, 1, true) then
++        package.path = package.path .. paths
++    end
++end
++
++local function format_plugin_exception(err)
++    -- Format the error even if given a userdata
++    local formatted = debug.traceback(tostring(err), 2)
++
++    if type(formatted) ~= 'string' then
++        return formatted
++    end
++
++    -- Remove all mentions of this file
++    local lines = {}
++    for line in formatted:gmatch('([^\n]+\n?)') do
++        if line:find('peas-lua-internal.lua', 1, true) then
++            break
++        end
++
++        table.insert(lines, line)
++    end
++
++    return table.concat(lines, '')
++end
++
++function Hooks:load(filename, module_dir, module_name)
++    local module = self.priv.module_cache[filename]
++
++    if module ~= nil then
++        return module ~= false
++    end
++
++    if package.loaded[module_name] ~= nil then
++        local msg = ("Error loading plugin '%s': " ..
++                     "module name '%s' has already been used")
++        self:failed(msg:format(filename, module_name))
++    end
++
++    add_package_path(module_dir)
++
++    local success, result = xpcall(function()
++        return require(module_name)
++    end, format_plugin_exception)
++
++    if not success then
++        local msg = "Error loading plugin '%s':\n%s"
++        self:failed(msg:format(module_name, tostring(result)))
++    end
++
++    if type(result) ~= 'table' then
++        self.priv.module_cache[filename] = false
++
++        local msg = "Error loading plugin '%s': expected table, got: %s (%s)"
++        self:failed(msg:format(module_name, type(result), tostring(result)))
++    end
++
++    self.priv.module_cache[filename] = result
++    self.priv.extension_cache[filename] = {}
++    return true
++end
++
++function Hooks:find_extension_type(filename, gtype)
++    local module_gtypes = self.priv.extension_cache[filename]
++    local extension_type = module_gtypes[gtype]
++
++    if extension_type ~= nil then
++        if extension_type == false then
++            return nil
++        end
++
++        return extension_type
++    end
++
++    for _, value in pairs(self.priv.module_cache[filename]) do
++        local value_gtype = value._gtype
++
++        if value_gtype ~= nil then
++            if GObject.type_is_a(value_gtype, gtype) then
++                module_gtypes[gtype] = value_gtype
++                return value_gtype
++            end
++        end
++    end
++
++    module_gtypes[gtype] = false
++    return nil
++end
++
++local function check_native(native, wrapped, typename)
++    local msg = ('Invalid wrapper for %s: %s'):format(typename,
++                                                      tostring(wrapped))
++
++    -- Cannot compare userdata directly!
++    assert(wrapped ~= nil, msg)
++    assert(tostring(native) == tostring(wrapped._native), msg)
++end
++
++function Hooks:setup_extension(exten, info)
++    local wrapped_exten = GObject.Object(exten, false)
++    check_native(exten, wrapped_exten, 'extension')
++
++    local wrapped_info = Peas.PluginInfo(info, false)
++    check_native(info, wrapped_info, 'PeasPluginInfo')
++
++    wrapped_exten.priv.plugin_info = wrapped_info
++end
++
++function Hooks:garbage_collect()
++    collectgarbage()
++end
++
++return Hooks.new()
++
++-- ex:ts=4:et:
+--- libpeas-1.24.0/loaders/lua5.4/resources/peas-lua-strict.lua
++++ libpeas-1.24.0/loaders/lua5.4/resources/peas-lua-strict.lua
+@@ -0,0 +1,50 @@
++--
++--  Copyright (C) 2015 - Garrett Regier
++--
++-- libpeas is free software; you can redistribute it and/or
++-- modify it under the terms of the GNU Lesser General Public
++-- License as published by the Free Software Foundation; either
++-- version 2.1 of the License, or (at your option) any later version.
++--
++-- libpeas is distributed in the hope that it will be useful,
++-- but WITHOUT ANY WARRANTY; without even the implied warranty of
++-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++-- Lesser General Public License for more details.
++--
++-- You should have received a copy of the GNU Lesser General Public
++-- License along with this library; if not, write to the Free Software
++-- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
++--
++-- Modified version of: http://metalua.luaforge.net/src/lib/strict.lua.html
++
++__STRICT = false
++
++local mt = getmetatable(_G)
++if mt == nil then
++    mt = {}
++    setmetatable(_G, mt)
++end
++
++function mt:__newindex(name, value)
++    if __STRICT then
++        local what = debug.getinfo(2, 'S').what
++
++        if what ~= 'C' then
++            error("Attempted to create global variable '" ..
++                  tostring(name) .. "'", 2)
++        end
++    end
++
++    rawset(self, name, value)
++end
++
++function mt:__index(name)
++    if not __STRICT or debug.getinfo(2, 'S').what == 'C' then
++        return rawget(self, name)
++    end
++
++    error("Attempted to access nonexistent " ..
++          "global variable '" .. tostring(name) .. "'", 2)
++end
++
++-- ex:ts=4:et:
+--- libpeas-1.24.0/loaders/lua5.4/resources/peas-lua.gresource.xml
++++ libpeas-1.24.0/loaders/lua5.4/resources/peas-lua.gresource.xml
+@@ -0,0 +1,7 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<gresources>
++  <gresource prefix="/org/gnome/libpeas/loaders/lua5.4">
++    <file alias="internal.lua">peas-lua-internal.lua</file>
++    <file alias="strict.lua">peas-lua-strict.lua</file>
++  </gresource>
++</gresources>
+--- libpeas-1.24.0/peas-demo/peas-demo.c
++++ libpeas-1.24.0/peas-demo/peas-demo.c
+@@ -137,7 +137,7 @@ main (int    argc,
+ 
+   /* We don't care about leaking memory */
+   g_setenv ("PEAS_ALLOW_ALL_LOADERS", "1", TRUE);
+-  peas_engine_enable_loader (engine, "lua5.1");
++  peas_engine_enable_loader (engine, "lua5.4");
+   peas_engine_enable_loader (engine, "python3");
+ 
+   if (run_from_build_dir)
+--- libpeas-1.24.0/peas-demo/plugins/luahello/luahello.plugin
++++ libpeas-1.24.0/peas-demo/plugins/luahello/luahello.plugin
+@@ -1,6 +1,6 @@
+ [Plugin]
+ Module=luahello
+-Loader=lua5.1
++Loader=lua5.4
+ Name=Lua Says Hello
+ Description=Inserts a box containing "Lua Says Hello" in every windows.
+ Authors=Garrett Regier <garrettregier@gmail.com>
+--- libpeas-1.24.0/tests/libpeas/plugins/extension-lua/extension-lua51.plugin
++++ libpeas-1.24.0/tests/libpeas/plugins/extension-lua/extension-lua51.plugin
+@@ -1,7 +0,0 @@
+-[Plugin]
+-Module=extension-lua51
+-Loader=lua5.1
+-Name=Extension lua5.1
+-Description=This plugin is for the lua5.1 PeasExtension tests.
+-Authors=Garrett Regier
+-Copyright=Copyright © 2014 Garrett Regier
+--- libpeas-1.24.0/tests/libpeas/plugins/extension-lua/extension-lua54.gschema.xml
++++ libpeas-1.24.0/tests/libpeas/plugins/extension-lua/extension-lua54.gschema.xml
+@@ -0,0 +1,9 @@
++<schemalist>
++  <schema id="extension-lua54" path="/org/gnome/libpeas/tests/extension-lua54/">
++    <key name="a-setting" type="s">
++      <default>'Blah'</default>
++      <summary>Just a setting.</summary>
++      <description>Just a setting.</description>
++    </key>
++  </schema>
++</schemalist>
+--- libpeas-1.24.0/tests/libpeas/plugins/extension-lua/extension-lua54.lua
++++ libpeas-1.24.0/tests/libpeas/plugins/extension-lua/extension-lua54.lua
+@@ -0,0 +1,105 @@
++--
++--  Copyright (C) 2014 - Garrett Regier
++--
++-- libpeas is free software; you can redistribute it and/or
++-- modify it under the terms of the GNU Lesser General Public
++-- License as published by the Free Software Foundation; either
++-- version 2.1 of the License, or (at your option) any later version.
++--
++-- libpeas is distributed in the hope that it will be useful,
++-- but WITHOUT ANY WARRANTY; without even the implied warranty of
++-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++-- Lesser General Public License for more details.
++--
++-- You should have received a copy of the GNU Lesser General Public
++-- License along with this library; if not, write to the Free Software
++-- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
++
++local lgi = require 'lgi'
++
++local GObject = lgi.GObject
++local Introspection = lgi.Introspection
++local Peas = lgi.Peas
++
++
++local ExtensionLuaPlugin = GObject.Object:derive('ExtensionLuaPlugin', {
++    Peas.Activatable,
++    Introspection.Base,
++    Introspection.Callable,
++    Introspection.HasPrerequisite
++})
++
++ExtensionLuaPlugin._property.object =
++    GObject.ParamSpecObject('object', 'object', 'object',
++                            GObject.Object._gtype,
++                            { GObject.ParamFlags.READABLE,
++                              GObject.ParamFlags.WRITABLE })
++
++ExtensionLuaPlugin._property.update_count =
++    GObject.ParamSpecInt('update-count', 'update-count', 'update-count',
++                         0, 1000000, 0,
++                         { GObject.ParamFlags.READABLE })
++
++function ExtensionLuaPlugin:_init()
++    self.priv.update_count = 0
++end
++
++function ExtensionLuaPlugin:do_activate()
++    collectgarbage('restart')
++end
++
++function ExtensionLuaPlugin:do_deactivate()
++    collectgarbage('stop')
++end
++
++function ExtensionLuaPlugin:do_update_state()
++    self.priv.update_count = self.priv.update_count + 1
++end
++
++function ExtensionLuaPlugin:do_get_plugin_info()
++    return self.priv.plugin_info
++end
++
++function ExtensionLuaPlugin:do_get_settings()
++    return self.priv.plugin_info:get_settings(nil)
++end
++
++function ExtensionLuaPlugin:do_call_no_args()
++end
++
++function ExtensionLuaPlugin:do_call_with_return()
++    return 'Hello, World!'
++end
++
++function ExtensionLuaPlugin:do_call_single_arg()
++    return true
++end
++
++function ExtensionLuaPlugin:do_call_multi_args(in_, inout)
++    return inout, in_
++end
++
++-- Test strict mode
++local UNIQUE = {}
++
++local function assert_error(success, result)
++    assert(not success, result)
++end
++
++assert_error(pcall(function() _G[UNIQUE] = true end))
++assert(pcall(function()
++    rawset(_G, UNIQUE, true)
++    assert(_G[UNIQUE] == true)
++    _G[UNIQUE] = nil
++end))
++assert_error(pcall(function() _G[UNIQUE] = true end))
++assert(pcall(function()
++    __STRICT = false
++    _G[UNIQUE] = true
++    _G[UNIQUE] = nil
++    __STRICT = true
++end))
++
++return { ExtensionLuaPlugin }
++
++-- ex:set ts=4 et sw=4 ai:
+--- libpeas-1.24.0/tests/libpeas/plugins/extension-lua/extension-lua54.plugin
++++ libpeas-1.24.0/tests/libpeas/plugins/extension-lua/extension-lua54.plugin
+@@ -0,0 +1,7 @@
++[Plugin]
++Module=extension-lua54
++Loader=lua5.4
++Name=Extension lua5.4
++Description=This plugin is for the lua5.4 PeasExtension tests.
++Authors=Garrett Regier
++Copyright=Copyright © 2014 Garrett Regier
+--- libpeas-1.24.0/tests/libpeas/plugins/extension-lua51-nonexistent.plugin
++++ libpeas-1.24.0/tests/libpeas/plugins/extension-lua51-nonexistent.plugin
+@@ -1,7 +0,0 @@
+-[Plugin]
+-Module=extension-lua51-nonexistent
+-Loader=lua5.1
+-Name=Extension lua5.1 Nonexistent
+-Description=This plugin is nonexistent.
+-Authors=Garrett Regier
+-Copyright=Copyright © 2014 Garrett Regier
+--- libpeas-1.24.0/tests/libpeas/plugins/extension-lua54-nonexistent.plugin
++++ libpeas-1.24.0/tests/libpeas/plugins/extension-lua54-nonexistent.plugin
+@@ -0,0 +1,7 @@
++[Plugin]
++Module=extension-lua54-nonexistent
++Loader=lua5.4
++Name=Extension lua5.4 Nonexistent
++Description=This plugin is nonexistent.
++Authors=Garrett Regier
++Copyright=Copyright © 2014 Garrett Regier

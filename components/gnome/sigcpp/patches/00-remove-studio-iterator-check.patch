@@ -1,0 +1,48 @@
+This breaks builds for Studio 12.4; this patch should likely be reworked to
+determine if an older version of Studio is being used and then only apply
+this fix.
+
+With that said, a better fix is likely to simply remove this logic entirely
+as has been done below (although any use of the related defines should also
+be removed as well, which is not included below).
+
+file upstream bug
+
+--- a/build/cxx_std.m4	2017-09-08 17:03:34.149312581 +0000
++++ b/build/cxx_std.m4	2017-09-08 17:04:02.966862214 +0000
+@@ -1,25 +0,0 @@
+-## SIGC_CXX_HAS_SUN_REVERSE_ITERATOR()
+-##
+-## Check for Sun libCstd style std::reverse_iterator, which demands more than just one template parameter.
+-## and #define SIGC_HAVE_SUN_REVERSE_ITERATOR if found.
+-##
+-AC_DEFUN([SIGC_CXX_HAS_SUN_REVERSE_ITERATOR],
+-[
+-  AC_CACHE_CHECK(
+-    [for non-standard Sun libCstd reverse_iterator],
+-    [sigc_cv_cxx_has_sun_reverse_iterator],
+-  [
+-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
+-    [[
+-      #include <iterator>
+-    ]],[[
+-      typedef std::reverse_iterator<char*, std::random_access_iterator_tag, char, char&, char*, int> ReverseIter;
+-    ]])],
+-      [sigc_cv_cxx_has_sun_reverse_iterator='yes'],
+-      [sigc_cv_cxx_has_sun_reverse_iterator='no']
+-    )
+-  ])
+-
+-  AS_IF([test "x${sigc_cv_cxx_has_sun_reverse_iterator}" = 'xyes'],
+-  [AC_DEFINE([SIGC_HAVE_SUN_REVERSE_ITERATOR], [1], [Define if the non-standard Sun reverse_iterator must be used.])])
+-])
+--- a/configure.ac	2017-09-08 17:04:23.145345919 +0000
++++ b/configure.ac	2017-09-08 17:04:34.721219453 +0000
+@@ -55,7 +55,6 @@
+ SIGC_CXX_GCC_TEMPLATE_SPECIALIZATION_OPERATOR_OVERLOAD
+ SIGC_CXX_MSVC_TEMPLATE_SPECIALIZATION_OPERATOR_OVERLOAD
+ SIGC_CXX_PRAGMA_PUSH_POP_MACRO
+-SIGC_CXX_HAS_SUN_REVERSE_ITERATOR
+ 
+ AS_IF([test "x$config_error" = xyes],
+       [AC_MSG_FAILURE([[One or more of the required C++ compiler features is missing.]])])

@@ -1,0 +1,69 @@
+# Add solaris-specific #pragma init and fini.
+# Add NULL pointer check.
+# Except for the #pragmas, this patch is suitable for upstream use.
+#
++++ src/tspi/rpc/hosttable.c	2014-04-24 11:05:44.000000000 -0700
+--- src/tspi/rpc/hosttable.c	2016-04-18 13:55:57.988441566 -0700
+@@ -21,8 +21,8 @@
+ 
+ static struct host_table *ht = NULL;
+ 
+-TSS_RESULT
+-host_table_init()
++static TSS_RESULT
++host_table_init(void)
+ {
+ 	ht = calloc(1, sizeof(struct host_table));
+ 	if (ht == NULL) {
+@@ -35,9 +35,8 @@
+ 	return TSS_SUCCESS;
+ }
+ 
+-#ifdef SOLARIS
+-#pragma init(_init)
+-void _init(void)
++#ifdef SOLARIS && !defined(__GNUC__)
++static void my_init(void)
+ #else
+ static void __attribute__ ((constructor)) my_init(void)
+ #endif
+@@ -46,11 +45,14 @@
+ 	__tspi_obj_list_init();
+ }
+ 
+-void
++static void
+ host_table_final()
+ {
+ 	struct host_table_entry *hte, *next = NULL;
+ 
++	if (ht == NULL) /* no host table to free */
++		return;
++
+ 	MUTEX_LOCK(ht->lock);
+ 
+ 	for (hte = ht->entries; hte; hte = next) {
+@@ -69,9 +71,8 @@
+ 	ht = NULL;
+ }
+ 
+-#ifdef SOLARIS
+-#pragma fini(_fini)
+-void _fini(void)
++#ifdef SOLARIS && !defined(__GNUC__)
++static void my_fini(void)
+ #else
+ static void __attribute__ ((destructor)) my_fini(void)
+ #endif
+@@ -79,6 +80,11 @@
+ 	host_table_final();
+ }
+ 
++#ifdef SOLARIS
++#pragma init(my_init)
++#pragma fini(my_fini)
++#endif
++
+ TSS_RESULT
+ __tspi_add_table_entry(TSS_HCONTEXT tspContext, BYTE *host, int type, struct host_table_entry **ret)
+ {

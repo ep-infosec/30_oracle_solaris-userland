@@ -1,0 +1,17 @@
+Still need to add a PATH with /usr/gnu/bin at the front, to get it to pick
+up GNU versions of utilities like chmod that use command line options that
+are not present in the Solaris supplied utilities in /usr/bin.
+
+This patch is Solaris specific and will not be sent upstream.
+
+--- gzip-1.12/znew.in
++++ gzip-1.12/znew.in
+@@ -21,6 +21,8 @@ # 51 Franklin Street, Fifth Floor, Bosto
+ LC_ALL=C
+ export LC_ALL
+ 
++PATH=/usr/gnu/bin:$bindir:$PATH; export PATH
++
+ version="znew (gzip) @VERSION@
+ Copyright (C) 2010-2018 Free Software Foundation, Inc.
+ This is free software.  You may redistribute copies of it under the terms of

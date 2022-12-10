@@ -1,0 +1,63 @@
+Filed at https://rt.cpan.org/Public/Bug/Display.html?id=114138
+
+--- DBD-SQLite-1.70/Makefile.PL
++++ DBD-SQLite-1.70/Makefile.PL
+@@ -178,6 +178,7 @@ if ( 0 ) {
+ 				while ( defined($_ = <$fh>) ) {
+ 					if (/\#define\s+SQLITE_VERSION_NUMBER\s+(\d+)/) {
+ 						$version = $1;
++						$sqlite_inc = File::Spec->catdir( '', @$dir );
+ 						last;
+ 					}
+ 				}
+@@ -220,12 +221,12 @@ unless ( $sqlite_local ) {
+ }
+ 
+ my @CC_INC = (
+-	'-I.',
+-	'-I$(DBI_INSTARCH_DIR)',
++# 	'-I.',
++ 	'-I$(DBI_INSTARCH_DIR)',
+ );
+-if ( $sqlite_inc ) {
+-	push @CC_INC, "-I$sqlite_inc";
+-}
++#if ( $sqlite_inc ) {
++#	unshift @CC_INC, "-I$sqlite_inc";
++#}
+ 
+ my @CC_DEFINE = (
+ 	'-DSQLITE_ENABLE_FTS4',             # for sqlite >= 3.7.4
+--- DBD-SQLite-1.58/sqlite3ext.h	2018-07-26 02:41:45.384365075 +0000
++++ DBD-SQLite-1.58/sqlite3ext.h	2018-07-26 02:41:28.422049360 +0000
+@@ -17,7 +17,7 @@
+ */
+ #ifndef SQLITE3EXT_H
+ #define SQLITE3EXT_H
+-#include "sqlite3.h"
++#include <sqlite3.h>
+ 
+ /*
+ ** The following structure holds pointers to all of the SQLite API
+--- DBD-SQLite-1.50/dbdimp.h	2016-05-02 13:40:28.956772954 -0700
++++ DBD-SQLite-1.50/dbdimp.h	2016-05-02 13:39:23.563370124 -0700
+@@ -3,7 +3,7 @@
+ #define _DBDIMP_H   1
+ 
+ #include "SQLiteXS.h"
+-#include "sqlite3.h"
++#include <sqlite3.h>
+ 
+ #define MY_CXT_KEY "DBD::SQLite::_guts" XS_VERSION
+ 
+--- DBD-SQLite-1.50/SQLiteXS.h	2016-05-02 13:40:29.181387425 -0700
++++ DBD-SQLite-1.50/SQLiteXS.h	2016-05-02 13:39:36.956291908 -0700
+@@ -18,7 +18,7 @@
+ #include "dbivport.h"
+ #include <dbd_xsh.h>
+ 
+-#include "sqlite3.h"
++#include <sqlite3.h>
+ #include "fts3_tokenizer.h"
+ 
+ #endif

@@ -1,0 +1,104 @@
+freezegun module is not in Solaris, hence remove tests which depend on it.
+
+Current Pytest also breaks when unknown marker pytest.mark.no_cover is present.
+Considering that this is only used for code coverage, we can safely remove it.
+
+--- python-dateutil-2.8.2/dateutil/test/test_utils.py
++++ python-dateutil-2.8.2/dateutil/test/test_utils.py
+@@ -7,26 +7,11 @@ from dateutil import utils
+ from dateutil.tz import UTC
+ from dateutil.utils import within_delta
+ 
+-from freezegun import freeze_time
++#from freezegun import freeze_time
+ 
+ NYC = tz.gettz("America/New_York")
+ 
+ 
+-@freeze_time(datetime(2014, 12, 15, 1, 21, 33, 4003))
+-def test_utils_today():
+-    assert utils.today() == datetime(2014, 12, 15, 0, 0, 0)
+-
+-
+-@freeze_time(datetime(2014, 12, 15, 12), tz_offset=5)
+-def test_utils_today_tz_info():
+-    assert utils.today(NYC) == datetime(2014, 12, 15, 0, 0, 0, tzinfo=NYC)
+-
+-
+-@freeze_time(datetime(2014, 12, 15, 23), tz_offset=5)
+-def test_utils_today_tz_info_different_day():
+-    assert utils.today(UTC) == datetime(2014, 12, 16, 0, 0, 0, tzinfo=UTC)
+-
+-
+ def test_utils_default_tz_info_naive():
+     dt = datetime(2014, 9, 14, 9, 30)
+     assert utils.default_tzinfo(dt, NYC).tzinfo is NYC
+--- python-dateutil-2.8.2/dateutil/test/test_rrule.py
++++ python-dateutil-2.8.2/dateutil/test/test_rrule.py
+@@ -13,7 +13,7 @@ from dateutil.rrule import (
+     MO, TU, WE, TH, FR, SA, SU
+ )
+ 
+-from freezegun import freeze_time
++#from freezegun import freeze_time
+ 
+ import pytest
+ 
+@@ -4615,30 +4615,6 @@ class RRuleTest(unittest.TestCase):
+                              [datetime(1997, 1, 6)])
+ 
+ 
+-@pytest.mark.rrule
+-@freeze_time(datetime(2018, 3, 6, 5, 36, tzinfo=tz.UTC))
+-def test_generated_aware_dtstart():
+-    dtstart_exp = datetime(2018, 3, 6, 5, 36, tzinfo=tz.UTC)
+-    UNTIL = datetime(2018, 3, 6, 8, 0, tzinfo=tz.UTC)
+-
+-    rule_without_dtstart = rrule(freq=HOURLY, until=UNTIL)
+-    rule_with_dtstart = rrule(freq=HOURLY, dtstart=dtstart_exp, until=UNTIL)
+-    assert list(rule_without_dtstart) == list(rule_with_dtstart)
+-
+-
+-@pytest.mark.rrule
+-@pytest.mark.rrulestr
+-@pytest.mark.xfail(reason="rrulestr loses time zone, gh issue #637")
+-@freeze_time(datetime(2018, 3, 6, 5, 36, tzinfo=tz.UTC))
+-def test_generated_aware_dtstart_rrulestr():
+-    rrule_without_dtstart = rrule(freq=HOURLY,
+-                                  until=datetime(2018, 3, 6, 8, 0,
+-                                                 tzinfo=tz.UTC))
+-    rrule_r = rrulestr(str(rrule_without_dtstart))
+-
+-    assert list(rrule_r) == list(rrule_without_dtstart)
+-
+-
+ @pytest.mark.rruleset
+ class RRuleSetTest(unittest.TestCase):
+     def testSet(self):
+--- python-dateutil-2.8.2/dateutil/test/conftest.py
++++ python-dateutil-2.8.2/dateutil/test/conftest.py
+@@ -2,24 +2,6 @@ import os
+ import pytest
+ 
+ 
+-# Configure pytest to ignore xfailing tests
+-# See: https://stackoverflow.com/a/53198349/467366
+-def pytest_collection_modifyitems(items):
+-    for item in items:
+-        marker_getter = getattr(item, 'get_closest_marker', None)
+-
+-        # Python 3.3 support
+-        if marker_getter is None:
+-            marker_getter = item.get_marker
+-
+-        marker = marker_getter('xfail')
+-
+-        # Need to query the args because conditional xfail tests still have
+-        # the xfail mark even if they are not expected to fail
+-        if marker and (not marker.args or marker.args[0]):
+-            item.add_marker(pytest.mark.no_cover)
+-
+-
+ def set_tzpath():
+     """
+     Sets the TZPATH variable if it's specified in an environment variable.

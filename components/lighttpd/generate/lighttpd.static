@@ -1,0 +1,42 @@
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+
+#
+# Copyright (c) 2019, 2022, Oracle and/or its affiliates.
+#
+
+file Solaris/auth_attr path=etc/security/auth_attr.d/lighttpd
+file Solaris/prof_attr path=etc/security/prof_attr.d/lighttpd
+file Solaris/http-lighttpd14.xml path=lib/svc/manifest/network/http-lighttpd14.xml
+file Solaris/lighttpd.8.sunman path=usr/share/man/man8/lighttpd.8
+
+file Solaris/fcgi-php.conf path=etc/lighttpd/1.4/conf.d/fcgi-php.conf mode=0644 \
+    original_name=SUNWlighttpd14:etc/lighttpd/1.4/conf.d/fcgi-php.conf preserve=renamenew
+file Solaris/ssl.conf path=etc/lighttpd/1.4/conf.d/ssl.conf mode=0644 \
+    original_name=SUNWlighttpd14:etc/lighttpd/1.4/conf.d/ssl.conf preserve=renamenew
+
+link path=usr/lighttpd/1.4/bin/spawn-fcgi target=../../../bin/spawn-fcgi
+link path=usr/lighttpd/1.4/man/man1/spawn-fcgi.1 target=../../../../share/man/man1/spawn-fcgi.1
+dir path=var/lighttpd/1.4/docroot
+dir path=var/lighttpd/1.4/errors
+dir path=var/lighttpd/1.4/logs owner=webservd group=webservd mode=700
+dir path=var/lighttpd/1.4/sockets
+dir path=var/lighttpd/1.4/vhosts

@@ -1,0 +1,35 @@
+'\" te
+.\" Copyright (C) 1998-2003, Carnegie Mellon Univeristy.  All Rights Reserved.
+.\" Portions Copyright (C) 2003, Sun Microsystems, Inc. All Rights Reserved
+.TH sasl_erasebuffer 3sasl "16 Sep 2003"  SASL "SASL man pages"
+.SH NAME
+sasl_erasebuffer \- erase buffer
+
+
+.SH SYNOPSIS
+.nf
+cc [ flag ... ] file ...  -lsasl [ library ... ]
+.B #include <sasl/saslutil.h>
+
+.sp
+.BI "void sasl_erasebuffer(char *" pass ", "
+.BI "                      unsigned " len "); "
+.fi
+
+.SH DESCRIPTION
+
+.B sasl_erasebuffer
+erases a security sensitive buffer or password. The implementation may use recovery-resistant erase logic.
+.SH PARAMETERS
+.I pass
+A password
+
+.I len
+The length of the password
+
+.SH "RETURN VALUES"
+The sasl_erasebuffer() interface returns no return values.
+
+.SH ERRORS
+None.
+

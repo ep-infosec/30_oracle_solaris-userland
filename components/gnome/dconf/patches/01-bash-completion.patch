@@ -1,0 +1,21 @@
+We don't deliver a .pc file for bash-completion so manually specify the 
+path
+
+Not suitable for upstream
+
+--- a/meson.build	2020-10-12 04:44:30.382114655 -0700
++++ b/meson.build	2020-10-12 04:45:30.783549456 -0700
+@@ -50,12 +50,7 @@
+ 
+ enable_bash_completion = get_option('bash_completion')
+ if enable_bash_completion
+-  bash_completion_dep = dependency('bash-completion')
+-  completions_dir = bash_completion_dep.get_pkgconfig_variable(
+-    'completionsdir',
+-    # bash-completion 2.10 changed the substitutions
+-    define_variable: bash_completion_dep.version().version_compare('>= 2.10') ? ['datadir', dconf_datadir] : ['prefix', dconf_prefix],
+-  )
++  completions_dir = '/usr/share/bash-completion/completions/'
+ endif
+ 
+ configure_file(

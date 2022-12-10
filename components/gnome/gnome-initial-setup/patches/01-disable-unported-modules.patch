@@ -1,0 +1,67 @@
+Remove modules that require software not yet ported to Solaris, such as
+Network Manager.
+
+Even if we ported all their dependencies, it's not clear we want these modules,
+since they are focused on setting up a new machine, not a new user - we have
+our initial user creation & network configuration handled by our OS install
+software instead.
+
+Disabling the timezone module for the moment as it causes gnome-initial-setup to
+core in tz_info_get_clean_name.  We can look into enabling it, if needed, once 
+all other modules that gnome-initial-setup depends on are updated to the latest.
+
+Not appropriate for upstream.
+
+diff -ur a/gnome-initial-setup/gnome-initial-setup.c b/gnome-initial-setup/gnome-initial-setup.c
+--- a/gnome-initial-setup/gnome-initial-setup.c	2022-03-16 00:35:45.100363894 -0700
++++ b/gnome-initial-setup/gnome-initial-setup.c	2022-03-16 00:38:17.663244931 -0700
+@@ -68,13 +68,9 @@
+   PAGE (welcome, FALSE),
+   PAGE (language, FALSE),
+   PAGE (keyboard, FALSE),
+-  PAGE (network,  FALSE),
+   PAGE (privacy,  FALSE),
+-  PAGE (timezone, TRUE),
+   PAGE (software, TRUE),
+   PAGE (goa,      FALSE),
+-  PAGE (account,  TRUE),
+-  PAGE (password, TRUE),
+ #ifdef HAVE_PARENTAL_CONTROLS
+   PAGE (parental_controls, TRUE),
+   PAGE (parent_password, TRUE),
+diff -ur a/gnome-initial-setup/meson.build b/gnome-initial-setup/meson.build
+--- a/gnome-initial-setup/meson.build	2022-03-16 00:35:45.102682449 -0700
++++ b/gnome-initial-setup/meson.build	2022-03-16 00:39:01.009337516 -0700
+@@ -28,8 +28,6 @@
+ ]
+ 
+ dependencies = [
+-    dependency ('libnm', version: '>= 1.2'),
+-    dependency ('libnma', version: '>= 1.0'),
+     dependency ('polkit-gobject-1', version: '>= 0.103'),
+     dependency ('accountsservice'),
+     dependency ('gnome-desktop-3.0', version: '>= 3.7.5'),
+@@ -50,7 +48,6 @@
+     dependency ('json-glib-1.0'),
+     dependency ('krb5'),
+     dependency ('libsecret-1', version: '>= 0.18.8'),
+-    dependency ('pwquality'),
+     dependency ('webkit2gtk-4.0', version: '>= 2.26.0'),
+     cheese_dep,
+     cheese_gtk_dep,
+diff -ur a/gnome-initial-setup/pages/meson.build b/gnome-initial-setup/pages/meson.build
+--- a/gnome-initial-setup/pages/meson.build	2022-03-16 00:35:45.122069310 -0700
++++ b/gnome-initial-setup/pages/meson.build	2022-03-16 00:39:25.761862860 -0700
+@@ -1,12 +1,8 @@
+ pages = [
+-   'account',
+    'language',
+    'keyboard',
+-   'network',
+-   'timezone',
+    'privacy',
+    'goa',
+-   'password',
+    'software',
+    'summary',
+    'welcome',

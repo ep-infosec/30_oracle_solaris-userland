@@ -1,0 +1,21 @@
+This is internal patch implementing mutt's issue:
+http://dev.mutt.org/trac/ticket/3392 
+
+This link is no longer available as Mutt's issue ticketing system moved 
+since the time of creating this issue from http://dev.mutt.org/hg/mutt/
+to https://gitlab.com/muttmua/mutt
+
+However, there is still at least some external discussion found at:
+https://www.mail-archive.com/mutt-users@mutt.org/msg41591.html
+
+--- mutt-2.1.3/pager.c
++++ mutt-2.1.3/pager.c
+@@ -2112,6 +2112,8 @@ return (-1);
+   }
+   unlink (fname);
+ 
++  clearok (stdscr, TRUE);
++
+   /* Initialize variables */
+ 
+   if (IsHeader (extra) && !extra->hdr->read)

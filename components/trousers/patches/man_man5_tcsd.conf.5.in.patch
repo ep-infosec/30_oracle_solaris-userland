@@ -1,0 +1,36 @@
+--- man/man5/tcsd.conf.5.in	2014-04-24 11:05:44.000000000 +0000
++++ man/man5/tcsd.conf.5.in	2016-09-12 10:00:43.162042248 +0000
+@@ -26,14 +26,22 @@
+ .SH "DESCRIPTION"
+ .PP
+ This file, by default
+-.IR /etc/tcsd.conf
++.IR /etc/security/tcsd.conf
+ is read by the trousers TCSD daemon, tcsd (see tcsd(8)). The tcsd.conf file
+ that is installed by trousers contains all the default options, commented out.
+ .SH "OPTIONS"
+ .PP
+ .BI port
+-The port that TCSD will listen on for connections, local and remote, from
++The TCP port that TCSD will listen on for connections, local and remote, from
+ applications.
++If 0, TCSD uses UNIX Domain socket /var/tpm/tcsd-socket,
++otherwise TCSD uses the TCP port specified
++(30003 is the traditional tcsd TCP port).
++If using a TCP Port (that is, port is not 0), clients such as tpmadm must set
++the port with shell environment variable TSS_TCSD_PORT. For example,
++.nf
++export TSS_TCSD_PORT=30003
++.fi
+ 
+ .BI num_threads
+ The maximum number of threads that the TCSD will spawn simultaneously to service
+@@ -106,7 +114,7 @@
+ .PP
+ .IP
+ .nf
+-port = 30003
++port = 0
+ num_threads = 10
+ system_ps_file = /usr/local/var/tpm/system.data
+ firmware_log_file = /proc/tpm/firmware_events

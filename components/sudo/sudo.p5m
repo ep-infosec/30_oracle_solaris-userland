@@ -1,0 +1,162 @@
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+# Copyright (c) 2011, 2022, Oracle and/or its affiliates.
+#
+
+<transform file path=usr.*/man/.+ -> default mangler.man.stability "pass-through volatile">
+set name=pkg.fmri \
+    value=pkg:/security/sudo@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION)
+set name=pkg.summary \
+    value="sudo - tool to allow certain tasks to be run as root by ordinary users"
+set name=com.oracle.info.baid value=$(COMPONENT_BAID)
+set name=com.oracle.info.description value="the sudo utility"
+set name=info.classification \
+    value="org.opensolaris.category.2008:Applications/System Utilities"
+set name=info.source-url value=$(COMPONENT_ARCHIVE_URL)
+set name=info.upstream-url value=$(COMPONENT_PROJECT_URL)
+set name=org.opensolaris.arc-caseid value=PSARC/2011/252 value=PSARC/2018/015 \
+    value=PSARC/2019/135 value=PSARC/2021/053
+set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
+file files/sudo path=etc/pam.d/sudo group=sys mode=0644 overlay=allow \
+    preserve=renamenew
+file files/sudo-i path=etc/pam.d/sudo-i group=sys mode=0644 overlay=allow \
+    preserve=renamenew
+file path=etc/sudo.conf group=root mode=0640 overlay=allow preserve=true
+file path=etc/sudoers group=root mode=0440 original_name=SUNWsudo:etc/sudoers \
+    overlay=allow pkg.linted.userland.action001.4=true preserve=true
+dir  path=etc/sudoers.d group=root mode=0750
+file path=usr/bin/cvtsudoers
+file path=usr/bin/sudo mode=4511
+link path=usr/bin/sudoedit target=sudo
+file path=usr/bin/sudoreplay mode=0511
+file path=usr/include/sudo_plugin.h
+file path=usr/lib/$(MACH64)/sudo/audit_json.so
+file path=usr/lib/$(MACH64)/sudo/group_file.so
+link path=usr/lib/$(MACH64)/sudo/libsudo_util.so target=libsudo_util.so.0.0.0
+link path=usr/lib/$(MACH64)/sudo/libsudo_util.so.0 target=libsudo_util.so.0.0.0
+file path=usr/lib/$(MACH64)/sudo/libsudo_util.so.0.0.0
+file path=usr/lib/$(MACH64)/sudo/sudo_intercept.so
+file path=usr/lib/$(MACH64)/sudo/sudo_noexec.so
+file path=usr/lib/$(MACH64)/sudo/sudoers.so
+file path=usr/lib/$(MACH64)/sudo/system_group.so
+file path=usr/sbin/visudo mode=0511
+file path=usr/share/doc/sudo/CONTRIBUTING.md
+file path=usr/share/doc/sudo/CONTRIBUTORS.md
+file path=usr/share/doc/sudo/ChangeLog
+file path=usr/share/doc/sudo/HISTORY.md
+file path=usr/share/doc/sudo/LICENSE.md
+file path=usr/share/doc/sudo/NEWS
+file path=usr/share/doc/sudo/README.LDAP.md
+file path=usr/share/doc/sudo/README.md
+file path=usr/share/doc/sudo/SECURITY.md
+file path=usr/share/doc/sudo/TROUBLESHOOTING.md
+file path=usr/share/doc/sudo/UPGRADE.md
+file path=usr/share/doc/sudo/examples/cvtsudoers.conf
+file path=usr/share/doc/sudo/examples/pam.conf
+file path=usr/share/doc/sudo/examples/sudo.conf
+file path=usr/share/doc/sudo/examples/sudoers
+file path=usr/share/doc/sudo/examples/syslog.conf
+file path=usr/share/doc/sudo/schema.ActiveDirectory
+file path=usr/share/doc/sudo/schema.OpenLDAP
+file path=usr/share/doc/sudo/schema.iPlanet
+file path=usr/share/doc/sudo/schema.olcSudo
+file path=usr/share/locale/ast/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/ast/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/ca/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/ca/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/cs/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/cs/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/da/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/da/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/de/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/de/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/el/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/eo/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/eo/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/es/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/es/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/eu/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/eu/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/fa/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/fi/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/fi/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/fr/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/fr/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/fur/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/fur/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/gl/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/hr/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/hr/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/hu/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/hu/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/it/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/it/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/ja/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/ja/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/ko/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/ko/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/lt/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/nb/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/nb/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/nl/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/nl/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/nn/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/pl/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/pl/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/pt/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/pt/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/pt_BR/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/pt_BR/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/ro/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/ro/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/ru/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/ru/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/sk/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/sk/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/sl/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/sl/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/sr/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/sr/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/sv/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/sv/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/tr/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/tr/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/uk/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/uk/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/vi/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/vi/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/zh_CN/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/zh_CN/LC_MESSAGES/sudoers.mo
+file path=usr/share/locale/zh_TW/LC_MESSAGES/sudo.mo
+file path=usr/share/locale/zh_TW/LC_MESSAGES/sudoers.mo
+file path=usr/share/man/man1/cvtsudoers.1
+file path=usr/share/man/man5/sudo.conf.5
+file path=usr/share/man/man5/sudoers.5
+file path=usr/share/man/man5/sudoers.ldap.5
+file path=usr/share/man/man5/sudoers_timestamp.5
+file path=usr/share/man/man8/sudo.8
+file path=usr/share/man/man8/sudo_plugin.8
+link path=usr/share/man/man8/sudoedit.8 target=sudo.8
+file path=usr/share/man/man8/sudoreplay.8
+file path=usr/share/man/man8/visudo.8
+dir  path=var/.migrate/sudo owner=root group=root mode=700 \
+    refresh_fmri=svc:/system/filesystem/minimal:default
+license sudo.license license="ISC-like, BSD, zlib license"

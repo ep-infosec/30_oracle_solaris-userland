@@ -1,0 +1,206 @@
+# Remove undesirable /usr/local path searches.
+#
+# Patch is Solaris specific and not appropriate for upstream.
+
+--- cmake-3.24.0/Modules/CMakeDetermineJavaCompiler.cmake
++++ cmake-3.24.0/Modules/CMakeDetermineJavaCompiler.cmake
+@@ -45,16 +45,11 @@ $ENV{JAVA_HOME}/bin
+     /usr/bin
+     /usr/lib/java/bin
+     /usr/share/java/bin
+-    /usr/local/bin
+-    /usr/local/java/bin
+-    /usr/local/java/share/bin
+     /usr/java/j2sdk1.4.2_04
+     /usr/lib/j2sdk1.4-sun/bin
+     /usr/java/j2sdk1.4.2_09/bin
+     /usr/lib/j2sdk1.5-sun/bin
+     /opt/sun-jdk-1.5.0.04/bin
+-    /usr/local/jdk-1.7.0/bin
+-    /usr/local/jdk-1.6.0/bin
+     )
+   # if no compiler has been specified yet, then look for one
+   if(CMAKE_Java_COMPILER_INIT)
+--- cmake-3.24.0/Modules/CMakeDetermineSystem.cmake
++++ cmake-3.24.0/Modules/CMakeDetermineSystem.cmake
+@@ -33,7 +33,7 @@ # MacOSX                        Darwin
+ 
+ # find out on which system cmake runs
+ if(CMAKE_HOST_UNIX)
+-  find_program(CMAKE_UNAME uname /bin /usr/bin /usr/local/bin )
++  find_program(CMAKE_UNAME uname /bin /usr/bin )
+   if(CMAKE_UNAME)
+     if(CMAKE_HOST_SYSTEM_NAME STREQUAL "AIX")
+       exec_program(${CMAKE_UNAME} ARGS -v OUTPUT_VARIABLE _CMAKE_HOST_SYSTEM_MAJOR_VERSION)
+--- cmake-3.24.0/Modules/FindGTK2.cmake
++++ cmake-3.24.0/Modules/FindGTK2.cmake
+@@ -301,9 +301,6 @@ endif()
+     find_path(GTK2_${_var}_INCLUDE_DIR ${_hdr}
+         PATHS
+             ${_gtk2_arch_dir}
+-            /usr/local/libx32
+-            /usr/local/lib64
+-            /usr/local/lib
+             /usr/libx32
+             /usr/lib64
+             /usr/lib
+--- cmake-3.24.0/Modules/FindIce.cmake
++++ cmake-3.24.0/Modules/FindIce.cmake
+@@ -421,7 +421,7 @@ set(Freeze_INCLUDE_DIR "${Freeze_INCLUDE
+   # In common use on Linux, MacOS X (homebrew) and FreeBSD; prefer
+   # version-specific dir
+   list(APPEND ice_slice_paths
+-       /usr/local/share /usr/share)
++       /usr/share)
+   list(APPEND ice_slice_suffixes
+        "Ice-${Ice_VERSION_SLICE2CPP_FULL}/slice"
+        "Ice-${Ice_VERSION_SLICE2CPP_SHORT}/slice"
+--- cmake-3.24.0/Modules/FindJNI.cmake
++++ cmake-3.24.0/Modules/FindJNI.cmake
+@@ -275,8 +275,6 @@ set(_JNI_JAVA_DIRECTORIES_BASE
+   /usr/lib/jvm/java
+   /usr/lib/java
+   /usr/lib/jvm
+-  /usr/local/lib/java
+-  /usr/local/share/java
+   /usr/lib/j2sdk1.4-sun
+   /usr/lib/j2sdk1.5-sun
+   /opt/sun-jdk-1.5.0.04
+@@ -294,19 +292,6 @@ /usr/lib/jvm/java-11-openjdk-{libarch}
+   /usr/lib/jvm/java-8-openjdk-{libarch}     # Ubuntu 15.10
+   /usr/lib/jvm/java-7-openjdk-{libarch}     # Ubuntu 15.10
+   /usr/lib/jvm/java-6-openjdk-{libarch}     # Ubuntu 15.10
+-  # OpenBSD specific paths for default JVM
+-  /usr/local/jdk-1.7.0
+-  /usr/local/jre-1.7.0
+-  /usr/local/jdk-1.6.0
+-  /usr/local/jre-1.6.0
+-  # FreeBSD specific paths for default JVM
+-  /usr/local/openjdk15
+-  /usr/local/openjdk14
+-  /usr/local/openjdk13
+-  /usr/local/openjdk12
+-  /usr/local/openjdk11
+-  /usr/local/openjdk8
+-  /usr/local/openjdk7
+   # SuSE specific paths for default JVM
+   /usr/lib64/jvm/java
+   /usr/lib64/jvm/jre
+--- cmake-3.24.0/Modules/FindJava.cmake
++++ cmake-3.24.0/Modules/FindJava.cmake
+@@ -126,15 +126,11 @@ # environment can always override hard g
+ set(_JAVA_PATHS
+   /usr/lib/java/bin
+   /usr/share/java/bin
+-  /usr/local/java/bin
+-  /usr/local/java/share/bin
+   /usr/java/j2sdk1.4.2_04
+   /usr/lib/j2sdk1.4-sun/bin
+   /usr/java/j2sdk1.4.2_09/bin
+   /usr/lib/j2sdk1.5-sun/bin
+   /opt/sun-jdk-1.5.0.04/bin
+-  /usr/local/jdk-1.7.0/bin
+-  /usr/local/jdk-1.6.0/bin
+   )
+ find_program(Java_JAVA_EXECUTABLE
+   NAMES java
+--- cmake-3.24.0/Modules/FindPHP4.cmake
++++ cmake-3.24.0/Modules/FindPHP4.cmake
+@@ -19,10 +19,7 @@ #]======================================
+ 
+ set(PHP4_POSSIBLE_INCLUDE_PATHS
+   /usr/include/php4
+-  /usr/local/include/php4
+   /usr/include/php
+-  /usr/local/include/php
+-  /usr/local/apache/php
+   )
+ 
+ set(PHP4_POSSIBLE_LIB_PATHS
+--- cmake-3.24.0/Modules/FindQt.cmake
++++ cmake-3.24.0/Modules/FindQt.cmake
+@@ -49,37 +49,6 @@ set(QT3_INSTALLED TRUE)
+ endif()
+ set(GLOB_TEMP_VAR)
+ 
+-file(GLOB GLOB_TEMP_VAR /usr/local/qt-x11-commercial-3*/bin/qmake)
+-if(GLOB_TEMP_VAR)
+-  set(QT3_INSTALLED TRUE)
+-endif()
+-set(GLOB_TEMP_VAR)
+-
+-file(GLOB GLOB_TEMP_VAR /usr/local/lib/qt3/bin/qmake)
+-if(GLOB_TEMP_VAR)
+-  set(QT3_INSTALLED TRUE)
+-endif()
+-set(GLOB_TEMP_VAR)
+-
+-# look for qt4 installations
+-file(GLOB GLOB_TEMP_VAR /usr/local/qt-x11-commercial-4*/bin/qmake)
+-if(GLOB_TEMP_VAR)
+-  set(QT4_INSTALLED TRUE)
+-endif()
+-set(GLOB_TEMP_VAR)
+-
+-file(GLOB GLOB_TEMP_VAR /usr/local/Trolltech/Qt-4*/bin/qmake)
+-if(GLOB_TEMP_VAR)
+-  set(QT4_INSTALLED TRUE)
+-endif()
+-set(GLOB_TEMP_VAR)
+-
+-file(GLOB GLOB_TEMP_VAR /usr/local/lib/qt4/bin/qmake)
+-if(GLOB_TEMP_VAR)
+-  set(QT4_INSTALLED TRUE)
+-endif()
+-set(GLOB_TEMP_VAR)
+-
+ if (Qt_FIND_VERSION)
+   if (Qt_FIND_VERSION MATCHES "^([34])(\\.[0-9]+.*)?$")
+     set(DESIRED_QT_VERSION ${CMAKE_MATCH_1})
+@@ -116,7 +85,6 @@ ${qt_headers}/Qt
+   $ENV{QTDIR}/include/Qt
+   /usr/lib/qt/include/Qt
+   /usr/share/qt4/include/Qt
+-  /usr/local/include/X11/qt4/Qt
+   C:/Progra~1/qt/include/Qt
+   PATH_SUFFIXES qt/include/Qt include/Qt)
+ 
+@@ -133,7 +101,6 @@ C:/Qt/3.3.3Educational/include
+   $ENV{QTDIR}/include
+   /usr/include/qt3/Qt
+   /usr/share/qt3/include
+-  /usr/local/include/X11/qt3
+   C:/Progra~1/qt/include
+   PATH_SUFFIXES qt/include include/qt3)
+ 
+--- cmake-3.24.0/Modules/FindQt3.cmake
++++ cmake-3.24.0/Modules/FindQt3.cmake
+@@ -66,7 +66,6 @@ $ENV{QTDIR}/include
+   ${GLOB_PATHS}
+   /usr/share/qt3/include
+   C:/Progra~1/qt/include
+-  /usr/local/include/X11/qt3
+   PATH_SUFFIXES lib/qt/include lib/qt3/include include/qt include/qt3 qt/include qt3/include
+   )
+ 
+--- cmake-3.24.0/Modules/Platform/UnixPaths.cmake
++++ cmake-3.24.0/Modules/Platform/UnixPaths.cmake
+@@ -27,7 +27,7 @@ # please make sure to keep Help/variable
+ # synchronized
+ list(APPEND CMAKE_SYSTEM_PREFIX_PATH
+   # Standard
+-  /usr/local /usr /
++  /usr /
+ 
+   # CMake install location
+   "${_CMAKE_INSTALL_DIR}"
+--- cmake-3.24.0/Modules/UseJava.cmake
++++ cmake-3.24.0/Modules/UseJava.cmake
+@@ -1108,7 +1108,6 @@ set(_jar_files)
+     set(_jar_versions)
+     set(_jar_paths
+         /usr/share/java/
+-        /usr/local/share/java/
+         ${Java_JAR_PATHS})
+     set(_jar_doc "NOTSET")
+ 

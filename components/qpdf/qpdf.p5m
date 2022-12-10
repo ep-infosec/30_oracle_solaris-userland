@@ -1,0 +1,108 @@
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+
+#
+# Copyright (c) 2018, 2022, Oracle and/or its affiliates.
+#
+
+<transform file path=usr.*/man/.+ -> default mangler.man.stability volatile>
+set name=pkg.fmri \
+    value=pkg:/print/filter/qpdf@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION)
+set name=pkg.summary value="PDF file processing library/utility"
+set name=com.oracle.info.baid value=$(COMPONENT_BAID)
+set name=com.oracle.info.description \
+    value="Performs structural, content-preserving transformations on PDF files"
+set name=info.classification value=org.opensolaris.category.2008:System/Printing
+set name=info.source-url value=$(COMPONENT_ARCHIVE_URL)
+set name=info.upstream-url value=$(COMPONENT_PROJECT_URL)
+set name=org.opensolaris.arc-caseid value=PSARC/2018/009 value=PSARC/2019/152
+set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
+#
+file path=usr/bin/fix-qdf
+file path=usr/bin/qpdf
+file path=usr/bin/zlib-flate
+file path=usr/include/qpdf/Buffer.hh
+file path=usr/include/qpdf/BufferInputSource.hh
+file path=usr/include/qpdf/ClosedFileInputSource.hh
+file path=usr/include/qpdf/Constants.h
+file path=usr/include/qpdf/DLL.h
+file path=usr/include/qpdf/FileInputSource.hh
+file path=usr/include/qpdf/InputSource.hh
+file path=usr/include/qpdf/JSON.hh
+file path=usr/include/qpdf/Pipeline.hh
+file path=usr/include/qpdf/Pl_Buffer.hh
+file path=usr/include/qpdf/Pl_Concatenate.hh
+file path=usr/include/qpdf/Pl_Count.hh
+file path=usr/include/qpdf/Pl_DCT.hh
+file path=usr/include/qpdf/Pl_Discard.hh
+file path=usr/include/qpdf/Pl_Flate.hh
+file path=usr/include/qpdf/Pl_QPDFTokenizer.hh
+file path=usr/include/qpdf/Pl_RunLength.hh
+file path=usr/include/qpdf/Pl_StdioFile.hh
+file path=usr/include/qpdf/PointerHolder.hh
+file path=usr/include/qpdf/QIntC.hh
+file path=usr/include/qpdf/QPDF.hh
+file path=usr/include/qpdf/QPDFAcroFormDocumentHelper.hh
+file path=usr/include/qpdf/QPDFAnnotationObjectHelper.hh
+file path=usr/include/qpdf/QPDFCryptoImpl.hh
+file path=usr/include/qpdf/QPDFCryptoProvider.hh
+file path=usr/include/qpdf/QPDFDocumentHelper.hh
+file path=usr/include/qpdf/QPDFEFStreamObjectHelper.hh
+file path=usr/include/qpdf/QPDFEmbeddedFileDocumentHelper.hh
+file path=usr/include/qpdf/QPDFExc.hh
+file path=usr/include/qpdf/QPDFFileSpecObjectHelper.hh
+file path=usr/include/qpdf/QPDFFormFieldObjectHelper.hh
+file path=usr/include/qpdf/QPDFMatrix.hh
+file path=usr/include/qpdf/QPDFNameTreeObjectHelper.hh
+file path=usr/include/qpdf/QPDFNumberTreeObjectHelper.hh
+file path=usr/include/qpdf/QPDFObjGen.hh
+file path=usr/include/qpdf/QPDFObject.hh
+file path=usr/include/qpdf/QPDFObjectHandle.hh
+file path=usr/include/qpdf/QPDFObjectHelper.hh
+file path=usr/include/qpdf/QPDFOutlineDocumentHelper.hh
+file path=usr/include/qpdf/QPDFOutlineObjectHelper.hh
+file path=usr/include/qpdf/QPDFPageDocumentHelper.hh
+file path=usr/include/qpdf/QPDFPageLabelDocumentHelper.hh
+file path=usr/include/qpdf/QPDFPageObjectHelper.hh
+file path=usr/include/qpdf/QPDFStreamFilter.hh
+file path=usr/include/qpdf/QPDFSystemError.hh
+file path=usr/include/qpdf/QPDFTokenizer.hh
+file path=usr/include/qpdf/QPDFWriter.hh
+file path=usr/include/qpdf/QPDFXRefEntry.hh
+file path=usr/include/qpdf/QTC.hh
+file path=usr/include/qpdf/QUtil.hh
+file path=usr/include/qpdf/RandomDataProvider.hh
+file path=usr/include/qpdf/Types.h
+file path=usr/include/qpdf/qpdf-c.h
+link path=usr/lib/$(MACH64)/libqpdf.so target=libqpdf.so.28.5.0
+link path=usr/lib/$(MACH64)/libqpdf.so.28 target=libqpdf.so.28.5.0
+file path=usr/lib/$(MACH64)/libqpdf.so.28.5.0
+file path=usr/lib/$(MACH64)/pkgconfig/libqpdf.pc
+link path=usr/lib/libqpdf.so target=libqpdf.so.28.5.0
+link path=usr/lib/libqpdf.so.28 target=libqpdf.so.28.5.0
+file path=usr/lib/libqpdf.so.28.5.0
+file path=usr/lib/pkgconfig/libqpdf.pc
+file path=usr/share/doc/qpdf/README-doc.txt
+file path=usr/share/man/man1/fix-qdf.1
+file path=usr/share/man/man1/qpdf.1
+file path=usr/share/man/man1/zlib-flate.1
+#
+license LICENSE.txt license="Apache v2.0"

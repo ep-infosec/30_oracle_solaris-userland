@@ -1,0 +1,324 @@
+#
+# This patch provides an authorization scheme for kadmind when used to
+# auto-migrate UNIX based users to Kerberos.  This is required to support
+# the auto-migrate module, pam_krb5_migrate(5).
+#
+# Note: MIT will unlikely want the pam_krb5_migrate kadmind authorization
+# functionality as this is specific to a 3rd party migration design.
+# Patch source: in-house
+#
+--- a/src/include/krb5/kadm5_auth_plugin.h
++++ b/src/include/krb5/kadm5_auth_plugin.h
+@@ -268,6 +268,15 @@ typedef void
+                                    kadm5_auth_moddata data,
+                                    struct kadm5_auth_restrictions *rs);
+ 
++/* Optional: authorize an migrate-principal operation, and optionally generate
++ * restrictions. (Solaris specific) */
++typedef krb5_error_code
++(*kadm5_auth_migrateprinc_fn)(krb5_context context, kadm5_auth_moddata data,
++                          krb5_const_principal client,
++                          krb5_const_principal target,
++                          const struct _kadm5_principal_ent_t *ent, long mask,
++                          struct kadm5_auth_restrictions **rs_out);
++
+ /* kadm5_auth vtable for major version 1. */
+ typedef struct kadm5_auth_vtable_st {
+     const char *name;           /* Mandatory: name of module. */
+@@ -297,6 +306,8 @@ typedef struct kadm5_auth_vtable_st {
+ 
+     kadm5_auth_iprop_fn iprop;
+ 
++    kadm5_auth_migrateprinc_fn migrate;
++
+     kadm5_auth_end_fn end;
+ 
+     kadm5_auth_free_restrictions_fn free_restrictions;
+--- a/src/kadmin/server/Makefile.in
++++ b/src/kadmin/server/Makefile.in
+@@ -15,7 +15,7 @@ SRCS = auth.o auth_acl.c auth_self.c kadm_rpc_svc.c server_stubs.c \
+ all: $(PROG)
+ 
+ $(PROG): $(OBJS) $(KADMSRV_DEPLIBS) $(KRB5_BASE_DEPLIBS) $(APPUTILS_DEPLIB) $(VERTO_DEPLIB)
+-	$(CC_LINK) -o $(PROG) $(OBJS) $(APPUTILS_LIB) $(KADMSRV_LIBS) $(KDB_DEP_LIB) $(KRB5_BASE_LIBS) $(VERTO_LIBS)
++	$(CC_LINK) -o $(PROG) $(OBJS) $(APPUTILS_LIB) $(KADMSRV_LIBS) $(KDB_DEP_LIB) $(KRB5_BASE_LIBS) $(VERTO_LIBS) -lpam
+ 
+ install:
+ 	$(INSTALL_PROGRAM) $(PROG) ${DESTDIR}$(SERVER_BINDIR)/$(PROG)
+--- a/src/kadmin/server/auth.c
++++ b/src/kadmin/server/auth.c
+@@ -272,7 +272,8 @@ auth_restrict(krb5_context context, int opcode, krb5_const_principal client,
+     krb5_const_principal target = ent->principal;
+     struct kadm5_auth_restrictions *rs;
+ 
+-    assert(opcode == OP_ADDPRINC || opcode == OP_MODPRINC);
++    assert(opcode == OP_ADDPRINC || opcode == OP_MODPRINC ||
++	opcode == OP_MIGRATE);
+     for (hp = handles; *hp != NULL; hp++) {
+         h = *hp;
+ 
+@@ -284,7 +285,10 @@ auth_restrict(krb5_context context, int opcode, krb5_const_principal client,
+         } else if (opcode == OP_MODPRINC && h->vt.modprinc != NULL) {
+             ret = h->vt.modprinc(context, h->data, client, target, ent, *mask,
+                                  &rs);
+-        }
++        } else if (opcode == OP_MIGRATE && h->vt.migrate != NULL) {
++            ret = h->vt.migrate(context, h->data, client, target, ent, *mask,
++                                 &rs);
++	}
+         if (rs != NULL) {
+             rs_ret = impose_restrictions(context, rs, ent, mask);
+             if (h->vt.free_restrictions != NULL)
+--- a/src/kadmin/server/auth.h
++++ b/src/kadmin/server/auth.h
+@@ -52,6 +52,7 @@
+ #define OP_GETPOL      17
+ #define OP_LISTPOLS    18
+ #define OP_IPROP       19
++#define OP_MIGRATE     20
+ 
+ /* Initialize all authorization modules. */
+ krb5_error_code auth_init(krb5_context context, const char *acl_file);
+--- a/src/kadmin/server/auth_acl.c
++++ b/src/kadmin/server/auth_acl.c
+@@ -45,6 +45,7 @@
+ #define ACL_LIST                128
+ #define ACL_SETKEY              256
+ #define ACL_IPROP               512
++#define	ACL_MIGRATE             1024
+ 
+ #define ACL_ALL_MASK            (ACL_ADD        |       \
+                                  ACL_DELETE     |       \
+@@ -53,7 +54,8 @@
+                                  ACL_INQUIRE    |       \
+                                  ACL_LIST       |       \
+                                  ACL_IPROP      |       \
+-                                 ACL_SETKEY)
++                                 ACL_SETKEY     |       \
++                                 ACL_MIGRATE)
+ 
+ struct acl_op_table {
+     char op;
+@@ -76,6 +78,7 @@ static const struct acl_op_table acl_op_table[] = {
+     { 'i', ACL_INQUIRE },
+     { 'l', ACL_LIST },
+     { 'p', ACL_IPROP },
++    { 'u', ACL_MIGRATE },
+     { 's', ACL_SETKEY },
+     { 'x', ACL_ALL_MASK },
+     { '*', ACL_ALL_MASK },
+@@ -720,6 +723,16 @@ acl_iprop(krb5_context context, kadm5_auth_moddata data,
+     return acl_check(data, ACL_IPROP, client, NULL, NULL);
+ }
+ 
++static krb5_error_code
++acl_migrate(krb5_context context, kadm5_auth_moddata data,
++             krb5_const_principal client, krb5_const_principal target,
++             const struct _kadm5_principal_ent_t *ent, long mask,
++             struct kadm5_auth_restrictions **rs_out)
++{
++    return acl_check(data, ACL_MIGRATE, client, target, rs_out);
++}
++
++
+ krb5_error_code
+ kadm5_auth_acl_initvt(krb5_context context, int maj_ver, int min_ver,
+                       krb5_plugin_vtable vtable)
+@@ -751,5 +764,6 @@ kadm5_auth_acl_initvt(krb5_context context, int maj_ver, int min_ver,
+     vt->getpol = acl_getpol;
+     vt->listpols = acl_listpols;
+     vt->iprop = acl_iprop;
++    vt->migrate = acl_migrate;
+     return 0;
+ }
+--- a/src/kadmin/server/server_stubs.c
++++ b/src/kadmin/server/server_stubs.c
+@@ -18,6 +18,7 @@
+ #include <rpc/svc_mt.h>
+ #include "misc.h"
+ #include "auth.h"
++#include <security/pam_appl.h>
+ 
+ extern gss_name_t                       gss_changepw_name;
+ extern gss_name_t                       gss_oldchangepw_name;
+@@ -519,6 +520,80 @@ log_done(
+                             client_addr(rqstp->rq_xprt));
+ }
+ 
++/*
++ * This routine primarily validates the username and password
++ * of the principal to be created, if a prior acl check for
++ * the 'u' privilege succeeds. Validation is done using
++ * the PAM `k5migrate' service. k5migrate normally stacks
++ * pam_unix_auth.so and pam_unix_account.so in its auth and
++ * account stacks respectively.
++ *
++ * Returns 1 (true), if validation is successful,
++ * else returns 0 (false).
++ */
++int
++verify_pam_pw(char *userdata, char *pwd)
++{
++	pam_handle_t *pamh;
++	int err = 0;
++	int result = 1;
++	char *user = NULL;
++	char *ptr = NULL;
++
++	ptr = strchr(userdata, '@');
++	if (ptr != NULL) {
++		user = (char *)malloc(ptr - userdata + 1);
++		if (user == NULL)
++			return (0);
++		(void) strlcpy(user, userdata, (ptr - userdata) + 1);
++	} else {
++		user = (char *)strdup(userdata);
++		if (user == NULL)
++			return (0);
++	}
++
++	err = pam_start("k5migrate", user, NULL, &pamh);
++	if (err != PAM_SUCCESS) {
++		syslog(LOG_ERR, "verify_pam_pw: pam_start() failed, %s\n",
++				pam_strerror(pamh, err));
++		free(user);
++		return (0);
++	}
++
++	err = pam_set_item(pamh, PAM_AUTHTOK, (void *)pwd);
++	if (err != PAM_SUCCESS) {
++		syslog(LOG_ERR, "verify_pam_pw: pam_set_item() failed, %s\n",
++				pam_strerror(pamh, err));
++		free(user);
++		(void) pam_end(pamh, err);
++		return (0);
++	}
++
++	err = pam_authenticate(pamh, PAM_SILENT);
++	if (err != PAM_SUCCESS) {
++		syslog(LOG_ERR, "verify_pam_pw: pam_authenticate() failed for "
++				"user=%s, %s\n", user,
++				pam_strerror(pamh, err));
++		free(user);
++		(void) pam_end(pamh, err);
++		return (0);
++	}
++
++	err = pam_acct_mgmt(pamh, PAM_SILENT);
++	if (err != PAM_SUCCESS) {
++		syslog(LOG_ERR, "verify_pam_pw: pam_acct_mgmt() failed for "
++				"user=%s, %s\n", user,
++				pam_strerror(pamh, err));
++		free(user);
++		(void) pam_end(pamh, err);
++		return (0);
++	}
++
++	free(user);
++	(void) pam_end(pamh, PAM_SUCCESS);
++	return (result);
++}
++
+ bool_t
+ create_principal_2_svc(cprinc_arg *arg, generic_ret *ret,
+                        struct svc_req *rqstp)
+@@ -529,6 +604,8 @@ create_principal_2_svc(cprinc_arg *arg, generic_ret *ret,
+     kadm5_server_handle_t       handle;
+     const char                  *errmsg = NULL;
+     gss_name_t                  name = NULL;
++    int				policy_migrate = 0;
++    kadm5_ret_t			retval;
+ 
+     ret->code = stub_setup(arg->api_version, rqstp, arg->rec.principal,
+                            &handle, &ret->api_version, &client_name,
+@@ -536,8 +613,14 @@ create_principal_2_svc(cprinc_arg *arg, generic_ret *ret,
+     if (ret->code)
+         goto exit_func;
+ 
++    if (stub_auth_restrict(handle, OP_MIGRATE, &arg->rec, &arg->mask) &&
++	verify_pam_pw(prime_arg, arg->passwd)) {
++	policy_migrate = 1;
++    }
++
+     if (CHANGEPW_SERVICE(rqstp) ||
+-        !stub_auth_restrict(handle, OP_ADDPRINC, &arg->rec, &arg->mask)) {
++        (!stub_auth_restrict(handle, OP_ADDPRINC, &arg->rec, &arg->mask) &&
++             (!policy_migrate))) {
+         ret->code = KADM5_AUTH_ADD;
+         log_unauth("kadm5_create_principal", prime_arg,
+                    &client_name, &service_name, rqstp);
+@@ -553,6 +636,25 @@ create_principal_2_svc(cprinc_arg *arg, generic_ret *ret,
+ 
+         if (errmsg != NULL)
+             krb5_free_error_message(handle->context, errmsg);
++
++	if (policy_migrate && (ret->code == 0)) {
++		arg->rec.policy = strdup("default");
++		if ((arg->mask & KADM5_PW_EXPIRATION)) {
++			arg->mask = 0;
++			arg->mask |= KADM5_POLICY;
++			arg->mask |= KADM5_PW_EXPIRATION;
++		} else {
++			arg->mask = 0;
++			arg->mask |= KADM5_POLICY;
++		}
++
++		retval = kadm5_modify_principal((void *)handle,
++				&arg->rec, arg->mask);
++		log_done("kadm5_modify_principal",
++			prime_arg, ((retval == 0) ? "success" :
++			error_message(retval)), &client_name,
++			&service_name, rqstp);
++	}
+     }
+ 
+ exit_func:
+@@ -570,6 +672,8 @@ create_principal3_2_svc(cprinc3_arg *arg, generic_ret *ret,
+     kadm5_server_handle_t       handle;
+     const char                  *errmsg = NULL;
+     gss_name_t                  name = NULL;
++    int				policy_migrate = 0;
++    kadm5_ret_t			retval;
+ 
+     ret->code = stub_setup(arg->api_version, rqstp, arg->rec.principal,
+                            &handle, &ret->api_version, &client_name,
+@@ -577,8 +681,13 @@ create_principal3_2_svc(cprinc3_arg *arg, generic_ret *ret,
+     if (ret->code)
+         goto exit_func;
+ 
++    if (stub_auth_restrict(handle, OP_MIGRATE, &arg->rec, &arg->mask) &&
++	verify_pam_pw(prime_arg, arg->passwd)) {
++	policy_migrate = 1;
++    }
+     if (CHANGEPW_SERVICE(rqstp) ||
+-        !stub_auth_restrict(handle, OP_ADDPRINC, &arg->rec, &arg->mask)) {
++        (!stub_auth_restrict(handle, OP_ADDPRINC, &arg->rec, &arg->mask) &&
++        !(policy_migrate))) {
+         ret->code = KADM5_AUTH_ADD;
+         log_unauth("kadm5_create_principal", prime_arg,
+                    &client_name, &service_name, rqstp);
+@@ -594,6 +703,24 @@ create_principal3_2_svc(cprinc3_arg *arg, generic_ret *ret,
+ 
+         if (errmsg != NULL)
+             krb5_free_error_message(handle->context, errmsg);
++
++	if (policy_migrate && (ret->code == 0)) {
++	 	arg->rec.policy = strdup("default");
++	 	if ((arg->mask & KADM5_PW_EXPIRATION)) {
++	 		arg->mask = 0;
++	 		arg->mask |= KADM5_POLICY;
++	 		arg->mask |= KADM5_PW_EXPIRATION;
++	 	} else {
++	 		arg->mask = 0;
++	 		arg->mask |= KADM5_POLICY;
++	 	}
++
++		retval = kadm5_modify_principal((void *)handle,
++					   &arg->rec, arg->mask);
++		log_done("kadm5_modify_principal", prime_arg,
++			((retval == 0) ? "success" : error_message(retval)),
++			&client_name, &service_name, rqstp);
++	 }
+     }
+ 
+ exit_func:

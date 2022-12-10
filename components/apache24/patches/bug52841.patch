@@ -1,0 +1,18 @@
+Patch origin: in-house
+Patch status: submitted to community
+
+https://issues.apache.org/bugzilla/show_bug.cgi?id=52841
+
+diff --git a/modules/slotmem/config.m4 b/modules/slotmem/config.m4
+index 82d13bb..40fe0f1 100644
+--- a/modules/slotmem/config.m4
++++ b/modules/slotmem/config.m4
+@@ -4,7 +4,7 @@ dnl APACHE_MODULE(name, helptext[, objects[, structname[, default[, config]]]])
+ 
+ APACHE_MODPATH_INIT(slotmem)
+ 
+-APACHE_MODULE(slotmem_shm, slotmem provider that uses shared memory, , , most)
++APACHE_MODULE(slotmem_shm, slotmem provider that uses shared memory, , , yes)
+ APACHE_MODULE(slotmem_plain, slotmem provider that uses plain memory, , , )
+ 
+ APACHE_MODPATH_FINISH

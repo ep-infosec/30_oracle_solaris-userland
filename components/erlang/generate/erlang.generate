@@ -1,0 +1,60 @@
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+
+#
+# Copyright (c) 2018, 2021, Oracle and/or its affiliates.
+#
+
+<include generate/common.transform>
+
+# Delete all files delivered separately as a package.
+<transform file link pkg.type=(?!erlang) -> drop>
+
+# Ignore the temporary files after patching manual pages.
+<transform file path=man[0-9]/(.+)\.\~1\~$ -> drop>
+
+# Modify the paths to the man pages.
+<transform file path=man1/.+ -> edit path man1 usr/share/man/man1>
+<transform file path=man3/(.+)$ -> edit path man3/%<1> usr/share/man/man3erl/%<1>erl>
+<transform file path=man4/(.+)\.4 -> edit path man4/%<1>\.4 usr/share/man/man5erl/%<1>.5erl>
+<transform file path=man6/(.+)\.6 -> edit path man6/%<1>\.6 usr/share/man/man7erl/%<1>.7erl>
+<transform file path=man7/(.+) -> edit path man7/%<1> usr/share/man/man7erl/%<1>erl>
+
+# Enable to call 'gmake manifest-check' even after 'gmake publish'.
+# Do not allow to add manual pages twice...
+<transform file path=^man/(.+) -> drop>
+
+# Add files of Erlang Port Mapper service.
+<transform file path=files/portmap.xml -> set action.hash %(path)>
+<transform file path=files/portmap.xml -> set path lib/svc/manifest/network/portmap.xml>
+<transform file path=files/svc-portmap -> set action.hash %(path)>
+<transform file path=files/svc-portmap -> set path lib/svc/method/portmap>
+<transform file path=lib/svc/method/portmap -> set disable_fmri svc:/network/erlang/portmap:default>
+
+# Set appropriate permissions to the executable files.
+<transform file path=usr/lib/\$\(MACH64\)/erlang/erts-10.0/bin/beam.smp -> set mode 0555>
+<transform file path=usr/lib/\$\(MACH64\)/erlang/lib/tools-3.0/bin/emem -> set mode 0555>
+
+# Rename back the architecture specific files.
+<transform file path=.*/internal/arch_i386/.* -> edit path /arch_i386/ /i386/>
+
+# Remove pkg.type tags before the comparison of *.p5m files.
+<transform file link -> delete pkg.type .*>

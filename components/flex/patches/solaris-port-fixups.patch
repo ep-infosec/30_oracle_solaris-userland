@@ -1,0 +1,27 @@
+Make sure that we always use /usr/gnu/bin/m4 rather than what is available
+via the M4 environment variable or what's in the PATH environment variable.
+
+This change has been sent upstream. See email thread starting at:
+
+  https://sourceforge.net/p/flex/mailman/message/35103749/
+
+--- flex-2.6.1/src/main.c.orig	2016-05-19 14:36:18.569346881 -0700
++++ flex-2.6.1/src/main.c	2016-05-20 07:59:04.169569771 -0700
+@@ -348,6 +348,7 @@
+ 
+     /* Setup the filter chain. */
+     output_chain = filter_create_int(NULL, filter_tee_header, headerfilename);
++#ifndef __sun
+     if ( !(m4 = getenv("M4"))) {
+ 	    char *slash;
+ 		m4 = M4;
+@@ -389,6 +390,9 @@
+ 		}
+ 	}
+     filter_create_ext(output_chain, m4, "-P", 0);
++#else
++    filter_create_ext(output_chain, "/usr/gnu/bin/m4", "-P", 0);
++#endif
+     filter_create_int(output_chain, filter_fix_linedirs, NULL);
+ 
+     /* For debugging, only run the requested number of filters. */

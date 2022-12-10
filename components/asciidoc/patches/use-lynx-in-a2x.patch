@@ -1,0 +1,63 @@
+Adjusted the a2x script to always use lynx to convert to text (rather
+than w3m). Note that this patch just does the minimal change required
+to achieve this rather than purge all the Python w3m code in a2x.py
+The a2x manual page has been updated to match.
+
+This patch will not be sent upstream.
+
+--- asciidoc-9.0.2/a2x.py
++++ asciidoc-9.0.2/a2x.py
+@@ -938,7 +938,7 @@ if __name__ == '__main__':
+         action='store_true', dest='keep_artifacts', default=False,
+         help='do not delete temporary build files')
+     parser.add_option('--lynx',
+-        action='store_true', dest='lynx', default=False,
++        action='store_true', dest='lynx', default=True,
+         help='use lynx to generate text files')
+     parser.add_option('-L', '--no-xmllint',
+         action='store_true', dest='no_xmllint', default=False,
+--- asciidoc-9.0.2/doc/a2x.1
++++ asciidoc-9.0.2/doc/a2x.1
+@@ -150,11 +150,7 @@ Use
+ \fIlynx(1)\fR
+ (actually: the text\-based browser defined by the
+ LYNX
+-config variable) when generating text formatted output\&. The default behavior is to use
+-\fIw3m(1)\fR
+-(actually: the text\-based browser defined by the
+-W3M
+-config variable)\&.
++config variable) when generating text formatted output\&. Note that this is the default behavior on Solaris\&.
+ .RE
+ .PP
+ \fB\-L, \-\-no\-xmllint\fR
+@@ -606,19 +602,6 @@ http://xmlgraphics\&.apache\&.org/fop/
+ .sp -1
+ .IP \(bu 2.3
+ .\}
+-\fBw3m\fR
+-(text format):
+-http://w3m\&.sourceforge\&.net/index\&.en\&.html
+-.RE
+-.sp
+-.RS 4
+-.ie n \{\
+-\h'-04'\(bu\h'+03'\c
+-.\}
+-.el \{\
+-.sp -1
+-.IP \(bu 2.3
+-.\}
+ \fBLynx\fR
+ (text format \(em alternative text file generator):
+ https://invisible\-island\&.net/lynx/
+@@ -713,8 +696,7 @@ ASCIIDOC = \*(Aqasciidoc\*(Aq
+ XSLTPROC = \*(Aqxsltproc\*(Aq
+ DBLATEX = \*(Aqdblatex\*(Aq         # pdf generation\&.
+ FOP = \*(Aqfop\*(Aq                 # pdf generation (\-\-fop option)\&.
+-W3M = \*(Aqw3m\*(Aq                 # primary text file generator\&.
+-LYNX = \*(Aqlynx\*(Aq               # alternate text file generator\&.
++LYNX = \*(Aqlynx\*(Aq               # text file generator\&.
+ XMLLINT = \*(Aqxmllint\*(Aq         # Set to \*(Aq\*(Aq to disable\&.
+ EPUBCHECK = \*(Aqepubcheck\*(Aq     # Set to \*(Aq\*(Aq to disable\&.
+ # External executable default options\&.

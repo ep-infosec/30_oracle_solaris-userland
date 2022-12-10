@@ -1,0 +1,45 @@
+#
+# This is a Solaris-specific patch 
+#
+# Linking the liby library with appropriate flags
+
+diff --git a/Makefile.in b/Makefile.in
+index 252ecea..6d0553f 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -682,6 +682,12 @@ am__lib_liby_a_SOURCES_DIST = lib/main.c lib/yyerror.c
+ @ENABLE_YACC_TRUE@am_lib_liby_a_OBJECTS = lib/main.$(OBJEXT) \
+ @ENABLE_YACC_TRUE@	lib/yyerror.$(OBJEXT)
+ lib_liby_a_OBJECTS = $(am_lib_liby_a_OBJECTS)
++
++# Doing this for just the OBJECTS macros doesn't seem to work
++# and we rely on the approprate xregs/no-app-regs flag already
++# being in our CFLAGS from shared-macros.mk.
++lib/yyerror.o lib/main.o: CFLAGS += $(CC_PIC)
++
+ am__objects_13 = examples/c++/calc++/calc__-driver.$(OBJEXT) \
+ 	examples/c++/calc++/calc__-scanner.$(OBJEXT) \
+ 	examples/c++/calc++/calc__-calc++.$(OBJEXT)
+@@ -3694,6 +3700,10 @@ WARN_ON_USE_H = $(top_srcdir)/lib/warn-on-use.h
+ @ENABLE_YACC_TRUE@lib_LIBRARIES = lib/liby.a
+ @ENABLE_YACC_TRUE@EXTRA_LIBRARIES = lib/liby.a
+ @ENABLE_YACC_TRUE@lib_liby_a_SOURCES = lib/main.c lib/yyerror.c
++
++# Include the yacc library
++lib_LIBRARIES += lib/liby.so.1
++
+ # Prettify Automake-computed names of compiled objects.
+ src_bison_SHORTNAME = bison
+ src_bison_CPPFLAGS = $(AM_CPPFLAGS) -DINSTALLDIR=\"$(bindir)\"
+@@ -3865,6 +3875,11 @@ CODESPELL = codespell
+ all: $(BUILT_SOURCES)
+ 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
+ 
++# Compile the yacc library
++lib/liby.so.1: $(lib_liby_a_OBJECTS) $(lib_liby_a_DEPENDENCIES)
++	-rm -f lib/liby.so.1
++	$(CC) $(CFLAGS) -G -h liby.so.1 -o lib/liby.so.1 $(lib_liby_a_OBJECTS) $(lib_liby_a_LIBADD)
++
+ .SUFFIXES:
+ .SUFFIXES: .gv .eps .pdf .svg .yy .stamp .c .cc .dvi .i .l .ll .log .o .obj .ps .test .test$(EXEEXT) .trs .y
+ am--refresh: Makefile

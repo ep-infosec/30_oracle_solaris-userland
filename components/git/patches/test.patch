@@ -1,0 +1,47 @@
+One of the tests need patching:
+
+  - Because we're doing the build in a symlink farm, one of the diff tests
+    thinks that we're changing the type of the files from symlink to file,
+    so the diffs come out wrong.  Rather than cleverly mucking around with
+    the working directory vs the repo directory, we just cat the files as
+    real files into place.
+
+Unclear whether this patch should be sent upstream.
+
+--- git-2.38.1/t/Makefile
++++ git-2.38.1/t/Makefile
+@@ -52,6 +52,9 @@ all: $(DEFAULT_TEST_TARGET)
+ test: pre-clean check-chainlint $(TEST_LINT)
+ 	$(CHAINLINTSUPPRESS) $(MAKE) aggregate-results-and-cleanup
+ 
++test-noclean: pre-clean $(TEST_LINT)
++	$(MAKE) T
++
+ failed:
+ 	@failed=$$(cd '$(TEST_RESULTS_DIRECTORY_SQ)' && \
+ 		grep -l '^failed [1-9]' *.counts | \
+@@ -124,6 +127,8 @@ echo >&2 "non-executable tests:" $$bad;
+ test-lint-shell-syntax:
+ 	@'$(PERL_PATH_SQ)' check-non-portable-shell.pl $(T) $(THELPERS) $(TPERF)
+ 
++T: $(T)
++
+ test-lint-filenames:
+ 	@# We do *not* pass a glob to ls-files but use grep instead, to catch
+ 	@# non-ASCII characters (which are quoted within double-quotes)
+--- git-2.38.1/t/t4018-diff-funcname.sh
++++ git-2.38.1/t/t4018-diff-funcname.sh
+@@ -80,8 +80,11 @@ done > .gitattributes &&
+ 
+ 	# add all test files to the index
+ 	(
+-		cd "$TEST_DIRECTORY"/t4018 &&
+-		git --git-dir="$TRASH_DIRECTORY/.git" add .
++		( cd "$TEST_DIRECTORY"/t4018 && printf "%s\n" * ) | while read f
++			do
++				cat "$TEST_DIRECTORY"/t4018/$f > $f
++				git add -v $f
++			done	
+ 	) &&
+ 
+ 	# place modified files in the worktree

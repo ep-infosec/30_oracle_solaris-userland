@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2015, 2018, Oracle and/or its affiliates. All rights reserved.
+-->
+<cpe-list xmlns="http://cpe.mitre.org/dictionary/2.0"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://scap.nist.gov/schema/cpe/2.3/ cpe-dictionary_2.3.xsd">
+  <cpe-item name="cpe:/o:oracle:solaris">
+    <title>Oracle Solaris</title>
+    <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5"
+         href="openscap-cpe-oval.xml">oval:com.oracle.solaris.cpe:def:1</check>
+  </cpe-item>
+  <cpe-item name="cpe:/o:oracle:solaris:11">
+    <title>Oracle Solaris 11</title>
+    <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5"
+         href="openscap-cpe-oval.xml">oval:com.oracle.solaris.cpe:def:11</check>
+  </cpe-item>
+  <cpe-item name="cpe:/o:oracle:solaris:11:1">
+    <title>Oracle Solaris 11.1</title>
+    <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5"
+         href="openscap-cpe-oval.xml">oval:com.oracle.solaris.cpe:def:111</check>
+  </cpe-item>
+  <cpe-item name="cpe:/o:oracle:solaris:11:2">
+    <title>Oracle Solaris 11.2</title>
+    <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5"
+         href="openscap-cpe-oval.xml">oval:com.oracle.solaris.cpe:def:112</check>
+  </cpe-item>
+  <cpe-item name="cpe:/o:oracle:solaris:11:3">
+    <title>Oracle Solaris 11.3</title>
+    <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5"
+         href="openscap-cpe-oval.xml">oval:com.oracle.solaris.cpe:def:113</check>
+  </cpe-item>
+  <cpe-item name="cpe:/o:oracle:solaris:11:4">
+    <title>Oracle Solaris 11.4</title>
+    <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5"
+         href="openscap-cpe-oval.xml">oval:com.oracle.solaris.cpe:def:114</check>
+  </cpe-item>
+  <cpe-item name="cpe:/o:oracle:solaris:11:5">
+    <title>Oracle Solaris 11.5</title>
+    <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5"
+         href="openscap-cpe-oval.xml">oval:com.oracle.solaris.cpe:def:115</check>
+  </cpe-item>
+  <cpe-item name="cpe:/o:oracle:solaris:11::global-zone">
+    <title>Oracle Solaris 11 in Global Zone</title>
+    <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5"
+         href="openscap-cpe-oval.xml">oval:com.oracle.solaris.cpe:def:1100</check>
+  </cpe-item>
+  <cpe-item name="cpe:/o:oracle:solaris:11::non-global-zone">
+    <title>Oracle Solaris 11 in Non Global Zone</title>
+    <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5"
+         href="openscap-cpe-oval.xml">oval:com.oracle.solaris.cpe:def:1101</check>
+  </cpe-item>
+  <cpe-item name="cpe:/o:oracle:solaris:11::kernel-zone">
+    <title>Oracle Solaris 11 in Kernel Zone</title>
+    <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5"
+         href="openscap-cpe-oval.xml">oval:com.oracle.solaris.cpe:def:1102</check>
+  </cpe-item>
+  <cpe-item name="cpe:/o:oracle:solaris:11::logical-domain">
+    <title>Oracle Solaris 11 in Logical Domain</title>
+    <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5"
+         href="openscap-cpe-oval.xml">oval:com.oracle.solaris.cpe:def:1103</check>
+  </cpe-item>
+  <cpe-item name="cpe:/o:oracle:solaris:11::logical-domain.control">
+    <title>Oracle Solaris 11 in Logical Domain Control Role</title>
+    <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5"
+         href="openscap-cpe-oval.xml">oval:com.oracle.solaris.cpe:def:1104</check>
+  </cpe-item>
+  <cpe-item name="cpe:/o:oracle:solaris:11::logical-domain.io">
+    <title>Oracle Solaris 11 in Logical Domain I/O Role</title>
+    <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5"
+         href="openscap-cpe-oval.xml">oval:com.oracle.solaris.cpe:def:1105</check>
+  </cpe-item>
+  <cpe-item name="cpe:/o:oracle:solaris:11::logical-domain.root">
+    <title>Oracle Solaris 11 in Logical Domain Root Role</title>
+    <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5"
+         href="openscap-cpe-oval.xml">oval:com.oracle.solaris.cpe:def:1106</check>
+  </cpe-item>
+  <cpe-item name="cpe:/o:oracle:solaris:11::logical-domain.service">
+    <title>Oracle Solaris 11 in Logical Domain Service Role</title>
+    <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5"
+         href="openscap-cpe-oval.xml">oval:com.oracle.solaris.cpe:def:1107</check>
+  </cpe-item>
+  <cpe-item name="cpe:/o:oracle:solaris:11::sparc">
+    <title>Oracle Solaris 11 on SPARC</title>
+    <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5"
+         href="openscap-cpe-oval.xml">oval:com.oracle.solaris.cpe:def:1108</check>
+  </cpe-item>
+  <cpe-item name="cpe:/o:oracle:solaris:11::x86">
+    <title>Oracle Solaris 11 on x86</title>
+    <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5"
+         href="openscap-cpe-oval.xml">oval:com.oracle.solaris.cpe:def:1109</check>
+  </cpe-item>  <cpe-item name="cpe:/a:oracle:solaris_cluster:4">
+    <title>Oracle Solaris Cluster</title>
+    <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5"
+         href="openscap-cpe-oval.xml">oval:com.oracle.solaris.cpe:def:128</check>
+  </cpe-item>
+</cpe-list>

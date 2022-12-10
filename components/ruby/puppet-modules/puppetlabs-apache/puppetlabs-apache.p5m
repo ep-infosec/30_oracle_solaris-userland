@@ -1,0 +1,366 @@
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+
+#
+# Copyright (c) 2015, 2021, Oracle and/or its affiliates.
+#
+
+<transform file -> edit path ^ usr/puppetlabs/puppet/modules/>
+#
+set name=pkg.fmri \
+    value=pkg:/system/management/puppet/puppetlabs-apache@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION)
+set name=pkg.summary value="Apache Puppet Module"
+set name=pkg.description \
+    value="Apache is a widely-used web server, and this module provides a simplified way of creating configurations to manage your infrastructure. This includes the ability to configure and manage a range of different virtual host setups, as well as a streamlined way to install and configure Apache modules."
+set name=com.oracle.info.baid value=$(COMPONENT_BAID)
+set name=com.oracle.info.description value="Apache Puppet Module"
+set name=info.classification \
+    value="org.opensolaris.category.2008:System/Administration and Configuration" \
+    value="org.opensolaris.category.2008:System/Enterprise Management"
+set name=info.source-url value=$(GIT_REPO)
+set name=info.upstream \
+    value="puppetlabs - https://forge.puppetlabs.com/puppetlabs"
+set name=info.upstream-url value=$(GIT_REPO)
+set name=org.opensolaris.arc-caseid value=PSARC/2015/368 value=PSARC/2016/016 \
+    value=PSARC/2016/607 value=PSARC/2017/092
+set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
+#
+
+file path=apache/CHANGELOG.md
+file path=apache/CONTRIBUTING.md
+file path=apache/Gemfile
+file path=apache/LICENSE
+file path=apache/NOTICE
+file path=apache/README.md
+file path=apache/Rakefile
+file path=apache/examples/apache.pp
+file path=apache/examples/dev.pp
+file path=apache/examples/init.pp
+file path=apache/examples/mod_load_params.pp
+file path=apache/examples/mods.pp
+file path=apache/examples/mods_custom.pp
+file path=apache/examples/php.pp
+file path=apache/examples/vhost.pp
+file path=apache/examples/vhost_directories.pp
+file path=apache/examples/vhost_filter.pp
+file path=apache/examples/vhost_ip_based.pp
+file path=apache/examples/vhost_proxypass.pp
+file path=apache/examples/vhost_ssl.pp
+file path=apache/examples/vhosts_without_listen.pp
+file path=apache/files/httpd
+file path=apache/lib/facter/apache_version.rb
+file path=apache/lib/puppet/provider/a2mod.rb
+file path=apache/lib/puppet/provider/a2mod/a2mod.rb
+file path=apache/lib/puppet/provider/a2mod/gentoo.rb
+file path=apache/lib/puppet/provider/a2mod/modfix.rb
+file path=apache/lib/puppet/provider/a2mod/redhat.rb
+file path=apache/lib/puppet/type/a2mod.rb
+file path=apache/manifests/balancer.pp
+file path=apache/manifests/balancermember.pp
+file path=apache/manifests/confd/no_accf.pp
+file path=apache/manifests/custom_config.pp
+file path=apache/manifests/default_confd_files.pp
+file path=apache/manifests/default_mods.pp
+file path=apache/manifests/default_mods/load.pp
+file path=apache/manifests/dev.pp
+file path=apache/manifests/fastcgi/server.pp
+file path=apache/manifests/init.pp
+file path=apache/manifests/listen.pp
+file path=apache/manifests/mod.pp
+file path=apache/manifests/mod/actions.pp
+file path=apache/manifests/mod/alias.pp
+file path=apache/manifests/mod/auth_basic.pp
+file path=apache/manifests/mod/auth_cas.pp
+file path=apache/manifests/mod/auth_kerb.pp
+file path=apache/manifests/mod/auth_mellon.pp
+file path=apache/manifests/mod/authn_core.pp
+file path=apache/manifests/mod/authn_dbd.pp
+file path=apache/manifests/mod/authn_file.pp
+file path=apache/manifests/mod/authnz_ldap.pp
+file path=apache/manifests/mod/authz_default.pp
+file path=apache/manifests/mod/authz_user.pp
+file path=apache/manifests/mod/autoindex.pp
+file path=apache/manifests/mod/cache.pp
+file path=apache/manifests/mod/cgi.pp
+file path=apache/manifests/mod/cgid.pp
+file path=apache/manifests/mod/cluster.pp
+file path=apache/manifests/mod/dav.pp
+file path=apache/manifests/mod/dav_fs.pp
+file path=apache/manifests/mod/dav_svn.pp
+file path=apache/manifests/mod/dbd.pp
+file path=apache/manifests/mod/deflate.pp
+file path=apache/manifests/mod/dev.pp
+file path=apache/manifests/mod/dir.pp
+file path=apache/manifests/mod/disk_cache.pp
+file path=apache/manifests/mod/dumpio.pp
+file path=apache/manifests/mod/env.pp
+file path=apache/manifests/mod/event.pp
+file path=apache/manifests/mod/expires.pp
+file path=apache/manifests/mod/ext_filter.pp
+file path=apache/manifests/mod/fastcgi.pp
+file path=apache/manifests/mod/fcgid.pp
+file path=apache/manifests/mod/filter.pp
+file path=apache/manifests/mod/geoip.pp
+file path=apache/manifests/mod/headers.pp
+file path=apache/manifests/mod/include.pp
+file path=apache/manifests/mod/info.pp
+file path=apache/manifests/mod/itk.pp
+file path=apache/manifests/mod/ldap.pp
+file path=apache/manifests/mod/mime.pp
+file path=apache/manifests/mod/mime_magic.pp
+file path=apache/manifests/mod/negotiation.pp
+file path=apache/manifests/mod/nss.pp
+file path=apache/manifests/mod/pagespeed.pp
+file path=apache/manifests/mod/passenger.pp
+file path=apache/manifests/mod/perl.pp
+file path=apache/manifests/mod/peruser.pp
+file path=apache/manifests/mod/php.pp
+file path=apache/manifests/mod/prefork.pp
+file path=apache/manifests/mod/proxy.pp
+file path=apache/manifests/mod/proxy_ajp.pp
+file path=apache/manifests/mod/proxy_balancer.pp
+file path=apache/manifests/mod/proxy_connect.pp
+file path=apache/manifests/mod/proxy_fcgi.pp
+file path=apache/manifests/mod/proxy_html.pp
+file path=apache/manifests/mod/proxy_http.pp
+file path=apache/manifests/mod/proxy_wstunnel.pp
+file path=apache/manifests/mod/python.pp
+file path=apache/manifests/mod/remoteip.pp
+file path=apache/manifests/mod/reqtimeout.pp
+file path=apache/manifests/mod/rewrite.pp
+file path=apache/manifests/mod/rpaf.pp
+file path=apache/manifests/mod/security.pp
+file path=apache/manifests/mod/setenvif.pp
+file path=apache/manifests/mod/shib.pp
+file path=apache/manifests/mod/socache_shmcb.pp
+file path=apache/manifests/mod/speling.pp
+file path=apache/manifests/mod/ssl.pp
+file path=apache/manifests/mod/status.pp
+file path=apache/manifests/mod/suexec.pp
+file path=apache/manifests/mod/suphp.pp
+file path=apache/manifests/mod/userdir.pp
+file path=apache/manifests/mod/version.pp
+file path=apache/manifests/mod/vhost_alias.pp
+file path=apache/manifests/mod/worker.pp
+file path=apache/manifests/mod/wsgi.pp
+file path=apache/manifests/mod/xsendfile.pp
+file path=apache/manifests/mpm.pp
+file path=apache/manifests/namevirtualhost.pp
+file path=apache/manifests/package.pp
+file path=apache/manifests/params.pp
+file path=apache/manifests/peruser/multiplexer.pp
+file path=apache/manifests/peruser/processor.pp
+file path=apache/manifests/php.pp
+file path=apache/manifests/proxy.pp
+file path=apache/manifests/python.pp
+file path=apache/manifests/security/rule_link.pp
+file path=apache/manifests/service.pp
+file path=apache/manifests/ssl.pp
+file path=apache/manifests/version.pp
+file path=apache/manifests/vhost.pp
+file path=apache/manifests/vhost/custom.pp
+file path=apache/manifests/vhosts.pp
+file path=apache/metadata.json
+file path=apache/spec/acceptance/apache_parameters_spec.rb
+file path=apache/spec/acceptance/apache_ssl_spec.rb
+file path=apache/spec/acceptance/class_spec.rb
+file path=apache/spec/acceptance/custom_config_spec.rb
+file path=apache/spec/acceptance/default_mods_spec.rb
+file path=apache/spec/acceptance/itk_spec.rb
+file path=apache/spec/acceptance/mod_php_spec.rb
+file path=apache/spec/acceptance/prefork_worker_spec.rb
+file path=apache/spec/acceptance/service_spec.rb
+file path=apache/spec/acceptance/vhost_spec.rb
+file path=apache/spec/acceptance/vhosts_spec.rb
+file path=apache/spec/classes/apache_spec.rb
+file path=apache/spec/classes/dev_spec.rb
+file path=apache/spec/classes/mod/alias_spec.rb
+file path=apache/spec/classes/mod/auth_cas_spec.rb
+file path=apache/spec/classes/mod/auth_kerb_spec.rb
+file path=apache/spec/classes/mod/auth_mellon_spec.rb
+file path=apache/spec/classes/mod/authn_dbd_spec.rb
+file path=apache/spec/classes/mod/authnz_ldap_spec.rb
+file path=apache/spec/classes/mod/cluster_spec.rb
+file path=apache/spec/classes/mod/dav_svn_spec.rb
+file path=apache/spec/classes/mod/deflate_spec.rb
+file path=apache/spec/classes/mod/dev_spec.rb
+file path=apache/spec/classes/mod/dir_spec.rb
+file path=apache/spec/classes/mod/disk_cache_spec.rb
+file path=apache/spec/classes/mod/dumpio_spec.rb
+file path=apache/spec/classes/mod/event_spec.rb
+file path=apache/spec/classes/mod/expires_spec.rb
+file path=apache/spec/classes/mod/ext_filter_spec.rb
+file path=apache/spec/classes/mod/fastcgi_spec.rb
+file path=apache/spec/classes/mod/fcgid_spec.rb
+file path=apache/spec/classes/mod/info_spec.rb
+file path=apache/spec/classes/mod/itk_spec.rb
+file path=apache/spec/classes/mod/ldap_spec.rb
+file path=apache/spec/classes/mod/mime_magic_spec.rb
+file path=apache/spec/classes/mod/mime_spec.rb
+file path=apache/spec/classes/mod/negotiation_spec.rb
+file path=apache/spec/classes/mod/pagespeed_spec.rb
+file path=apache/spec/classes/mod/passenger_spec.rb
+file path=apache/spec/classes/mod/perl_spec.rb
+file path=apache/spec/classes/mod/peruser_spec.rb
+file path=apache/spec/classes/mod/php_spec.rb
+file path=apache/spec/classes/mod/prefork_spec.rb
+file path=apache/spec/classes/mod/proxy_balancer_spec.rb
+file path=apache/spec/classes/mod/proxy_connect_spec.rb
+file path=apache/spec/classes/mod/proxy_html_spec.rb
+file path=apache/spec/classes/mod/proxy_wstunnel.rb
+file path=apache/spec/classes/mod/python_spec.rb
+file path=apache/spec/classes/mod/remoteip_spec.rb
+file path=apache/spec/classes/mod/reqtimeout_spec.rb
+file path=apache/spec/classes/mod/rpaf_spec.rb
+file path=apache/spec/classes/mod/security_spec.rb
+file path=apache/spec/classes/mod/shib_spec.rb
+file path=apache/spec/classes/mod/speling_spec.rb
+file path=apache/spec/classes/mod/ssl_spec.rb
+file path=apache/spec/classes/mod/status_spec.rb
+file path=apache/spec/classes/mod/suphp_spec.rb
+file path=apache/spec/classes/mod/worker_spec.rb
+file path=apache/spec/classes/mod/wsgi_spec.rb
+file path=apache/spec/classes/params_spec.rb
+file path=apache/spec/classes/service_spec.rb
+file path=apache/spec/classes/vhosts_spec.rb
+file path=apache/spec/defines/balancer_spec.rb
+file path=apache/spec/defines/balancermember_spec.rb
+file path=apache/spec/defines/custom_config_spec.rb
+file path=apache/spec/defines/fastcgi_server_spec.rb
+file path=apache/spec/defines/mod_spec.rb
+file path=apache/spec/defines/modsec_link_spec.rb
+file path=apache/spec/defines/vhost_custom_spec.rb
+file path=apache/spec/defines/vhost_spec.rb
+file path=apache/spec/fixtures/files/negotiation.conf
+file path=apache/spec/fixtures/files/spec
+file path=apache/spec/fixtures/templates/negotiation.conf.erb
+file path=apache/spec/spec_helper.rb
+file path=apache/spec/spec_helper_acceptance.rb
+file path=apache/spec/spec_helper_local.rb
+file path=apache/spec/unit/provider/a2mod/gentoo_spec.rb
+file path=apache/templates/confd/no-accf.conf.erb
+file path=apache/templates/fastcgi/server.erb
+file path=apache/templates/httpd.conf.erb
+file path=apache/templates/listen.erb
+file path=apache/templates/mod/alias.conf.erb
+file path=apache/templates/mod/auth_cas.conf.erb
+file path=apache/templates/mod/auth_mellon.conf.erb
+file path=apache/templates/mod/authn_dbd.conf.erb
+file path=apache/templates/mod/authnz_ldap.conf.erb
+file path=apache/templates/mod/autoindex.conf.erb
+file path=apache/templates/mod/cgid.conf.erb
+file path=apache/templates/mod/cluster.conf.erb
+file path=apache/templates/mod/dav_fs.conf.erb
+file path=apache/templates/mod/deflate.conf.erb
+file path=apache/templates/mod/dir.conf.erb
+file path=apache/templates/mod/disk_cache.conf.erb
+file path=apache/templates/mod/dumpio.conf.erb
+file path=apache/templates/mod/event.conf.erb
+file path=apache/templates/mod/expires.conf.erb
+file path=apache/templates/mod/ext_filter.conf.erb
+file path=apache/templates/mod/fastcgi.conf.erb
+file path=apache/templates/mod/fcgid.conf.erb
+file path=apache/templates/mod/geoip.conf.erb
+file path=apache/templates/mod/info.conf.erb
+file path=apache/templates/mod/itk.conf.erb
+file path=apache/templates/mod/ldap.conf.erb
+file path=apache/templates/mod/load.erb
+file path=apache/templates/mod/mime.conf.erb
+file path=apache/templates/mod/mime_magic.conf.erb
+file path=apache/templates/mod/mpm_event.conf.erb
+file path=apache/templates/mod/negotiation.conf.erb
+file path=apache/templates/mod/nss.conf.erb
+file path=apache/templates/mod/pagespeed.conf.erb
+file path=apache/templates/mod/passenger.conf.erb
+file path=apache/templates/mod/peruser.conf.erb
+file path=apache/templates/mod/php.conf.erb
+file path=apache/templates/mod/prefork.conf.erb
+file path=apache/templates/mod/proxy.conf.erb
+file path=apache/templates/mod/proxy_balancer.conf.erb
+file path=apache/templates/mod/proxy_html.conf.erb
+file path=apache/templates/mod/reqtimeout.conf.erb
+file path=apache/templates/mod/rpaf.conf.erb
+file path=apache/templates/mod/security.conf.erb
+file path=apache/templates/mod/security_crs.conf.erb
+file path=apache/templates/mod/setenvif.conf.erb
+file path=apache/templates/mod/ssl.conf.erb
+file path=apache/templates/mod/status.conf.erb
+file path=apache/templates/mod/suphp.conf.erb
+file path=apache/templates/mod/userdir.conf.erb
+file path=apache/templates/mod/worker.conf.erb
+file path=apache/templates/mod/wsgi.conf.erb
+file path=apache/templates/namevirtualhost.erb
+file path=apache/templates/ports_header.erb
+file path=apache/templates/vhost/_access_log.erb
+file path=apache/templates/vhost/_action.erb
+file path=apache/templates/vhost/_additional_includes.erb
+file path=apache/templates/vhost/_aliases.erb
+file path=apache/templates/vhost/_allow_encoded_slashes.erb
+file path=apache/templates/vhost/_auth_cas.erb
+file path=apache/templates/vhost/_auth_kerb.erb
+file path=apache/templates/vhost/_block.erb
+file path=apache/templates/vhost/_charsets.erb
+file path=apache/templates/vhost/_custom_fragment.erb
+file path=apache/templates/vhost/_directories.erb
+file path=apache/templates/vhost/_docroot.erb
+file path=apache/templates/vhost/_error_document.erb
+file path=apache/templates/vhost/_fallbackresource.erb
+file path=apache/templates/vhost/_fastcgi.erb
+file path=apache/templates/vhost/_file_footer.erb
+file path=apache/templates/vhost/_file_header.erb
+file path=apache/templates/vhost/_filters.erb
+file path=apache/templates/vhost/_header.erb
+file path=apache/templates/vhost/_itk.erb
+file path=apache/templates/vhost/_jk_mounts.erb
+file path=apache/templates/vhost/_keepalive_options.erb
+file path=apache/templates/vhost/_logging.erb
+file path=apache/templates/vhost/_passenger.erb
+file path=apache/templates/vhost/_php.erb
+file path=apache/templates/vhost/_php_admin.erb
+file path=apache/templates/vhost/_proxy.erb
+file path=apache/templates/vhost/_redirect.erb
+file path=apache/templates/vhost/_requestheader.erb
+file path=apache/templates/vhost/_require.erb
+file path=apache/templates/vhost/_rewrite.erb
+file path=apache/templates/vhost/_scriptalias.erb
+file path=apache/templates/vhost/_security.erb
+file path=apache/templates/vhost/_serveralias.erb
+file path=apache/templates/vhost/_serversignature.erb
+file path=apache/templates/vhost/_setenv.erb
+file path=apache/templates/vhost/_ssl.erb
+file path=apache/templates/vhost/_sslproxy.erb
+file path=apache/templates/vhost/_suexec.erb
+file path=apache/templates/vhost/_suphp.erb
+file path=apache/templates/vhost/_wsgi.erb
+
+#
+license puppetlabs-apache.license license="Apache v2.0"
+# Renamed Package
+depend type=optional \
+    fmri=system/management/puppet/puppet-apache@1.4.0-5.12.0.0.0.93.0
+# Require Puppet for module path changes
+depend type=require fmri=system/management/puppet
+
+# force a dependency on puppetlabs-concat
+depend type=require fmri=system/management/puppet/puppetlabs-concat
+
+# force a dependency on puppetlabs-stdlib
+depend type=require fmri=system/management/puppet/puppetlabs-stdlib

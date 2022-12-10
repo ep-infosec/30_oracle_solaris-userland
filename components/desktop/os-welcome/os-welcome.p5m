@@ -1,0 +1,97 @@
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+
+#
+# Copyright (c) 2016, 2022, Oracle and/or its affiliates.
+#
+
+set name=pkg.fmri \
+    value=pkg:/release/os-welcome@$(IPS_COMPONENT_VERSION),$(BUILD_VERSION)
+set name=pkg.summary value="Oracle Solaris Welcome Pack"
+set name=info.classification \
+    value="org.opensolaris.category.2008:Desktop (GNOME)/Documentation"
+set name=org.opensolaris.arc-caseid value=PSARC/2010/143
+set name=org.opensolaris.consolidation value=$(CONSOLIDATION)
+file path=usr/bin/os-about
+file path=usr/bin/os-next-steps
+file path=usr/share/applications/os-about.desktop
+file path=usr/share/applications/os-next-steps.desktop
+file path=usr/share/doc/os-welcome/html/C/css/master.css
+file path=usr/share/doc/os-welcome/html/C/images/ora_info_company.png
+file path=usr/share/doc/os-welcome/html/C/images/ora_solaris.png
+file path=usr/share/doc/os-welcome/html/C/index.html
+file path=usr/share/doc/os-welcome/html/C/js/1p.js
+file path=usr/share/doc/os-welcome/html/de/index.html
+file path=usr/share/doc/os-welcome/html/es/index.html
+file path=usr/share/doc/os-welcome/html/fr/index.html
+file path=usr/share/doc/os-welcome/html/index.html
+file path=usr/share/doc/os-welcome/html/it/index.html
+file path=usr/share/doc/os-welcome/html/ja/index.html
+file path=usr/share/doc/os-welcome/html/ko/index.html
+file path=usr/share/doc/os-welcome/html/pt_BR/index.html
+file path=usr/share/doc/os-welcome/html/zh_CN/index.html
+file path=usr/share/doc/os-welcome/html/zh_HK/index.html
+file path=usr/share/doc/os-welcome/html/zh_TW/index.html
+file path=usr/share/icons/hicolor/scalable/apps/os-about.svg
+file path=usr/share/icons/hicolor/scalable/apps/os-next-steps.svg
+file path=usr/share/icons/hicolor/symbolic/apps/os-about-symbolic.svg
+file path=usr/share/icons/hicolor/symbolic/apps/os-next-steps-symbolic.svg
+file path=usr/share/locale/ar/LC_MESSAGES/os-welcome.mo
+file path=usr/share/locale/ca/LC_MESSAGES/os-welcome.mo
+file path=usr/share/locale/cs/LC_MESSAGES/os-welcome.mo
+file path=usr/share/locale/de/LC_MESSAGES/os-welcome.mo
+file path=usr/share/locale/el/LC_MESSAGES/os-welcome.mo
+file path=usr/share/locale/es/LC_MESSAGES/os-welcome.mo
+file path=usr/share/locale/fr/LC_MESSAGES/os-welcome.mo
+file path=usr/share/locale/he/LC_MESSAGES/os-welcome.mo
+file path=usr/share/locale/hu/LC_MESSAGES/os-welcome.mo
+file path=usr/share/locale/id/LC_MESSAGES/os-welcome.mo
+file path=usr/share/locale/it/LC_MESSAGES/os-welcome.mo
+file path=usr/share/locale/ja/LC_MESSAGES/os-welcome.mo
+file path=usr/share/locale/ko/LC_MESSAGES/os-welcome.mo
+file path=usr/share/locale/nl/LC_MESSAGES/os-welcome.mo
+file path=usr/share/locale/pl/LC_MESSAGES/os-welcome.mo
+file path=usr/share/locale/pt_BR/LC_MESSAGES/os-welcome.mo
+file path=usr/share/locale/ru/LC_MESSAGES/os-welcome.mo
+file path=usr/share/locale/sk/LC_MESSAGES/os-welcome.mo
+file path=usr/share/locale/sv/LC_MESSAGES/os-welcome.mo
+file path=usr/share/locale/zh_CN/LC_MESSAGES/os-welcome.mo
+file path=usr/share/locale/zh_HK/LC_MESSAGES/os-welcome.mo
+file path=usr/share/locale/zh_TW/LC_MESSAGES/os-welcome.mo
+file path=usr/share/os-about/about-os-background.jpg
+file path=usr/share/os-about/about-os-logo.png
+link path=usr/share/os-about/gnome.png \
+    target=../icons/Adwaita/48x48/places/start-here.png
+file path=usr/share/os-about/participate.png
+file path=usr/share/os-about/resources.png
+license os-welcome.license license=Oracle
+
+
+# pkgdepend doesn't know that importing gi requires the gobject-introspection
+# data files (RFE 24463417), so we have to list them manually
+depend type=require fmri=__TBD pkg.tmp.gi-typelib=Gdk-3.0 \
+    pkg.debug.depend.reason=usr/bin/os-about \
+    pkg.debug.depend.reason=usr/bin/os-next-steps
+depend type=require fmri=__TBD pkg.tmp.gi-typelib=Gtk-3.0 \
+    pkg.debug.depend.reason=usr/bin/os-about \
+    pkg.debug.depend.reason=usr/bin/os-next-steps
+depend type=require fmri=__TBD pkg.debug.depend.reason=usr/bin/os-next-steps \
+    pkg.tmp.gi-typelib=Gio-2.0

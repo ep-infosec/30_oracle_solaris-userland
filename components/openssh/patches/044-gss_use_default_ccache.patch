@@ -1,0 +1,214 @@
+#
+# Provide per-session credential cache support in OpenSSH in Solaris by
+# introducing new sshd_config option GSSAPIUseDefaultCCache.
+#
+# In the future we plan to provide proper per-session credential cache support
+# in Kerberos in Solaris. When that happens, GSSAPIUseDefaultCCache option
+# will no longer be relevant and we will mark it as deprecated.
+#
+# Patch source: in-house
+# Solaris specific, upstream already has per-session ccache.
+#
+--- old/gss-serv.c	2022-06-10 18:02:13.915590984 +0200
++++ new/gss-serv.c	2022-06-10 18:03:22.194187207 +0200
+@@ -51,6 +51,8 @@
+ #include "ssh-gss.h"
+ #include "monitor_wrap.h"
+ 
++#include <gssapi/gssapi_ext.h>
++
+ extern ServerOptions options;
+ 
+ static ssh_gssapi_client gssapi_client =
+@@ -400,6 +402,12 @@ ssh_gssapi_cleanup_creds(void)
+ 	krb5_ccache ccache = NULL;
+ 	krb5_error_code problem;
+ 
++	if (options.gss_use_default_ccache == 1) {
++		debug("removing default gssapi cred cache file "
++		    "on session cleanup not supported");
++		return;
++	}
++
+ 	if (gssapi_client.store.data != NULL) {
+ 		if ((problem = krb5_cc_resolve(gssapi_client.store.data, gssapi_client.store.envval, &ccache))) {
+ 			debug("%s: krb5_cc_resolve(): %.100s", __func__,
+@@ -418,10 +426,66 @@ ssh_gssapi_cleanup_creds(void)
+ void
+ ssh_gssapi_storecreds(void)
+ {
+-	if (gssapi_client.mech && gssapi_client.mech->storecreds) {
+-		(*gssapi_client.mech->storecreds)(&gssapi_client);
+-	} else
+-		debug("ssh_gssapi_storecreds: Not a GSSAPI mechanism");
++	/* optionally storing creds to per-session ccache */
++	if (options.gss_use_default_ccache == 0) {
++		if (gssapi_client.mech && gssapi_client.mech->storecreds) {
++			(*gssapi_client.mech->storecreds)(&gssapi_client);
++		} else
++			debug("ssh_gssapi_storecreds: Not a GSSAPI mechanism");
++	} else {
++		OM_uint32 maj_status, min_status;
++
++		if (gssapi_client.creds == NULL) {
++			debug("No credentials stored");
++			return;
++		}
++
++		maj_status = gss_store_cred(&min_status, gssapi_client.creds,
++		    GSS_C_INITIATE, &gssapi_client.mech->oid, 1, 1, NULL, NULL);
++
++		if (GSS_ERROR(maj_status)) {
++			struct sshbuf *b;
++			gss_buffer_desc msg;
++			OM_uint32 lmin;
++			OM_uint32 more = 0;
++			int r;
++
++			if ((b = sshbuf_new()) == NULL)
++				fatal("%s: sshbuf_new failed", __func__);
++			/* GSS-API error */
++			do {
++				gss_display_status(&lmin, maj_status,
++				    GSS_C_GSS_CODE, GSS_C_NULL_OID, &more,
++				    &msg);
++				if ((r = sshbuf_put(b, msg.value,
++				    msg.length)) != 0 ||
++				    (r = sshbuf_put_u8(b, '\n')) != 0)
++					fatal("%s: buffer error: %s", __func__,
++					    ssh_err(r));
++			
++				gss_release_buffer(&lmin, &msg);
++			} while (more != 0);
++			/* Mechanism specific error */
++			do {
++				gss_display_status(&lmin, min_status,
++				    GSS_C_MECH_CODE,
++				    &gssapi_client.mech->oid, &more, &msg);
++				if ((r = sshbuf_put(b, msg.value,
++				    msg.length)) != 0 ||
++				    (r = sshbuf_put_u8(b, '\n')) != 0)
++					fatal("%s: buffer error: %s", __func__,
++					    ssh_err(r));
++				gss_release_buffer(&lmin, &msg);
++			} while (more != 0);
++
++			if ((r = sshbuf_put_u8(b, '\n')) != 0)
++				fatal("%s: buffer error: %s", __func__,
++				    ssh_err(r));
++			error("GSS-API error while storing delegated "
++			    "credentials: %s", sshbuf_ptr(b));
++			sshbuf_free(b);
++		}
++	}
+ }
+ 
+ /* This allows GSSAPI methods to do things to the child's environment based
+--- old/servconf.c	2022-06-10 18:02:13.920820833 +0200
++++ new/servconf.c	2022-06-10 18:03:22.199764975 +0200
+@@ -198,6 +198,7 @@ initialize_server_options(ServerOptions
+ 	 */
+ 	options->pam_service_per_authmethod = 1;
+ #endif /* PAM_ENHANCEMENT */
++	options->gss_use_default_ccache = -1;
+ 	options->authorized_principals_file = NULL;
+ 	options->authorized_principals_command = NULL;
+ 	options->authorized_principals_command_user = NULL;
+@@ -487,7 +488,8 @@ fill_default_server_options(ServerOption
+ 	if (options->pam_service_prefix == NULL)
+ 		options->pam_service_prefix = _SSH_PAM_SERVICE_PREFIX;
+ #endif
+-
++	if (options->gss_use_default_ccache == -1)
++		options->gss_use_default_ccache = 1;
+ 	if (options->fwd_opts.streamlocal_bind_mask == (mode_t)-1)
+ 		options->fwd_opts.streamlocal_bind_mask = 0177;
+ 	if (options->fwd_opts.streamlocal_bind_unlink == -1)
+@@ -577,6 +579,7 @@ typedef enum {
+ 	sRevokedKeys, sTrustedUserCAKeys, sAuthorizedPrincipalsFile,
+ 	sAuthorizedPrincipalsCommand, sAuthorizedPrincipalsCommandUser,
+ 	sKexAlgorithms, sCASignatureAlgorithms, sIPQoS, sVersionAddendum,
++	sGssUseDefaultCCache,
+ 	sAuthorizedKeysCommand, sAuthorizedKeysCommandUser,
+ 	sAuthenticationMethods, sHostKeyAgent, sPermitUserRC,
+ 	sStreamLocalBindMask, sStreamLocalBindUnlink,
+@@ -765,6 +768,7 @@ static struct {
+ 	{ "authorizedprincipalscommand", sAuthorizedPrincipalsCommand, SSHCFG_ALL },
+ 	{ "authorizedprincipalscommanduser", sAuthorizedPrincipalsCommandUser, SSHCFG_ALL },
+ 	{ "versionaddendum", sVersionAddendum, SSHCFG_GLOBAL },
++	{ "gssapiusedefaultccache", sGssUseDefaultCCache, SSHCFG_GLOBAL },
+ 	{ "authenticationmethods", sAuthenticationMethods, SSHCFG_ALL },
+ 	{ "streamlocalbindmask", sStreamLocalBindMask, SSHCFG_ALL },
+ 	{ "streamlocalbindunlink", sStreamLocalBindUnlink, SSHCFG_ALL },
+@@ -1669,6 +1673,10 @@ process_server_config_line_depth(ServerO
+ 		intptr = &options->gss_strict_acceptor;
+ 		goto parse_flag;
+ 
++	case sGssUseDefaultCCache:
++		intptr = &options->gss_use_default_ccache;
++		goto parse_flag;
++
+ 	case sGssStoreRekey:
+ 		intptr = &options->gss_store_rekey;
+ 		goto parse_flag;
+@@ -2990,6 +2998,7 @@ dump_config(ServerOptions *o)
+ 	dump_cfg_fmtint(sStreamLocalBindUnlink, o->fwd_opts.streamlocal_bind_unlink);
+ 	dump_cfg_fmtint(sFingerprintHash, o->fingerprint_hash);
+ 	dump_cfg_fmtint(sExposeAuthInfo, o->expose_userauth_info);
++	dump_cfg_fmtint(sGssUseDefaultCCache, o->gss_use_default_ccache);
+ 
+ 	/* string arguments */
+ 	dump_cfg_string(sPidFile, o->pid_file);
+--- old/servconf.h	2022-06-10 18:02:13.925564733 +0200
++++ new/servconf.h	2022-06-10 18:03:22.204524563 +0200
+@@ -237,6 +237,7 @@ typedef struct {
+ 	int	expose_userauth_info;
+ 	u_int64_t timing_secret;
+ 	char   *sk_provider;
++	int	gss_use_default_ccache;
+ }       ServerOptions;
+ 
+ /* Information about the incoming connection as used by Match */
+--- old/sshd_config.5	2022-06-10 18:02:13.930621673 +0200
++++ new/sshd_config.5	2022-06-10 18:03:22.209604306 +0200
+@@ -657,6 +657,18 @@ Specifies whether to automatically destr
+ on logout.
+ The default is
+ .Cm yes .
++.It Cm GSSAPIUseDefaultCCache
++Specifies whether delegated GSSAPI credentials are stored in default credential
++cache file (eg. /tmp/krb5cc_100 for a user with UID 100) or in per-session
++non-default credential cache (eg.  /tmp/krb5cc_100_HwGrDC).  Tickets in
++non-default credential cache are not directly usable for accessing
++krb5-protected NFS shares.  Non-default credential cache can be destroyed on
++logout based on 
++.Cm GSSAPICleanupCredentials 
++setting however default credential
++caches are never automatically destroyed by sshd on session logout.
++The default is 
++.Cm yes .
+ .It Cm GSSAPIKeyExchange
+ Specifies whether key exchange based on GSSAPI is allowed. GSSAPI key exchange
+ doesn't rely on ssh keys to verify host identity.
+--- old/sshd.c	2022-06-10 18:02:13.935425443 +0200
++++ new/sshd.c	2022-06-10 18:03:22.214435249 +0200
+@@ -2281,9 +2281,19 @@ main(int ac, char **av)
+ 
+ #ifdef GSSAPI
+ 	if (options.gss_authentication) {
++		if (setreuid(authctxt->pw->pw_uid, -1) != 0) {
++			debug("setreuid %u: %.100s",
++			    (u_int) authctxt->pw->pw_uid, strerror(errno));
++			goto bail_storecred;
++		}
+ 		temporarily_use_uid(authctxt->pw);
+ 		ssh_gssapi_storecreds();
+ 		restore_uid();
++		if (setuid(geteuid()) != 0) {
++			fatal("setuid %u: %.100s", (u_int) geteuid(),
++			    strerror(errno));
++		}
++ bail_storecred: ;
+ 	}
+ #endif
+ #ifdef USE_PAM

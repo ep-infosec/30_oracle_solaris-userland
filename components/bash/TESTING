@@ -1,0 +1,22 @@
+Bash test results are stored in test/*/test-64-results. They are then filtered
+by COMPONENT_TEST_TRANSFORMS to make the test produce stable/reproducible
+results. Currently all tests are passing. After bash50-002 upstream patch
+application the bug in the bash Makefile causes some of the build targets to
+rebuild each time gmake is issued. COMPONENT_TEST_TRANSFORMS are used to get
+rid of this part from the test output.
+
+
+Please note that the tests have to be executed from tty, otherwise this two
+tests fail:
+
+run-execscript
+run-read
+
+
+To test new version of bash installed on new machine I did:
+
+- install new bash
+- reboot
+- svcs -x # to see if it caused any issue
+- bash --version
+  - to see if we are testing right bash version

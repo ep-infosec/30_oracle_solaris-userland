@@ -1,0 +1,24 @@
+Causes pkgdepend to fail. Should be investigated.
+
+--- firefox-102.1.0/js/src/old-configure.in
++++ firefox-102.1.0/js/src/old-configure.in
+@@ -517,7 +517,7 @@ fi
+     ;;
+ 
+ *-solaris*)
+-    MOZ_FIX_LINK_PATHS="-L${DIST}/bin"
++    MOZ_FIX_LINK_PATHS="-L${DIST}/bin -Wl,-R,'\$ORIGIN'"
+     ;;
+ 
+ *-wasi*)
+--- firefox-102.1.0/old-configure.in
++++ firefox-102.1.0/old-configure.in
+@@ -595,7 +595,7 @@ fi
+     ;;
+ 
+ *-solaris*)
+-    MOZ_FIX_LINK_PATHS="-L${DIST}/bin"
++    MOZ_FIX_LINK_PATHS="-L${DIST}/bin -Wl,-R,'\$ORIGIN'"
+     ;;
+ 
+ esac

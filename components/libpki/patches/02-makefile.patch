@@ -1,0 +1,146 @@
+Patch origin: in-house
+Patch status: Solaris-specific; not suitable for upstream
+
+There are nine test cases included in this component, but test 7 & 8 are
+intentionally disabled because test 7 requires us to set up mysql server,
+ldap serves, etc, and because test 8 uses libeTPkcs11.so, which is a
+commercial product. 
+
+Documents should be installed under /usr/share/doc/libpki instead of
+/usr/share/libpki.
+
+Configuration files should be installed under /etc/libpki.
+
+Need to include $(top_srcdir)/src because not all headers are available in
+$(top_builddir)/src/libpki.
+
+The option -ggdb doesn't work with Studio.
+
+--- libpki-0.8.9/Makefile.am	2016-06-01 15:47:17.703517449 -0700
++++ libpki-0.8.9/Makefile.am	2016-06-01 18:14:09.941087309 -0700
+@@ -89,8 +89,6 @@
+  	src/tests/test4 \
+  	src/tests/test5 \
+  	src/tests/test6 \
+- 	src/tests/test7 \
+- 	src/tests/test8 \
+ 	src/tests/test9
+ 
+ rebuild::
+--- libpki-0.8.9/docs/Makefile.am	2016-06-01 15:47:48.571731471 -0700
++++ libpki-0.8.9/docs/Makefile.am	2016-06-01 18:16:44.901744754 -0700
+@@ -36,10 +36,11 @@
+ install-data-am: install-man
+ 	@$(NORMAL_INSTALL) ; \
+         $(mkinstalldirs) $(DESTDIR)$(exec_prefix)/share; \
+-        $(mkinstalldirs) $(DESTDIR)$(exec_prefix)/share/libpki; \
++        $(mkinstalldirs) $(DESTDIR)$(exec_prefix)/share/doc; \
++        $(mkinstalldirs) $(DESTDIR)$(exec_prefix)/share/doc/libpki; \
+         for file in $(EXTRA_DIST) latex/refman.pdf; do \
+             if test -f $$file; then \
+-              $(INSTALL_DATA) $$file $(DESTDIR)$(exec_prefix)/share/libpki; \
++              $(INSTALL_DATA) $$file $(DESTDIR)$(exec_prefix)/share/doc/libpki; \
+             fi \
+           done
+ 
+--- libpki-0.8.9/etc/Makefile.am	2016-06-01 15:47:16.927275667 -0700
++++ libpki-0.8.9/etc/Makefile.am	2016-06-07 14:20:52.853719021 -0700
+@@ -12,42 +12,42 @@
+ HSMS       = hsm.d/*.xml
+ STORES     = store.d/*.xml
+ CONFIGS    = *.xml
+-PKI_CONFIG = pki.conf
++PKI_CONFIG = $(srcdir)/pki.conf
+ 
+ EXTRA_DIST = $(PROFILES) $(TOKENS) $(HSMS) $(STORES) $(CONFIGS) $(PKI_CONFIG)
+ 
+ install-data-local:
+ 	@$(NORMAL_INSTALL) ; \
+-        $(mkinstalldirs) $(DESTDIR)$(exec_prefix)/etc/libpki; \
+-        $(mkinstalldirs) $(DESTDIR)$(exec_prefix)/etc/libpki/hsm.d; \
+-        $(mkinstalldirs) $(DESTDIR)$(exec_prefix)/etc/libpki/token.d; \
+-        $(mkinstalldirs) $(DESTDIR)$(exec_prefix)/etc/libpki/store.d; \
+-        $(mkinstalldirs) $(DESTDIR)$(exec_prefix)/etc/libpki/profile.d; \
++        $(mkinstalldirs) $(DESTDIR)/etc/libpki; \
++        $(mkinstalldirs) $(DESTDIR)/etc/libpki/hsm.d; \
++        $(mkinstalldirs) $(DESTDIR)/etc/libpki/token.d; \
++        $(mkinstalldirs) $(DESTDIR)/etc/libpki/store.d; \
++        $(mkinstalldirs) $(DESTDIR)/etc/libpki/profile.d; \
+         for file in $(PROFILES) ; do \
+             if test -f $$file; then \
+-              $(INSTALL_DATA) $$file $(DESTDIR)$(exec_prefix)/etc/libpki/profile.d; \
++              $(INSTALL_DATA) $$file $(DESTDIR)/etc/libpki/profile.d; \
+             fi \
+           done
+ 	@for file in $(TOKENS) ; do \
+             if test -f $$file; then \
+-              $(INSTALL_DATA) $$file $(DESTDIR)$(exec_prefix)/etc/libpki/token.d; \
++              $(INSTALL_DATA) $$file $(DESTDIR)/etc/libpki/token.d; \
+             fi \
+           done
+ 	@for file in $(HSMS) ; do \
+             if test -f $$file; then \
+-              $(INSTALL_DATA) $$file $(DESTDIR)$(exec_prefix)/etc/libpki/hsm.d; \
++              $(INSTALL_DATA) $$file $(DESTDIR)/etc/libpki/hsm.d; \
+             fi \
+           done
+ 	@for file in $(STORES) ; do \
+             if test -f $$file; then \
+-              $(INSTALL_DATA) $$file $(DESTDIR)$(exec_prefix)/etc/libpki/store.d; \
++              $(INSTALL_DATA) $$file $(DESTDIR)/etc/libpki/store.d; \
+             fi \
+           done
+ 	@for file in $(CONFIGS) ; do \
+             if test -f $$file; then \
+-              $(INSTALL_DATA) $$file $(DESTDIR)$(exec_prefix)/etc/libpki; \
++              $(INSTALL_DATA) $$file $(DESTDIR)/etc/libpki; \
+             fi \
+           done
+-	@$(INSTALL_DATA) $(PKI_CONFIG) $(DESTDIR)$(exec_prefix)/etc
++	@$(INSTALL_DATA) $(PKI_CONFIG) $(DESTDIR)/etc
+ 
+ 
+--- libpki-0.8.9/src/Makefile.am	2016-06-01 15:47:17.732926831 -0700
++++ libpki-0.8.9/src/Makefile.am	2016-06-09 14:49:11.713859300 -0700
+@@ -27,19 +27,20 @@
+  
+ nobase_include_HEADERS = \
+ 	libpki/*.h \
+-	libpki/net/*.h \
+-	libpki/io/*.h \
+-	libpki/scep/*.h \
+-	libpki/prqp/*.h \
+-	libpki/lirt/*.h \
+-	libpki/cms/*.h \
+-	libpki/openssl/*.h \
+-	libpki/drivers/*.h \
+-	libpki/drivers/openssl/*.h \
+-	libpki/drivers/engine/*.h \
+-	libpki/drivers/pkcs11/*.h \
+-	libpki/drivers/pkcs11/rsa/*.h \
+-	libpki/drivers/kmf/*.h
++	$(top_srcdir)/src/libpki/*.h \
++	$(top_srcdir)/src/libpki/net/*.h \
++	$(top_srcdir)/src/libpki/io/*.h \
++	$(top_srcdir)/src/libpki/scep/*.h \
++	$(top_srcdir)/src/libpki/prqp/*.h \
++	$(top_srcdir)/src/libpki/lirt/*.h \
++	$(top_srcdir)/src/libpki/cms/*.h \
++	$(top_srcdir)/src/libpki/openssl/*.h \
++	$(top_srcdir)/src/libpki/drivers/*.h \
++	$(top_srcdir)/src/libpki/drivers/openssl/*.h \
++	$(top_srcdir)/src/libpki/drivers/engine/*.h \
++	$(top_srcdir)/src/libpki/drivers/pkcs11/*.h \
++	$(top_srcdir)/src/libpki/drivers/pkcs11/rsa/*.h \
++	$(top_srcdir)/src/libpki/drivers/kmf/*.h
+ 
+ SRCS = \
+ 	pki_init.c \
+--- libpki-0.8.9/src/tests/Makefile.am	2016-06-01 15:47:33.304908175 -0700
++++ libpki-0.8.9/src/tests/Makefile.am	2016-06-07 15:21:44.869944846 -0700
+@@ -73,4 +73,4 @@
+ test9_SOURCES = test9.c
+ test9_LDFLAGS = $(testLDFLAGS)
+ test9_LDADD   = $(testLDADD)
+-test9_CFLAGS = -I$(TOP) $(LIBPKI_CFLAGS) -ggdb
++test9_CFLAGS = -I$(TOP) $(LIBPKI_CFLAGS)

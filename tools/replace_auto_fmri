@@ -1,0 +1,70 @@
+#!/bin/bash
+
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+
+#
+# Copyright (c) 2019, 2020, Oracle and/or its affiliates. All rights reserved.
+#
+
+
+set -Eeu -o pipefail
+
+UNCOMMITTED_CHANGES=$(
+	# Make sure that there are no other files changed than ips-buildinfo.mk
+	hg status -nmard |
+	( ggrep -v -F -x make-rules/ips-buildinfo.mk || : )
+)
+if [ -n "$UNCOMMITTED_CHANGES" ]; then
+	echo "There are some uncommitted changes, please fix first:"
+	echo -E "$UNCOMMITTED_CHANGES"
+	exit 1
+fi
+
+cd $(hg root)
+
+# Extract current BRANCHID
+BRANCHID=$(
+	gmake -f - <<'EOT'
+include make-rules/ips-buildinfo.mk
+
+all:
+	@echo $(BRANCHID)
+EOT
+)
+echo "Replacing AUTO_FMRI by $BRANCHID"
+
+# list all files |
+#   take into account only
+#          - history files
+#          - p5m files
+#          - transforms/legacy
+#   replace every AUTO_FMRI in the file unless the line starts with '#'
+hg manifest |
+	ggrep -P '((/history|\.p5m)(|\.i386|\.sparc)$|^transforms/legacy$)' |
+	xargs perl -pi -e 's/AUTO_FMRI/'"$BRANCHID"'/g unless m/^\s*#/'
+
+# Now make all the modified manifests pkgfmt clean
+hg status --no-status --modified |
+	ggrep -P '\.p5m(|\.i386|\.sparc)$' |
+	xargs pkgfmt
+
+hg diff
